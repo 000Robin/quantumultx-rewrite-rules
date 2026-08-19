@@ -1,6 +1,6 @@
 # 每三天研究任务
 
-在私有仓库 `000Robin/quantumultx-rewrite-rules` 的本地检出目录执行一次增量研究并推送结果。
+在公开只读、仅所有者可写的仓库 `000Robin/quantumultx-rewrite-rules` 的本地检出目录执行一次增量研究并推送结果。
 
 1. 先拉取 `main` 最新提交并阅读 `SECURITY.md`、`sources/source-audit.md`、两个 `rules/protected-*.conf`。
 2. 检查 `sources/all-rewrite-sources.conf` 的 54 条上游是否更新、失效或迁移；优先使用作者仓库、原始发布页和公开文档。
@@ -12,3 +12,4 @@
 8. 会员/VIP/RevenueCat/收据/订阅解锁、Cookie/Token 获取、定位伪造等非广告功能只做风险标记，不复制、不启用、不合并。
 9. 扫描暂存差异，确认不含 p12、passphrase、订阅 token、Cookie、账号或 GitHub 凭据；没有可信增量时只记录“无可采纳更新”，不要制造变化。
 10. 有安全且可验证的增量时提交并推送 `main`；完成后在本任务中简要报告新增数、失效数、受限但已摘录数和提交链接。失败时保留本地证据并报告，不强推。
+11. 本仓库仅供所有者个人使用，不接受外部贡献；不得移除 `LICENSE`、`NOTICE.md`、`CONTRIBUTING.md` 或 `.github/CODEOWNERS`。
