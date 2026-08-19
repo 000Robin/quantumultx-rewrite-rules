@@ -1,5 +1,7 @@
 # Security
 
+本仓库公开可读。任何提交都必须假定会立刻被全网看到。
+
 ## 禁止提交
 
 - Quantumult X 的 `p12`、`passphrase` 或任何 MitM 私钥材料。

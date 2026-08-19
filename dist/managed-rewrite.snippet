@@ -1,0 +1,31 @@
+#!name=Robin 个人维护去开屏
+#!desc=仅供 000Robin 个人使用；公开可读不代表允许复制、修改或再分发。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-08-19
+
+# Tencent Video startup/interactive ad transport and media
+^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.* url reject-200
+^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.* url reject
+^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.* url reject
+
+# China Merchants Bank splash pre-cache
+^https:\/\/mbasecc\.bcs\.cmbchina\.com\/Edge\/api\/mlife\.clientface\.clientservice\.api\.advertiseService\/preCacheAdvertiseSec(?:\?.*)?$ url reject-dict
+
+# Zhaopin splash media
+^https://storage-public\.zhaopin\.cn/information/team/public/.*2000x1080.* url reject
+
+# Hunliji startup ad
+^https:\/\/api\.hunliji\.com\/hms\/hljLego\/appApi\/startAD\/info(?:\?.*)?$ url reject-dict
+
+# CITIC splash creative by known dimensions
+^https?:\/\/autoload\.bank\.ecitic\.com\/imcslego\/cloud\/[^?]+\.(?:png|jpg|jpeg|gif|webp)\?[^#]*(?:width=750&height=1624|height=1624&width=750)(?:&.*)?$ url reject
+
+# China Telecom / CTYun startup endpoints
+^https?:\/\/[^\/]*\.189\.cn\/.*(?:splash|advert|advertisement|startup|launch).* url reject-dict
+^https?:\/\/[^\/]*\.ctyun\.cn\/.*(?:splash|advert|startup|launch).* url reject-dict
+
+# Ctrip trip ad endpoint
+^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
+
+hostname = iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, *.189.cn, *.ctyun.cn, m.ctrip.com
