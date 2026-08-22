@@ -13,3 +13,12 @@
 - 新增仅供个人使用、禁止复制/修改/再分发的保留权利声明，并明确公开 GitHub 无法技术性阻止克隆或 Fork。
 - 新增 `dist/managed-rewrite.snippet`，只包含原配置中已验证的去开屏拒绝规则和最小 MitM hostname。
 - 不公开完整用户配置、证书、节点订阅、Cookie、Token 或会员解锁代码。
+
+## 2026-08-22 — 三日增量研究
+
+- 上游复核：54 条中 53 条返回 200、1 条返回 403；失效 0、确认迁移 0。
+- 已恢复：此前记录的 3 条 403 与 5 条 404 本次全部可直接读取；未改动原目录顺序和启停状态。
+- 受限来源：`https://limbopro.com/Adblock4limbo.conf` 返回 403；未绕过限制，保留 URL，未产生新摘录。
+- 风险隔离：`chxm1023/Rewrite/main/Reheji.js` 内容指纹变化，但属于 RevenueCat/订阅解锁类别，未复制、未启用、未合并。
+- 新增候选 1 条：`https://raw.githubusercontent.com/chxm1023/Advertising/main/AppAd.conf`，功能为 App 广告与开屏净化，公开可达，最近相关提交为 2026-08-13。
+- 候选审查：65 条拒绝、17 条响应脚本；依赖脚本未发现凭据或订阅解锁读写。因 hostname 较宽并与现有广告合集重叠，只以 `enabled=false` 收录，等待实机/HAR 验证。
