@@ -22,3 +22,12 @@
 - 风险隔离：`chxm1023/Rewrite/main/Reheji.js` 内容指纹变化，但属于 RevenueCat/订阅解锁类别，未复制、未启用、未合并。
 - 新增候选 1 条：`https://raw.githubusercontent.com/chxm1023/Advertising/main/AppAd.conf`，功能为 App 广告与开屏净化，公开可达，最近相关提交为 2026-08-13。
 - 候选审查：65 条拒绝、17 条响应脚本；依赖脚本未发现凭据或订阅解锁读写。因 hostname 较宽并与现有广告合集重叠，只以 `enabled=false` 收录，等待实机/HAR 验证。
+
+## 2026-08-26 — 去广分流与安全加固
+
+- 对照 Quantumult X 官方示例，补充独立 `filter_remote` 产物；混合 `direct/reject` 文件明确禁止设置 `force-policy`。
+- 审计 AWAvenue、fmz200、Cats-Team、blackmatrix7 四类主去广分流及两个 Unbreak 来源；只登记 URL、快照、规模和判断，候选全部停用。
+- 新增最小分流基线：4 条精确直连、3 条腾讯视频连接层拒绝；不复制大型第三方列表。
+- 中国电信重写正则从任意 `*.189.cn` 收紧为 `wapside.189.cn`，并在 MitM hostname 加入两个登录域名排除项；`*.ctyun.cn` 宽 MitM 从默认管理片段隔离，等待精确 HAR。
+- 识别当前配置中 fmz200 分流、fmz200 重写及 blackmatrix7 Advertising 的重复镜像；本次不自动删除受保护历史基线。
+- 新增无第三方依赖的规则校验脚本与 GitHub Actions，检查敏感信息、候选启停、分流顺序和电信 MitM 回归。

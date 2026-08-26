@@ -1,0 +1,20 @@
+#!name=Robin 个人维护去广分流
+#!desc=低误杀连接层拦截与关键直连修正；导入时不要设置 force-policy。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-08-26
+
+# China Telecom login: never intercept or reject certificate-pinned authentication.
+host, appgologinhd.189.cn, direct
+host, appgologin.189.cn, direct
+
+# Douyin security verification: exact exception only; do not bypass whole domains.
+host, vcs-lf.zijieapi.com, direct
+
+# Railway app stability: keep the known service endpoint reachable.
+host, ad.12306.cn, direct
+
+# Tencent Video startup/interactive ad connection-layer fallback.
+host, iacc.qq.com, reject
+host, iacc.rec.qq.com, reject
+host, ad.reward.qq.com, reject

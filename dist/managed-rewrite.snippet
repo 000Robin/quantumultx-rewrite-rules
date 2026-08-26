@@ -2,7 +2,7 @@
 #!desc=仅供 000Robin 个人使用；公开可读不代表允许复制、修改或再分发。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-08-19
+#!date=2026-08-26
 
 # Tencent Video startup/interactive ad transport and media
 ^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.* url reject-200
@@ -21,11 +21,12 @@
 # CITIC splash creative by known dimensions
 ^https?:\/\/autoload\.bank\.ecitic\.com\/imcslego\/cloud\/[^?]+\.(?:png|jpg|jpeg|gif|webp)\?[^#]*(?:width=750&height=1624|height=1624&width=750)(?:&.*)?$ url reject
 
-# China Telecom / CTYun startup endpoints
-^https?:\/\/[^\/]*\.189\.cn\/.*(?:splash|advert|advertisement|startup|launch).* url reject-dict
-^https?:\/\/[^\/]*\.ctyun\.cn\/.*(?:splash|advert|startup|launch).* url reject-dict
+# China Telecom startup endpoint
+^https?:\/\/wapside\.189\.cn(?::\d+)?\/.*(?:splash|advert|advertisement|startup|launch).* url reject-dict
+
+# CTYun wildcard rewrite is quarantined pending an exact-host HAR.
 
 # Ctrip trip ad endpoint
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
 
-hostname = iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, *.ctyun.cn, m.ctrip.com
+hostname = -appgologinhd.189.cn, -appgologin.189.cn, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, m.ctrip.com
