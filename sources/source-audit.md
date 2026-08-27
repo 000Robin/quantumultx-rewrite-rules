@@ -48,3 +48,10 @@
 - `https://limbopro.com/Adblock4limbo.conf` 本次返回 403。未绕过访问限制，保留原 URL 和既有内容分类，等待后续重试。
 - `chxm1023/Rewrite/main/Reheji.js` 内容指纹发生变化；该来源属于 RevenueCat/订阅解锁风险类别，仅记录变化，不复制、不启用、不合并。
 - 新增 `chxm1023/Advertising/main/AppAd.conf` 为停用候选：上游 2026-08-13 有提交，公开地址返回 200；包含 65 条拒绝与 17 条响应脚本规则。依赖脚本未发现 Cookie、Token、收据或订阅解锁读写，但 hostname 范围较宽且与现有广告合集重叠，因此没有实机/HAR 证据前不得启用。
+
+## 增量复核（2026-08-27）
+
+- `cat-kun/QuantumultX-block-ad/master/haoxing.conf` 已返回 404；上游默认分支为 `main`，同路径文件在 `main` 可读取（139 B，blob `46e4a9ab`），并可追溯至该仓库 2022-12-12 的原始提交。来源目录已将分支名迁移为 `main`，原标签、顺序和启用状态不变；受保护基线未修改。
+- 已登记的 GitHub 重写来源除上述旧分支外均可读取；jsDelivr 镜像仍作为 blackmatrix7 Raw 地址的重复入口保留。主要分流候选的内容指纹与 2026-08-26 快照一致，没有新增主列表。
+- 公开检索发现 `ZenmoFeiShi/Reject-AD`，但其 `rewrite.conf` 标记更新时间为 2025-05-21，存在不完整的 `url` 语法、非标准 `response-body` 写法、宽泛 `*.kuwo.cn` MitM，且仓库未声明许可证；不登记为候选。
+- `chxm1023/Rewrite/main/Reheji.js` 仍属于 RevenueCat/订阅解锁隔离类别；只确认可达，不复制、不启用、不合并。未发现 Cookie、Token、订阅地址、证书或私钥泄露到可发布文件。
