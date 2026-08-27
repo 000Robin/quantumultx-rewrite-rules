@@ -28,6 +28,14 @@
 - 对照 Quantumult X 官方示例，补充独立 `filter_remote` 产物；混合 `direct/reject` 文件明确禁止设置 `force-policy`。
 - 审计 AWAvenue、fmz200、Cats-Team、blackmatrix7 四类主去广分流及两个 Unbreak 来源；只登记 URL、快照、规模和判断，候选全部停用。
 - 新增最小分流基线：4 条精确直连、3 条腾讯视频连接层拒绝；不复制大型第三方列表。
+
 - 中国电信重写正则从任意 `*.189.cn` 收紧为 `wapside.189.cn`，并在 MitM hostname 加入两个登录域名排除项；`*.ctyun.cn` 宽 MitM 从默认管理片段隔离，等待精确 HAR。
 - 识别当前配置中 fmz200 分流、fmz200 重写及 blackmatrix7 Advertising 的重复镜像；本次不自动删除受保护历史基线。
 - 新增无第三方依赖的规则校验脚本与 GitHub Actions，检查敏感信息、候选启停、分流顺序和电信 MitM 回归。
+
+## 2026-08-27 腾讯视频应用内弹窗增量
+
+- 依据：用户 2026-08-21 HAR 形成的既有约束，以及本次对公开 GitHub 腾讯视频规则的复核。
+- 采用：为 `https://i.video.qq.com/` 根接口增加自编响应脚本，只清空明确广告容器、过滤带广告标志或已知 `promotionTest` / `starter` 素材的节点。
+- 安全：JSON 解析失败时原样放行；不匹配 `vv6.video.qq.com/getvinfo`、`playproxy.video.qq.com` 或其他播放接口；不修改会员、账户、订阅或权益字段。
+- 拒绝复制：公开来源中存在全域拦截、过宽 hostname 及 VIP 修改内容，均未合并。

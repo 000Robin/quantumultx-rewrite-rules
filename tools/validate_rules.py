@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -78,6 +80,19 @@ def check_rewrite() -> None:
         if not host_lines or protected not in host_lines[0]:
             fail(f"missing China Telecom MitM protection: {protected}")
 
+    popup_rule = (
+        r"^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-response-body "
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/tencent_video_popup_clean.js"
+    )
+    if popup_rule not in lines:
+        fail("missing exact Tencent Video in-app popup cleaner rule")
+    if not host_lines or "i.video.qq.com" not in hostname_tokens:
+        fail("missing Tencent Video popup MitM hostname")
+    for playback_host in ("vv6.video.qq.com", "playproxy.video.qq.com"):
+        if any(playback_host in line for line in lines):
+            fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
+
     telecom_rules = [line for line in lines if r"wapside\.189\.cn" in line]
     if len(telecom_rules) != 1:
         fail("managed rewrite must contain exactly one China Telecom rule")
@@ -101,6 +116,31 @@ def check_rewrite() -> None:
             for url in should_not_match:
                 if telecom_pattern.search(url):
                     fail(f"China Telecom rewrite unexpectedly matches login: {url}")
+
+
+def check_scripts() -> None:
+    relative = "scripts/tencent_video_popup_clean.js"
+    path = ROOT / relative
+    if not path.is_file():
+        fail(f"missing required file: {relative}")
+        return
+
+    text = path.read_text(encoding="utf-8")
+    forbidden = ("annualvip", "endtime", "svip", "entitlement", "getvinfo")
+    for term in forbidden:
+        if term in text.lower():
+            fail(f"{relative} must not modify account/playback field: {term}")
+
+    node = shutil.which("node")
+    if node:
+        result = subprocess.run(
+            [node, "--check", str(path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode:
+            fail(f"invalid JavaScript syntax in {relative}: {result.stderr.strip()}")
 
 
 def check_filter() -> None:
@@ -154,6 +194,7 @@ def check_candidates() -> None:
 def main() -> int:
     check_sensitive_data()
     check_rewrite()
+    check_scripts()
     check_filter()
     check_candidates()
     if ERRORS:
