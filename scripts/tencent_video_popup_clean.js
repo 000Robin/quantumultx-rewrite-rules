@@ -58,6 +58,12 @@ const adTypeValues = new Set([
   "commercialad",
 ]);
 
+// Native cards on the profile page may omit ad IDs and expose only UI labels.
+// Requiring both labels avoids matching ordinary content that merely mentions ads.
+const nativeAdBadgeText = "广告";
+const nativeAdActionText = "了解更多";
+const protectedHistoryText = "观看历史";
+
 const isTruthyAdValue = (value) => {
   if (value === true || value === 1) return true;
   if (typeof value !== "string") return false;
@@ -76,10 +82,33 @@ const isKnownAdAsset = (value) =>
   typeof value === "string" &&
   /\/(?:promotionTest|starter)\//i.test(value);
 
+const hasNativeAdCardSignature = (value) => {
+  const stack = [value];
+  let hasAdBadge = false;
+  let hasAdAction = false;
+  let containsWatchHistory = false;
+
+  while (stack.length) {
+    const current = stack.pop();
+    if (typeof current === "string") {
+      const text = current.trim();
+      if (text === nativeAdBadgeText) hasAdBadge = true;
+      if (text === nativeAdActionText) hasAdAction = true;
+      if (text === protectedHistoryText) containsWatchHistory = true;
+      continue;
+    }
+
+    if (!current || typeof current !== "object") continue;
+    for (const child of Object.values(current)) stack.push(child);
+  }
+
+  return hasAdBadge && hasAdAction && !containsWatchHistory;
+};
+
 const isExplicitAdNode = (value) => {
   if (!value || Array.isArray(value) || typeof value !== "object") return false;
 
-  return Object.entries(value).some(([key, fieldValue]) => {
+  const hasStructuredAdMarker = Object.entries(value).some(([key, fieldValue]) => {
     const normalizedKey = normalizeKey(key);
     if (adFlagKeys.has(normalizedKey)) return isTruthyAdValue(fieldValue);
     if (adIdKeys.has(normalizedKey)) return hasNonzeroId(fieldValue);
@@ -91,6 +120,8 @@ const isExplicitAdNode = (value) => {
 
     return isKnownAdAsset(fieldValue);
   });
+
+  return hasStructuredAdMarker || hasNativeAdCardSignature(value);
 };
 
 const emptyLike = (value) => {

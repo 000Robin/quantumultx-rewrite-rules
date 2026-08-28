@@ -194,6 +194,13 @@ def check_scripts() -> None:
             if term in text.lower():
                 fail(f"{relative} must not modify non-ad field or state: {term}")
 
+        if relative == "scripts/tencent_video_popup_clean.js":
+            for marker in ('"广告"', '"了解更多"', '"观看历史"'):
+                if marker not in text:
+                    fail(f"{relative} missing native profile-card safeguard: {marker}")
+            if "1688" in text:
+                fail(f"{relative} must not depend on one advertiser's copy")
+
         if node:
             result = subprocess.run(
                 [node, "--check", str(path)],
@@ -204,20 +211,24 @@ def check_scripts() -> None:
             if result.returncode:
                 fail(f"invalid JavaScript syntax in {relative}: {result.stderr.strip()}")
 
-    test_relative = "tests/youtube_ad_clean.test.js"
-    test_path = ROOT / test_relative
-    if not test_path.is_file():
-        fail(f"missing required file: {test_relative}")
-    elif node:
-        result = subprocess.run(
-            [node, str(test_path)],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if result.returncode:
-            details = result.stderr.strip() or result.stdout.strip()
-            fail(f"YouTube ad cleaner regression test failed: {details}")
+    tests = (
+        "tests/tencent_video_popup_clean.test.js",
+        "tests/youtube_ad_clean.test.js",
+    )
+    for test_relative in tests:
+        test_path = ROOT / test_relative
+        if not test_path.is_file():
+            fail(f"missing required file: {test_relative}")
+        elif node:
+            result = subprocess.run(
+                [node, str(test_path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode:
+                details = result.stderr.strip() or result.stdout.strip()
+                fail(f"script regression test failed for {test_relative}: {details}")
 
 
 def check_filter() -> None:

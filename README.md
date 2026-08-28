@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/managed-rewrite.snippet, tag=Robin个人维护去开屏, update-interval=259200, opt-parser=false, enabled=true
 ```
 
-两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。腾讯视频应用内弹窗由 `scripts/tencent_video_popup_clean.js` 处理：仅净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，解析失败时原样放行。
+两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。腾讯视频应用内弹窗由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；“观看历史”模块受到显式保护，解析失败时原样放行。
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
 
@@ -57,6 +57,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `dist/managed-filter.list`：供 Quantumult X 引用的精简去广分流与修正列表。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 净化脚本，不处理会员或正片播放接口。
+- `tests/tencent_video_popup_clean.test.js`：腾讯视频个人页广告移除及观看历史、VIP、账号、播放字段保留测试。
 - `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。
 - `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。

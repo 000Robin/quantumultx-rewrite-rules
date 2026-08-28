@@ -48,3 +48,10 @@
 - 采用：新增自编 `youtube_ad_clean.js`。JSON 仅删除明确命名的广告容器和渲染器；protobuf 仅在 `/player` 顶层删除长度分隔的字段 7 与 68，其余字段保持原始字节。
 - 安全取舍：只加入 `youtubei.googleapis.com`，没有加入 `*.googlevideo.com`、`rr*.googlevideo.com`、`www.youtube.com` 或 `s.youtube.com`；没有合并 Premium、会员、后台播放、画中画、字幕翻译、Cookie/Token 或界面改造。
 - 校验：新增正常播放字段保留、广告字段移除、非播放器二进制放行、畸形 JSON/protobuf 放行测试，并接入 `tools/validate_rules.py`。
+
+## 2026-08-28 — 腾讯视频“观看历史”下方原生广告
+
+- 现象：用户截图确认腾讯视频“我的”页在“观看历史”模块下方插入独立原生广告卡片；当前示例同时显示“广告”角标和“了解更多”按钮。
+- 公开来源复核：[`fmz200/wool_scripts` 腾讯视频分流](https://github.com/fmz200/wool_scripts/blob/main/Loon/rule/TencentVideo.list)主要依赖整域拒绝 `gdt.qq.com`、`l.qq.com`、`rdelivery.qq.com` 等广告网络；因范围较大且没有该卡片的精确接口证据，本次未合并这些域名。
+- 采用：扩展现有 `i.video.qq.com` JSON 清理器，只把“广告”与“了解更多”同时存在的数组卡片识别为原生广告；不写入截图中的具体广告主或文案，避免规则随广告轮换失效。
+- 保护：若节点包含“观看历史”则不在该层删除，继续向下清理更小的广告子卡片；新增回归测试确认观看记录、VIP、账号、播放状态和普通内容保持不变，畸形 JSON 原样放行。
