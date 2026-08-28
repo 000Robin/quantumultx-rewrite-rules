@@ -60,6 +60,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频个人页广告移除及观看历史、VIP、账号、播放字段保留测试。
 - `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。
 - `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
+- `examples/optimized-policy.conf`：脱敏的个人策略组参考，包含 AI/地区自动选择与低频按需测速；不是可直接加载的远程资源。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。
 - `tools/validate_rules.py`：本地与 GitHub Actions 共用的语法、顺序和敏感信息检查。

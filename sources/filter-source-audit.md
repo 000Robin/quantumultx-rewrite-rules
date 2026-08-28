@@ -40,3 +40,12 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 2. 抖音：只直连 `vcs-lf.zijieapi.com` 安全验证；整段直连 `douyin.com`、`snssdk.com`、`zijieapi.com` 会让去广列表失效。
 3. `*.ctyun.cn` 属于宽 MitM 风险，已从默认管理片段隔离；原始保护参考仍保留，取得新 HAR 并定位实际广告主机后再以精确 hostname 恢复。
 4. 不启用 `hostname=*`，不因广告规则关闭证书校验，不把 Cookie、Token、订阅或 MitM 私钥写入仓库。
+
+## 2026-08-28 完整配置复核与策略优化
+
+- 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。
+- 服务分流：Google 从 Loon 路径改为原生 Quantumult X 列表（711 条）；GitHub 从 `host-keyword` 改为 31 条专用列表，避免把名称中偶然含有 `github` 的无关域名一并代理。Apple、WeChat、Telegram、TikTok、Spotify 与媒体规则只在对应策略存在时按需启用。
+- 上游异常：`blackmatrix7/ios_rule_script` 的 `rule/QuantumultX/Global/Global.list` 当前 blob 为空，没有作为全球兜底候选；继续登记内容非空的 `ConnersHua/RuleGo` `Proxy.list`。
+- 许可边界：检索到 `QuixoticHeart/rule-set`，但其 README 明确限制转载或发布至中国大陆地区。本仓库不复制、不镜像，也不登记其生成文件为候选。
+- 策略修复：删除重复的“兜底分流”包装层，`final` 直接交给 `Shawn`；新增 AI 自动组与韩国节点组；把所有大小写标志统一放到正则开头，并将自动测速改为按需触发，减少后台唤醒。
+- TLS 与 MitM：完整私有配置将 `skip_validating_cert` 恢复为 `false`，删除 CTYun 通配重写和 MitM，只保留已有精确主机；这些私有证书与订阅变化不进入本公开仓库。

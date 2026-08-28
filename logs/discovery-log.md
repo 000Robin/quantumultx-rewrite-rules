@@ -55,3 +55,11 @@
 - 公开来源复核：[`fmz200/wool_scripts` 腾讯视频分流](https://github.com/fmz200/wool_scripts/blob/main/Loon/rule/TencentVideo.list)主要依赖整域拒绝 `gdt.qq.com`、`l.qq.com`、`rdelivery.qq.com` 等广告网络；因范围较大且没有该卡片的精确接口证据，本次未合并这些域名。
 - 采用：扩展现有 `i.video.qq.com` JSON 清理器，只把“广告”与“了解更多”同时存在的数组卡片识别为原生广告；不写入截图中的具体广告主或文案，避免规则随广告轮换失效。
 - 保护：若节点包含“观看历史”则不在该层删除，继续向下清理更小的广告子卡片；新增回归测试确认观看记录、VIP、账号、播放状态和普通内容保持不变，畸形 JSON 原样放行。
+
+## 2026-08-28 — 完整配置去重与服务分流候选
+
+- 脱敏审计完整配置：启用重写从 37 条收敛为 14 条；删除 raw/CDN 镜像、多个大型去开屏合集，以及 VIP、RevenueCat、收据、试用期和 Cookie/Token 类解锁资源。完整配置含订阅和 MitM 私钥，未写入仓库。
+- 主去广分流只选择 AWAvenue v1.7.6；新增 Google、GitHub、Apple、WeChat、抖音/TikTok、Telegram、Spotify、流媒体、国内 ASN 与全球兜底候选，全部保持 `enabled=false`。
+- 精确性：Google 改用 Quantumult X 原生路径；GitHub 用专用列表替代 `host-keyword`；删除整段抖音直连，保留 `vcs-lf.zijieapi.com` 安全验证直连。
+- 未采用：blackmatrix7 `Global.list` 当前为空；QuixoticHeart 规则集存在明确地域再发布限制；二者均未加入运行配置。
+- 新增 `examples/optimized-policy.conf`，只保存无凭据的策略组参考，不包含节点、订阅、证书或完整个人配置。

@@ -279,12 +279,63 @@ def check_candidates() -> None:
                 fail(f"candidate must remain disabled in {relative}: {line}")
 
 
+def check_policy_example() -> None:
+    relative = "examples/optimized-policy.conf"
+    lines = active_lines(relative)
+    if not lines or lines[0] != "[policy]":
+        fail(f"{relative} must contain one [policy] section")
+        return
+
+    names: set[str] = set()
+    for line in lines[1:]:
+        match = re.match(
+            r"(?:static|available|round-robin|dest-hash|url-latency-benchmark)=([^,]+),",
+            line,
+        )
+        if not match:
+            fail(f"invalid policy example line: {line}")
+            continue
+        names.add(match.group(1).strip())
+
+        regex_match = re.search(r"server-tag-regex=(.*?),\s*check-interval=", line)
+        if regex_match:
+            pattern = regex_match.group(1)
+            if "(?i)" in pattern and not pattern.startswith("(?i)"):
+                fail(f"inline case flag must start the policy regex: {line}")
+            try:
+                re.compile(pattern)
+            except re.error as exc:
+                fail(f"invalid policy regex in {relative}: {exc}")
+            if "alive-checking=false" not in line.replace(" ", ""):
+                fail(f"automatic policy must avoid idle polling: {line}")
+            interval = re.search(r"check-interval=(\d+)", line)
+            if not interval or int(interval.group(1)) < 600:
+                fail(f"automatic policy checks too frequently: {line}")
+
+    required = {
+        "Shawn",
+        "全球加速",
+        "ChatGPT",
+        "自动选择",
+        "AI自动",
+        "香港节点",
+        "台湾节点",
+        "日本节点",
+        "狮城节点",
+        "韩国节点",
+        "美国节点",
+    }
+    for name in sorted(required - names):
+        fail(f"missing required policy example: {name}")
+
+
 def main() -> int:
     check_sensitive_data()
     check_rewrite()
     check_scripts()
     check_filter()
     check_candidates()
+    check_policy_example()
     if ERRORS:
         print("Quantumult X validation failed:", file=sys.stderr)
         for error in ERRORS:
