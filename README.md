@@ -24,6 +24,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。腾讯视频应用内弹窗由 `scripts/tencent_video_popup_clean.js` 处理：仅净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，解析失败时原样放行。
 
+YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
+
 ## 建议启用结构
 
 1. 先加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
@@ -55,6 +57,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 - `dist/managed-filter.list`：供 Quantumult X 引用的精简去广分流与修正列表。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 净化脚本，不处理会员或正片播放接口。
+- `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。
+- `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。
 - `tools/validate_rules.py`：本地与 GitHub Actions 共用的语法、顺序和敏感信息检查。

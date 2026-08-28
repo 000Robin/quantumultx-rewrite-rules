@@ -93,6 +93,47 @@ def check_rewrite() -> None:
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
+    youtube_rule = (
+        r"^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/"
+        r"(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ "
+        "url script-response-body https://raw.githubusercontent.com/000Robin/"
+        "quantumultx-rewrite-rules/main/scripts/youtube_ad_clean.js"
+    )
+    youtube_rules = [line for line in lines if r"youtubei\.googleapis\.com" in line]
+    if youtube_rules != [youtube_rule]:
+        fail("managed rewrite must contain only the exact YouTube ad cleaner rule")
+    else:
+        try:
+            youtube_pattern = re.compile(youtube_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid YouTube rewrite regex: {exc}")
+        else:
+            should_match = (
+                "https://youtubei.googleapis.com/youtubei/v1/player",
+                "https://youtubei.googleapis.com/youtubei/v1/browse?key=fixture",
+                "https://youtubei.googleapis.com/youtubei/v1/reel/reel_watch_sequence",
+            )
+            should_not_match = (
+                "https://youtubei.googleapis.com/youtubei/v1/guide",
+                "https://youtubei.googleapis.com/youtubei/v1/get_setting",
+                "https://youtubei.googleapis.com/youtubei/v1/player/extra",
+                "https://rr1---sn.example.googlevideo.com/initplayback",
+            )
+            for url in should_match:
+                if not youtube_pattern.search(url):
+                    fail(f"YouTube rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if youtube_pattern.search(url):
+                    fail(f"YouTube rewrite unexpectedly matches non-ad scope: {url}")
+    if "youtubei.googleapis.com" not in hostname_tokens:
+        fail("missing exact YouTube API MitM hostname")
+    for hostname in hostname_tokens:
+        if "googlevideo.com" in hostname.lower():
+            fail(f"YouTube playback CDN must not be intercepted: {hostname}")
+    for forbidden_endpoint in ("guide", "get_setting", "get_watch", "log_event", "config"):
+        if any(forbidden_endpoint in line for line in youtube_rules):
+            fail(f"non-ad YouTube endpoint must not be intercepted: {forbidden_endpoint}")
+
     telecom_rules = [line for line in lines if r"wapside\.189\.cn" in line]
     if len(telecom_rules) != 1:
         fail("managed rewrite must contain exactly one China Telecom rule")
@@ -119,28 +160,64 @@ def check_rewrite() -> None:
 
 
 def check_scripts() -> None:
-    relative = "scripts/tencent_video_popup_clean.js"
-    path = ROOT / relative
-    if not path.is_file():
-        fail(f"missing required file: {relative}")
-        return
-
-    text = path.read_text(encoding="utf-8")
-    forbidden = ("annualvip", "endtime", "svip", "entitlement", "getvinfo")
-    for term in forbidden:
-        if term in text.lower():
-            fail(f"{relative} must not modify account/playback field: {term}")
-
     node = shutil.which("node")
-    if node:
+    scripts = {
+        "scripts/tencent_video_popup_clean.js": (
+            "annualvip",
+            "endtime",
+            "svip",
+            "entitlement",
+            "getvinfo",
+        ),
+        "scripts/youtube_ad_clean.js": (
+            "account",
+            "backgroundplayer",
+            "captionlang",
+            "entitlement",
+            "pictureinpicture",
+            "premium",
+            "receipt",
+            "subscription",
+            "$persistentstore",
+            "$prefs",
+        ),
+    }
+
+    for relative, forbidden_terms in scripts.items():
+        path = ROOT / relative
+        if not path.is_file():
+            fail(f"missing required file: {relative}")
+            continue
+
+        text = path.read_text(encoding="utf-8")
+        for term in forbidden_terms:
+            if term in text.lower():
+                fail(f"{relative} must not modify non-ad field or state: {term}")
+
+        if node:
+            result = subprocess.run(
+                [node, "--check", str(path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode:
+                fail(f"invalid JavaScript syntax in {relative}: {result.stderr.strip()}")
+
+    test_relative = "tests/youtube_ad_clean.test.js"
+    test_path = ROOT / test_relative
+    if not test_path.is_file():
+        fail(f"missing required file: {test_relative}")
+    elif node:
         result = subprocess.run(
-            [node, "--check", str(path)],
+            [node, str(test_path)],
             capture_output=True,
             text=True,
             check=False,
         )
         if result.returncode:
-            fail(f"invalid JavaScript syntax in {relative}: {result.stderr.strip()}")
+            details = result.stderr.strip() or result.stdout.strip()
+            fail(f"YouTube ad cleaner regression test failed: {details}")
 
 
 def check_filter() -> None:

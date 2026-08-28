@@ -39,3 +39,12 @@
 - 采用：为 `https://i.video.qq.com/` 根接口增加自编响应脚本，只清空明确广告容器、过滤带广告标志或已知 `promotionTest` / `starter` 素材的节点。
 - 安全：JSON 解析失败时原样放行；不匹配 `vv6.video.qq.com/getvinfo`、`playproxy.video.qq.com` 或其他播放接口；不修改会员、账户、订阅或权益字段。
 - 拒绝复制：公开来源中存在全域拦截、过宽 hostname 及 VIP 修改内容，均未合并。
+
+## 2026-08-28 — YouTube 纯去广告增量
+
+- 官方语法依据：复核 [`crossutility/Quantumult-X/sample.conf`](https://github.com/crossutility/Quantumult-X/blob/master/sample.conf)，沿用 `script-response-body` 与精确 `hostname` 写法。
+- 近期主实现：[`Maasea/sgmodule/youtube.response.js`](https://github.com/Maasea/sgmodule/blob/master/Script/Youtube/youtube.response.js) 于 2026-07-19 更新，当前使用二进制 protobuf 并在播放器响应中识别 `adPlacements` / `adSlots`；同一增强脚本还会修改后台播放、画中画、字幕和界面，因此只研究其广告字段结构，没有复制或引用该脚本。
+- 交叉来源：[`fmz200/wool_scripts` 的 YouTube 片段](https://github.com/fmz200/wool_scripts/blob/main/QuantumultX/rewrite/split/partY/YouTube.snippet)（2025-10-18）同时使用 `youtubei.googleapis.com` 响应脚本和 `rr*.googlevideo.com/initplayback` 拒绝；[`ddgksf2013/Rewrite`](https://github.com/ddgksf2013/Rewrite/blob/master/AdBlock/YoutubeAds.conf)（2025-04-15）还包含 `*.googlevideo.com` 通配 MitM 与功能增强；[`app2smile/rules`](https://github.com/app2smile/rules/blob/master/module/youtube-qx.conf)（2024-04-28）证明 Quantumult X 需处理 `browse` / `next` 的二进制响应。
+- 采用：新增自编 `youtube_ad_clean.js`。JSON 仅删除明确命名的广告容器和渲染器；protobuf 仅在 `/player` 顶层删除长度分隔的字段 7 与 68，其余字段保持原始字节。
+- 安全取舍：只加入 `youtubei.googleapis.com`，没有加入 `*.googlevideo.com`、`rr*.googlevideo.com`、`www.youtube.com` 或 `s.youtube.com`；没有合并 Premium、会员、后台播放、画中画、字幕翻译、Cookie/Token 或界面改造。
+- 校验：新增正常播放字段保留、广告字段移除、非播放器二进制放行、畸形 JSON/protobuf 放行测试，并接入 `tools/validate_rules.py`。
