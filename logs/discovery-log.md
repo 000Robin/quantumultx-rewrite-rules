@@ -79,3 +79,11 @@
 - 官方机制复核：RevenueCat entitlement 与 Apple 签名交易属于真实权益依据；Quantumult X 客户端响应改写不能替代正式交易，并会扩大账户、收据与 MitM 风险。
 - 本轮可执行链接 0、复制脚本 0、启用 0、合并 0；`dist/` 和全部保护基线未改变。
 - 强化 `SECURITY.md`、自动审计提示和校验脚本，防止后续把 Raw/CDN、一键导入或会员解锁规则误提交到仓库。
+
+## 2026-08-29 — 不可复制 / 视觉来源原创阅读记录
+
+- 研究对象：第三方 Moli X 介绍页及其指向的公开 GitHub 项目主页。
+- 读取结果：公开搜索索引可读取主要文字；直接视觉渲染被当前云浏览器安全策略拒绝，未绕过、未截图、未 OCR 受限内容。
+- 采用：新增 `sources/noncopyable-source-notes.md`，只保存来源、14 字短摘录和原创风险分析。
+- 结论：页面混合会员、广告、增强和多客户端资源，只作发现线索；新增可执行候选 0、复制脚本 0、复制规则 0、启用 0、合并 0。
+- 保护：`dist/`、`sources/candidates.conf`、`sources/filter-candidates.conf` 和全部 `rules/protected-*.conf` 未修改。

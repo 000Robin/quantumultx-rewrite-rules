@@ -344,6 +344,65 @@ def check_restricted_membership_catalog() -> None:
             fail(f"missing reviewed membership source in {relative}: {repository}")
 
 
+def check_noncopyable_source_notes() -> None:
+    relative = "sources/noncopyable-source-notes.md"
+    path = ROOT / relative
+    if not path.is_file():
+        fail(f"missing required file: {relative}")
+        return
+
+    text = path.read_text(encoding="utf-8")
+    lowered = text.lower()
+    if "不可执行的原创阅读笔记" not in text:
+        fail(f"{relative} must prominently state that it is non-executable and original")
+
+    forbidden_markers = (
+        "raw.githubusercontent.com",
+        "cdn.jsdelivr.net",
+        "quantumult-x:///",
+        "script-response-body",
+        "script-request-body",
+        "rewrite_remote",
+        "enabled=true",
+        "hostname =",
+    )
+    for marker in forbidden_markers:
+        if marker in lowered:
+            fail(f"{relative} contains executable material: {marker}")
+
+    executable_link = re.compile(
+        r"https?://[^\s)>]+\.(?:js|conf|snippet|sgmodule|plugin)(?:[?#][^\s)>]*)?",
+        re.IGNORECASE,
+    )
+    if executable_link.search(text):
+        fail(f"{relative} must not contain executable file links")
+
+    excerpts = re.findall(r"^> 短摘录（(\d+) 字）：“([^”]+)”$", text, re.MULTILINE)
+    if not excerpts:
+        fail(f"{relative} must contain at least one labeled short excerpt")
+    for declared_length, excerpt in excerpts:
+        actual_length = len(re.sub(r"\s+", "", excerpt))
+        if actual_length != int(declared_length):
+            fail(
+                f"{relative} excerpt length mismatch: declared {declared_length}, "
+                f"actual {actual_length}"
+            )
+        if actual_length > 25:
+            fail(f"{relative} excerpt exceeds the 25-character limit")
+
+    required_links = (
+        "https://www.ahhhhfs.com/43894/",
+        "https://github.com/Moli-X/Resources",
+    )
+    for link in required_links:
+        if link not in text:
+            fail(f"missing reviewed visual source in {relative}: {link}")
+
+    for required_boundary in ("未绕过限制", "可执行链接、复制脚本、复制规则、启用或合并：0"):
+        if required_boundary not in text:
+            fail(f"{relative} must record the access and execution boundary: {required_boundary}")
+
+
 def check_policy_example() -> None:
     relative = "examples/optimized-policy.conf"
     lines = active_lines(relative)
@@ -402,6 +461,7 @@ def main() -> int:
     check_abc_direct()
     check_candidates()
     check_restricted_membership_catalog()
+    check_noncopyable_source_notes()
     check_policy_example()
     if ERRORS:
         print("Quantumult X validation failed:", file=sys.stderr)
