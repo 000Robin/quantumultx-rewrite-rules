@@ -292,6 +292,58 @@ def check_candidates() -> None:
                 fail(f"candidate must remain disabled in {relative}: {line}")
 
 
+def check_restricted_membership_catalog() -> None:
+    relative = "sources/restricted-membership-sources.md"
+    path = ROOT / relative
+    if not path.is_file():
+        fail(f"missing required file: {relative}")
+        return
+
+    text = path.read_text(encoding="utf-8")
+    lowered = text.lower()
+    if "不可执行研究索引" not in text:
+        fail(f"{relative} must prominently state that it is non-executable")
+
+    forbidden_markers = (
+        "raw.githubusercontent.com",
+        "cdn.jsdelivr.net",
+        "quantumult-x:///",
+        "script-response-body",
+        "script-request-body",
+        "rewrite_remote",
+        "enabled=true",
+        "hostname =",
+    )
+    for marker in forbidden_markers:
+        if marker in lowered:
+            fail(f"{relative} contains executable membership material: {marker}")
+
+    executable_link = re.compile(
+        r"https?://[^\s)>]+\.(?:js|conf|snippet|sgmodule|plugin)(?:[?#][^\s)>]*)?",
+        re.IGNORECASE,
+    )
+    allowed_document_prefixes = (
+        "https://github.com/crossutility/Quantumult-X/blob/",
+    )
+    for match in executable_link.finditer(text):
+        if not match.group(0).startswith(allowed_document_prefixes):
+            fail(f"{relative} must link only to repository or official documentation pages")
+
+    required_repositories = {
+        "https://github.com/chxm1023/Rewrite",
+        "https://github.com/Yu9191/Rewrite",
+        "https://github.com/yqc007/QuantumultX",
+        "https://github.com/NobyDa/Script",
+        "https://github.com/89996462/Quantumult-X",
+        "https://github.com/Moli-X/Resources",
+        "https://github.com/Yunxingz/Rewrite",
+        "https://github.com/Semporia/Quantumult-X",
+    }
+    for repository in sorted(required_repositories):
+        if repository not in text:
+            fail(f"missing reviewed membership source in {relative}: {repository}")
+
+
 def check_policy_example() -> None:
     relative = "examples/optimized-policy.conf"
     lines = active_lines(relative)
@@ -349,6 +401,7 @@ def main() -> int:
     check_filter()
     check_abc_direct()
     check_candidates()
+    check_restricted_membership_catalog()
     check_policy_example()
     if ERRORS:
         print("Quantumult X validation failed:", file=sys.stderr)

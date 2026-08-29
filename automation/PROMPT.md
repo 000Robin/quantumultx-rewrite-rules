@@ -9,7 +9,7 @@
 5. 去重并检查 Quantumult X 语法、脚本类型、hostname/MitM 范围和潜在误杀。没有实机或 HAR 证据时，不扩大通配 hostname，不拦截核心业务/视频播放接口。
 6. 绝不能修改、删除、禁用、重排或替换任何 `rules/protected-*.conf`。对全部保护文件做变更前后比较；有任何差异就停止本次推送。
 7. 新发现只追加到对应的 `sources/candidates.conf` 或 `sources/filter-candidates.conf`，必须 `enabled=false`，并在 `logs/discovery-log.md` 记录日期、来源、功能、可达性、冲突和采用理由。主去广分流不得自动启用两个以上。
-8. 会员/VIP/RevenueCat/收据/订阅解锁、Cookie/Token 获取、定位伪造等非广告功能只做风险标记，不复制、不启用、不合并。
+8. 会员/VIP/RevenueCat/收据/订阅解锁、Cookie/Token 获取、定位伪造等非广告功能只做风险标记，不复制、不启用、不合并。若需登记，只能在 `sources/restricted-membership-sources.md` 写仓库主页、日期、许可证和高层风险；禁止 Raw/CDN、文件直链、一键导入、脚本正文、规则、hostname 或响应模板。
 9. 运行 `python tools/validate_rules.py`，再扫描暂存差异，确认不含 p12、passphrase、订阅 token、Cookie、账号或 GitHub 凭据；没有可信增量时只记录“无可采纳更新”，不要制造变化。
 10. 有安全且可验证的增量时提交并推送 `main`；完成后在本任务中简要报告新增数、失效数、受限但已摘录数和提交链接。失败时保留本地证据并报告，不强推。
 11. 本仓库仅供所有者个人使用，不接受外部贡献；不得移除 `LICENSE`、`NOTICE.md`、`CONTRIBUTING.md` 或 `.github/CODEOWNERS`。

@@ -44,6 +44,10 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
 
+### 会员解锁来源研究
+
+会员、VIP、RevenueCat、App Store 收据和订阅解锁来源只收录到 [`sources/restricted-membership-sources.md`](sources/restricted-membership-sources.md) 的不可执行风险目录。目录只保存仓库主页、维护状态、许可证和风险判断，不提供 Raw/CDN、一键导入、脚本正文或可执行规则；这些内容永远不得进入 `dist/`、候选资源或个人去广基线。
+
 ## 建议启用结构
 
 1. 如需农行保护，先加载 `dist/abc-direct.list`，并合并对应 DNS 与 MitM 排除项。
@@ -73,6 +77,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `sources/candidates.conf`：定时研究发现的重写候选，默认停用。
 - `sources/filter-candidates.conf`：已审计的分流候选，主去广列表只能择一测试。
 - `sources/filter-source-audit.md`：分流来源规模、重复、顺序和误杀风险审计。
+- `sources/restricted-membership-sources.md`：会员/VIP/RevenueCat 来源的不可执行风险目录，仅用于审计。
 - `dist/managed-filter.list`：供 Quantumult X 引用的精简去广分流与修正列表。
 - `dist/abc-direct.list`：中国农业银行官方及农行自有业务域名的独立直连列表。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。

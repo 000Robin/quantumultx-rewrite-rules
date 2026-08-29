@@ -71,3 +71,11 @@
 - 采用：新增 `dist/abc-direct.list`，仅含 4 条 `host-suffix ... direct`，不加入动态 IP 段、不拦截接口、不修改账户、交易或设备状态。
 - MitM：README 给出主配置合并项，覆盖根域及子域的 DNS 占位排除和负向 hostname；仓库不保存任何 CA、证书密码或完整配置。
 - 能力边界：直连与不解密可减少代理出口、占位 DNS 和证书固定校验导致的风控，但无法隐藏 iOS 的 VPN 隧道状态。
+
+## 2026-08-29 — 会员 / VIP / RevenueCat 来源隔离目录
+
+- 全网公开检索并核验 8 个代表性 GitHub 来源：`chxm1023/Rewrite`、`Yu9191/Rewrite`、`yqc007/QuantumultX`、`NobyDa/Script`、`89996462/Quantumult-X`、`Moli-X/Resources`、`Yunxingz/Rewrite`、`Semporia/Quantumult-X`。
+- 新增 `sources/restricted-membership-sources.md`：只保存仓库主页、最后推送日期、目录规模、许可证和风险，不保存任何可执行文件链接。
+- 官方机制复核：RevenueCat entitlement 与 Apple 签名交易属于真实权益依据；Quantumult X 客户端响应改写不能替代正式交易，并会扩大账户、收据与 MitM 风险。
+- 本轮可执行链接 0、复制脚本 0、启用 0、合并 0；`dist/` 和全部保护基线未改变。
+- 强化 `SECURITY.md`、自动审计提示和校验脚本，防止后续把 Raw/CDN、一键导入或会员解锁规则误提交到仓库。
