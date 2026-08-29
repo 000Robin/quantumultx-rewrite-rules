@@ -272,6 +272,19 @@ def check_filter() -> None:
         fail(f"missing critical unbreak host: {host}")
 
 
+def check_abc_direct() -> None:
+    relative = "dist/abc-direct.list"
+    lines = active_lines(relative)
+    expected = [
+        "host-suffix, abchina.com, direct",
+        "host-suffix, abchina.com.cn, direct",
+        "host-suffix, 95599.cn, direct",
+        "host-suffix, openaboc.com, direct",
+    ]
+    if lines != expected:
+        fail(f"{relative} must contain only the reviewed ABC direct domains in stable order")
+
+
 def check_candidates() -> None:
     for relative in ("sources/candidates.conf", "sources/filter-candidates.conf"):
         for line in active_lines(relative):
@@ -334,6 +347,7 @@ def main() -> int:
     check_rewrite()
     check_scripts()
     check_filter()
+    check_abc_direct()
     check_candidates()
     check_policy_example()
     if ERRORS:

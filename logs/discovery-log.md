@@ -63,3 +63,11 @@
 - 精确性：Google 改用 Quantumult X 原生路径；GitHub 用专用列表替代 `host-keyword`；删除整段抖音直连，保留 `vcs-lf.zijieapi.com` 安全验证直连。
 - 未采用：blackmatrix7 `Global.list` 当前为空；QuixoticHeart 规则集存在明确地域再发布限制；二者均未加入运行配置。
 - 新增 `examples/optimized-policy.conf`，只保存无凭据的策略组参考，不包含节点、订阅、证书或完整个人配置。
+
+## 2026-08-29 — 中国农业银行安全直连
+
+- 官方核验：中国农业银行安全公告明确列出 `abchina.com`、`95599.cn` 及掌上银行使用的 `abchina.com.cn`；农行深圳分行公开页面确认 `openaboc.com` 为农行自有业务域名。
+- 交叉核验：blackmatrix7 的中国直连列表包含 `abchina.com`；公开 Quantumult X 配置也普遍将 `95599.cn` 与 `abchina.com` 设为直连。社区来源只用于交叉验证，实际采用域名均有农行官方页面佐证。
+- 采用：新增 `dist/abc-direct.list`，仅含 4 条 `host-suffix ... direct`，不加入动态 IP 段、不拦截接口、不修改账户、交易或设备状态。
+- MitM：README 给出主配置合并项，覆盖根域及子域的 DNS 占位排除和负向 hostname；仓库不保存任何 CA、证书密码或完整配置。
+- 能力边界：直连与不解密可减少代理出口、占位 DNS 和证书固定校验导致的风控，但无法隐藏 iOS 的 VPN 隧道状态。

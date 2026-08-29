@@ -1,0 +1,9 @@
+# 中国农业银行安全直连
+# 官方域名依据：https://www.abchina.com/cn/ebanking/personal/bulletin/servicenotice/201511/t20151125_805172.htm
+# openaboc.com 依据：https://www.abchina.com/cn/branch/szx/news/201601/t20160122_825662.htm
+# 仅改变出口策略；MitM 排除仍需合并到主配置的 [mitm] hostname。
+
+host-suffix, abchina.com, direct
+host-suffix, abchina.com.cn, direct
+host-suffix, 95599.cn, direct
+host-suffix, openaboc.com, direct

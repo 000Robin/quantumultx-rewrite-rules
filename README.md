@@ -16,6 +16,24 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 该文件同时包含 `direct` 修正和 `reject` 规则，必须放在大型去广列表之前，且**不要设置 `force-policy`**。
 
+### 中国农业银行安全直连
+
+```ini
+https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/abc-direct.list, tag=中国农业银行直连, update-interval=259200, opt-parser=false, inserted-resource=true, enabled=true
+```
+
+该列表只包含农行官方及农行自有业务域名的 `direct` 规则，应放在大型去广与代理分流之前。为避免证书固定校验或占位 DNS 引发误判，还应把下列项目**合并**到现有配置对应字段，不要新建第二条 `hostname` 或 `dns_exclusion_list`：
+
+```ini
+# 追加到 [general] 的 dns_exclusion_list
+abchina.com, *.abchina.com, abchina.com.cn, *.abchina.com.cn, 95599.cn, *.95599.cn, openaboc.com, *.openaboc.com
+
+# 追加到 [mitm] 的 hostname
+-abchina.com, -*.abchina.com, -abchina.com.cn, -*.abchina.com.cn, -95599.cn, -*.95599.cn, -openaboc.com, -*.openaboc.com
+```
+
+这能避免代理出口和 MitM 造成的风控误判，但不能向 App 隐藏 iOS 正在运行的 VPN 隧道；若 App 检测的是系统 VPN 状态，域名直连无法保证阻止退出。
+
 ### 去广重写
 
 ```ini
@@ -28,10 +46,11 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 ## 建议启用结构
 
-1. 先加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
-2. 分流修正列表按需选择一个，不要无差别叠加。
-3. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200，覆盖优先可继续使用 Cats-Team；不建议再叠加 blackmatrix7 超大型列表。
-4. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
+1. 如需农行保护，先加载 `dist/abc-direct.list`，并合并对应 DNS 与 MitM 排除项。
+2. 再加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
+3. 分流修正列表按需选择一个，不要无差别叠加。
+4. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200，覆盖优先可继续使用 Cats-Team；不建议再叠加 blackmatrix7 超大型列表。
+5. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
 
 候选 URL、快照规模、冲突和采用判断见 `sources/filter-candidates.conf` 与 `sources/filter-source-audit.md`。
 
@@ -55,6 +74,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `sources/filter-candidates.conf`：已审计的分流候选，主去广列表只能择一测试。
 - `sources/filter-source-audit.md`：分流来源规模、重复、顺序和误杀风险审计。
 - `dist/managed-filter.list`：供 Quantumult X 引用的精简去广分流与修正列表。
+- `dist/abc-direct.list`：中国农业银行官方及农行自有业务域名的独立直连列表。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 净化脚本，不处理会员或正片播放接口。
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频个人页广告移除及观看历史、VIP、账号、播放字段保留测试。
