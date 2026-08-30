@@ -55,3 +55,11 @@
 - 已登记的 GitHub 重写来源除上述旧分支外均可读取；jsDelivr 镜像仍作为 blackmatrix7 Raw 地址的重复入口保留。主要分流候选的内容指纹与 2026-08-26 快照一致，没有新增主列表。
 - 公开检索发现 `ZenmoFeiShi/Reject-AD`，但其 `rewrite.conf` 标记更新时间为 2025-05-21，存在不完整的 `url` 语法、非标准 `response-body` 写法、宽泛 `*.kuwo.cn` MitM，且仓库未声明许可证；不登记为候选。
 - `chxm1023/Rewrite/main/Reheji.js` 仍属于 RevenueCat/订阅解锁隔离类别；只确认可达，不复制、不启用、不合并。未发现 Cookie、Token、订阅地址、证书或私钥泄露到可发布文件。
+
+## 增量复核（2026-08-30）
+
+- 检查 54 条重写上游和 19 条分流候选：73 条 URL 均返回 HTTP 200；没有 404、403 或确认迁移。
+- 其中 5 条 `ddgksf2013.top` 旧地址虽返回 200，正文却是同一份 HTML 资源首页，不再是 Quantumult X 配置或 JavaScript：`ZhiLianZhaoPinAds.conf`、`javdbapp.ads.js`、`StartUpAds.conf`、`zhihu.ads.js`、`bdpan.ads.js`。5 条均标为停用；未采用已删除的 Gist、第三方镜像或搜索结果中的转存地址替代。
+- 复核历史目录正文后，确认 7 条启用项属于 VIP、RevenueCat、收据或付费内容解锁，而不是广告净化：`dandanvip.conf`、`nnjk.js`、`QQYD.js`、`bdyy.js`、`BPZJ.js`、`xt.js`、`Reheji.js`。已全部改为 `enabled=false`，未复制或改写脚本正文。
+- 已登记分流候选均可读取；AWAvenue 仍为 v1.7.6（2026-08-20），没有需要替换的主去广列表。新检索来源要么属于旧合集/个人整包配置，要么混有功能解锁及宽泛 MitM，本轮新增候选 0。
+- 新增离线校验，防止上述受限来源或返回 HTML 的旧地址再次被设为启用；`dist/` 与全部 `rules/protected-*.conf` 未修改。

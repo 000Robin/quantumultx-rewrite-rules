@@ -87,3 +87,11 @@
 - 采用：新增 `sources/noncopyable-source-notes.md`，只保存来源、14 字短摘录和原创风险分析。
 - 结论：页面混合会员、广告、增强和多客户端资源，只作发现线索；新增可执行候选 0、复制脚本 0、复制规则 0、启用 0、合并 0。
 - 保护：`dist/`、`sources/candidates.conf`、`sources/filter-candidates.conf` 和全部 `rules/protected-*.conf` 未修改。
+
+## 2026-08-30 — 三日来源与安全复核
+
+- 可达性：54 条重写上游和 19 条分流候选均返回 HTTP 200；但 5 条 `ddgksf2013.top` 旧地址的正文已统一变为 HTML 资源首页，属于“HTTP 成功、内容失效”。
+- 处置：停用其中 4 条此前仍启用的旧地址；`zhihu.ads.js` 原本已停用。未找到作者确认的规范迁移路径，因此不使用已删除 Gist 或第三方转存。
+- 隔离：正文复核确认 7 条启用来源包含 VIP、RevenueCat、收据或付费内容解锁，全部改为 `enabled=false`；可执行内容未复制、未合并到 `dist/`。
+- 去重：确认 blackmatrix7 Advertising、ddgksf2013 Applet、fmz200 rewrite 的镜像重复仍存在于历史总目录；受保护基线不变，本轮不重排历史条目。
+- 新增候选 0、确认迁移 0、HTTP 状态失效 0、内容失效 5、风险隔离 7；校验器新增对应的停用回归检查。

@@ -292,6 +292,39 @@ def check_candidates() -> None:
                 fail(f"candidate must remain disabled in {relative}: {line}")
 
 
+def check_source_catalog_safety() -> None:
+    relative = "sources/all-rewrite-sources.conf"
+    lines = active_lines(relative)
+    restricted_sources = (
+        "dandanvip.conf",
+        "/nnjk.js",
+        "/QQYD.js",
+        "/bdyy.js",
+        "/BPZJ.js",
+        "/xt.js",
+        "/Reheji.js",
+        "/wloc.conf",
+        "/QQMusic.js",
+        "/ForOwnUse.conf",
+        "/cookies.snippet",
+    )
+    landing_page_sources = (
+        "/rewrite/ZhiLianZhaoPinAds.conf",
+        "/scripts/javdbapp.ads.js",
+        "/rewrite/StartUpAds.conf",
+        "/scripts/zhihu.ads.js",
+        "/scripts/bdpan.ads.js",
+    )
+    for line in lines:
+        compact = line.replace(" ", "").lower()
+        if any(marker.lower() in line.lower() for marker in restricted_sources):
+            if "enabled=false" not in compact:
+                fail(f"restricted non-ad source must remain disabled in {relative}: {line}")
+        if any(marker.lower() in line.lower() for marker in landing_page_sources):
+            if "enabled=false" not in compact:
+                fail(f"non-rule landing-page source must remain disabled in {relative}: {line}")
+
+
 def check_restricted_membership_catalog() -> None:
     relative = "sources/restricted-membership-sources.md"
     path = ROOT / relative
@@ -460,6 +493,7 @@ def main() -> int:
     check_filter()
     check_abc_direct()
     check_candidates()
+    check_source_catalog_safety()
     check_restricted_membership_catalog()
     check_noncopyable_source_notes()
     check_policy_example()
