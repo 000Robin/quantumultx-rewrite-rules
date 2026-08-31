@@ -89,7 +89,36 @@ def check_rewrite() -> None:
         fail("missing exact Tencent Video in-app popup cleaner rule")
     if not host_lines or "i.video.qq.com" not in hostname_tokens:
         fail("missing Tencent Video popup MitM hostname")
-    for playback_host in ("vv6.video.qq.com", "playproxy.video.qq.com"):
+    pause_ad_rule = (
+        r"^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\."
+        r"(?:jpe?g|png|gif|webp)(?:\?.*)?$ url reject-img"
+    )
+    if pause_ad_rule not in lines:
+        fail("missing exact Tencent Video pause-ad image rule")
+    else:
+        try:
+            pause_ad_pattern = re.compile(pause_ad_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid Tencent Video pause-ad regex: {exc}")
+        else:
+            should_match = (
+                "https://wa.gtimg.com/adxcdn/202606/26/fixture.jpg?md5=fixture",
+                "https://wa.gtimg.com/adxcdn/creative/fixture.webp",
+            )
+            should_not_match = (
+                "https://wa.gtimg.com/news/fixture.jpg",
+                "https://vfiles.gtimg.cn/wupload/xy/starter/fixture.png",
+                "https://vv.video.qq.com/getvinfo",
+            )
+            for url in should_match:
+                if not pause_ad_pattern.search(url):
+                    fail(f"Tencent Video pause-ad rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if pause_ad_pattern.search(url):
+                    fail(f"Tencent Video pause-ad rewrite unexpectedly matches protected scope: {url}")
+    if "wa.gtimg.com" not in hostname_tokens:
+        fail("missing exact Tencent Video pause-ad MitM hostname")
+    for playback_host in ("vv.video.qq.com", "vv6.video.qq.com", "playproxy.video.qq.com"):
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 

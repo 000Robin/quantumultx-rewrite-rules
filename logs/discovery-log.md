@@ -103,3 +103,11 @@
 - 采用：自行整理 3 条精确重写，只拦广告清单、广告渲染素材和广告安装包；使用 9 个精确 hostname，不采用通配 MitM。
 - 保护：不拦 `fqnovelvod`、通用 `snssdk`、`gurd` 或 `zijieapi.com`，继续避免抖音安全验证和番茄听书误伤；不包含 Cookie、Token、会员或付费解锁。
 - 校验：为应命中和必须放行的 URL 增加静态回归检查；全部 `rules/protected-*.conf` 未修改。
+
+## 2026-08-31 — 腾讯视频暂停广告 HAR 增量
+
+- 证据：用户提供约 68 秒、952 条记录的 Quantumult X HAR；原始 HAR 仅在本地分析，未加入仓库，也未复制请求头、Cookie、Token、设备标识或完整查询参数。
+- 定位：按暂停后唯一新加载的广告创意为 `wa.gtimg.com/adxcdn/...jpg`，解码内容为静态商品广告；随后出现第三方曝光上报。已有广告清单请求被拒绝，但该素材仍返回 HTTP 200，因此缓存广告仍可显示。
+- 采用：新增一条精确 `wa.gtimg.com/adxcdn/` 图片拒绝规则和一个精确 MitM hostname；只覆盖 `jpg/jpeg/png/gif/webp`，不拦整个 `wa.gtimg.com` 或 `*.gtimg.com`。
+- 保护：未采用旧版 `vv.video.qq.com/getvmind` 整接口拒绝；继续禁止拦截 `vv.video.qq.com`、`vv6.video.qq.com`、`playproxy.video.qq.com`，保护 `getvinfo`、`batchvinfo`、正片、进度和投屏链路。
+- 未采用：曝光上报域名不影响画面呈现，本次不扩大到 `pmpmonitor.365dmp.com`、`mm.365dmp.com` 或整个广点通域名。

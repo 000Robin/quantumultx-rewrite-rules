@@ -12,6 +12,9 @@
 # Tencent Video in-app popup/ad cards; exact root endpoint only.
 ^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_popup_clean.js
 
+# Tencent Video pause-ad image confirmed by 2026-08-31 HAR; keep the scope on the ad-exchange CDN path.
+^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\.(?:jpe?g|png|gif|webp)(?:\?.*)?$ url reject-img
+
 # YouTube ads: exact API host and content endpoints; no googlevideo playback MitM.
 ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/youtube_ad_clean.js
 
@@ -41,4 +44,4 @@
 # Ctrip trip ad endpoint
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
 
-hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, m.ctrip.com
+hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, m.ctrip.com
