@@ -34,6 +34,16 @@ abchina.com, *.abchina.com, abchina.com.cn, *.abchina.com.cn, 95599.cn, *.95599.
 
 这能避免代理出口和 MitM 造成的风控误判，但不能向 App 隐藏 iOS 正在运行的 VPN 隧道；若 App 检测的是系统 VPN 状态，域名直连无法保证阻止退出。
 
+### AI 精确分流
+
+```ini
+https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/managed-ai.list, tag=Robin AI精确分流, update-interval=86400, opt-parser=false, inserted-resource=true, enabled=true
+```
+
+该列表内置 `ChatGPT` 与 `AI服务` 两个策略名：OpenAI 登录、上传、静态资源、功能配置和实时连接统一进入 `ChatGPT`；Claude、Gemini、Copilot、Grok、Perplexity 与 Poe 进入 `AI服务`。它必须放在广告分流、Google/微软通用分流和全球代理规则之前，并且**不要设置 `force-policy`**。
+
+规则按官方产品/API 文档与上游列表逐项收紧，不采用 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、整个 `googleapis.com` 或整个 Microsoft/Bing 域名。OpenAI 核心域名仍应排除 MitM，避免 TLS 检查破坏上传或 WebSocket。
+
 ### 去广重写
 
 ```ini
@@ -54,11 +64,12 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 ## 建议启用结构
 
-1. 如需农行保护，先加载 `dist/abc-direct.list`，并合并对应 DNS 与 MitM 排除项。
-2. 再加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
-3. 分流修正列表按需选择一个，不要无差别叠加。
-4. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200，覆盖优先可继续使用 Cats-Team；不建议再叠加 blackmatrix7 超大型列表。
-5. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
+1. 先加载 `dist/managed-ai.list`，确保 AI 登录、上传和接口不会被广告或通用服务规则抢先命中。
+2. 如需农行保护，再加载 `dist/abc-direct.list`，并合并对应 DNS 与 MitM 排除项。
+3. 加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
+4. 分流修正列表按需选择一个，不要无差别叠加。
+5. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200，覆盖优先可继续使用 Cats-Team；不建议再叠加 blackmatrix7 超大型列表。
+6. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
 
 候选 URL、快照规模、冲突和采用判断见 `sources/filter-candidates.conf` 与 `sources/filter-source-audit.md`。
 
@@ -84,6 +95,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `sources/restricted-membership-sources.md`：会员/VIP/RevenueCat 来源的不可执行风险目录，仅用于审计。
 - `sources/noncopyable-source-notes.md`：不可复制或视觉页面的极短摘录、原创摘要与访问限制记录。
 - `dist/managed-filter.list`：供 Quantumult X 引用的精简去广分流与修正列表。
+- `dist/managed-ai.list`：OpenAI 与常用国际 AI 服务的精确分流；不含宽泛共享域名、IP 或 ASN 规则。
 - `dist/abc-direct.list`：中国农业银行官方及农行自有业务域名的独立直连列表。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 净化脚本，不处理会员或正片播放接口。

@@ -368,6 +368,61 @@ def check_abc_direct() -> None:
         fail(f"{relative} must contain only the reviewed ABC direct domains in stable order")
 
 
+def check_ai_filter() -> None:
+    relative = "dist/managed-ai.list"
+    lines = active_lines(relative)
+    if not lines:
+        return
+
+    seen: set[str] = set()
+    forbidden_domains = {
+        "algolia.net",
+        "auth0.com",
+        "browser-intake-datadoghq.com",
+        "segment.io",
+        "sentry.io",
+        "static.cloudflareinsights.com",
+        "stripe.com",
+    }
+    required = {
+        ("host-suffix", "chatgpt.com", "ChatGPT"),
+        ("host-suffix", "openai.com", "ChatGPT"),
+        ("host-suffix", "oaistatic.com", "ChatGPT"),
+        ("host-suffix", "oaiusercontent.com", "ChatGPT"),
+        ("host-suffix", "anthropic.com", "AI服务"),
+        ("host-suffix", "claude.ai", "AI服务"),
+        ("host", "gemini.google.com", "AI服务"),
+        ("host", "generativelanguage.googleapis.com", "AI服务"),
+        ("host", "copilot.microsoft.com", "AI服务"),
+        ("host-suffix", "x.ai", "AI服务"),
+        ("host-suffix", "perplexity.ai", "AI服务"),
+    }
+    parsed: set[tuple[str, str, str]] = set()
+    for line in lines:
+        normalized = re.sub(r"\s+", "", line.lower())
+        if normalized in seen:
+            fail(f"duplicate AI filter line: {line}")
+        seen.add(normalized)
+
+        fields = tuple(part.strip() for part in line.split(","))
+        if len(fields) != 3:
+            fail(f"invalid AI filter line: {line}")
+            continue
+        rule_type, domain, policy = fields
+        if rule_type not in {"host", "host-suffix"}:
+            fail(f"broad AI rule type is forbidden: {line}")
+        if policy not in {"ChatGPT", "AI服务"}:
+            fail(f"unexpected AI policy: {line}")
+        if domain.lower() in forbidden_domains:
+            fail(f"shared non-AI domain must not be captured: {line}")
+        if domain.startswith("*.") or "*" in domain:
+            fail(f"wildcard AI domain is forbidden: {line}")
+        parsed.add((rule_type, domain, policy))
+
+    for item in sorted(required - parsed):
+        fail(f"missing required exact AI route: {item}")
+
+
 def check_candidates() -> None:
     for relative in ("sources/candidates.conf", "sources/filter-candidates.conf"):
         for line in active_lines(relative):
@@ -555,6 +610,7 @@ def check_policy_example() -> None:
     required = {
         "Shawn",
         "全球加速",
+        "AI服务",
         "ChatGPT",
         "自动选择",
         "AI自动",
@@ -568,6 +624,16 @@ def check_policy_example() -> None:
     for name in sorted(required - names):
         fail(f"missing required policy example: {name}")
 
+    ai_lines = {line.split("=", 1)[1].split(",", 1)[0].strip(): line for line in lines if line.startswith("static=")}
+    for name in ("AI服务", "ChatGPT"):
+        line = ai_lines.get(name, "")
+        if "自动选择" in line or re.search(r",\s*proxy(?:\s*,|$)", line):
+            fail(f"{name} must not inherit unrestricted automatic/proxy nodes: {line}")
+    if ai_lines.get("AI服务", "").split(",")[1].strip() != "AI自动":
+        fail("AI服务 must default to AI自动")
+    if ai_lines.get("ChatGPT", "").split(",")[1].strip() != "AI服务":
+        fail("ChatGPT must default to AI服务")
+
 
 def main() -> int:
     check_sensitive_data()
@@ -575,6 +641,7 @@ def main() -> int:
     check_scripts()
     check_filter()
     check_abc_direct()
+    check_ai_filter()
     check_candidates()
     check_source_catalog_safety()
     check_restricted_membership_catalog()

@@ -1,0 +1,55 @@
+# Robin personal AI routing for Quantumult X.
+# Exact service domains only; no IP ranges, ASN rules, host-keyword rules or shared analytics/payment roots.
+
+# OpenAI / ChatGPT — keep login, uploads, static assets, feature flags and realtime on one exit.
+host-suffix, chatgpt.com, ChatGPT
+host-suffix, openai.com, ChatGPT
+host-suffix, oaistatic.com, ChatGPT
+host-suffix, oaiusercontent.com, ChatGPT
+host-suffix, oaistatsig.com, ChatGPT
+host, cdn.openaimerge.com, ChatGPT
+host, cdn.workos.com, ChatGPT
+host, api.statsig.com, ChatGPT
+host-suffix, statsigapi.net, ChatGPT
+host-suffix, chatgpt.livekit.cloud, ChatGPT
+host, host.livekit.cloud, ChatGPT
+host, turn.livekit.cloud, ChatGPT
+host, openai-api.arkoselabs.com, ChatGPT
+host, client-api.arkoselabs.com, ChatGPT
+host, chat.openai.com.cdn.cloudflare.net, ChatGPT
+host, openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net, ChatGPT
+host, openaicomproductionae4b.blob.core.windows.net, ChatGPT
+host, production-openaicom-storage.azureedge.net, ChatGPT
+host-suffix, featuregates.org, ChatGPT
+host-suffix, openaiapi-site.azureedge.net, ChatGPT
+host-suffix, openaicom.imgix.net, ChatGPT
+
+# Claude — product and API roots.
+host-suffix, anthropic.com, AI服务
+host-suffix, claude.ai, AI服务
+host-suffix, claude.com, AI服务
+
+# Gemini — product, AI Studio and API endpoints without routing all Google APIs.
+host, gemini.google.com, AI服务
+host, ai.google.dev, AI服务
+host, aistudio.google.com, AI服务
+host, makersuite.google.com, AI服务
+host, generativelanguage.googleapis.com, AI服务
+host, proactivebackend-pa.googleapis.com, AI服务
+host, alkalimakersuite-pa.clients6.google.com, AI服务
+host-suffix, deepmind.com, AI服务
+host-suffix, deepmind.google, AI服务
+host-suffix, generativeai.google, AI服务
+
+# Microsoft Copilot — exact app/realtime endpoints; do not proxy all Microsoft 365 or Bing traffic.
+host, copilot.microsoft.com, AI服务
+host, copilot.cloud.microsoft, AI服务
+host, sydney.bing.com, AI服务
+host, services.bingapis.com, AI服务
+host-suffix, edgeservices.bing.com, AI服务
+
+# Other commonly used international AI services.
+host-suffix, x.ai, AI服务
+host-suffix, grok.com, AI服务
+host-suffix, perplexity.ai, AI服务
+host-suffix, poe.com, AI服务
