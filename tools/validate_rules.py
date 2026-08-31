@@ -134,6 +134,60 @@ def check_rewrite() -> None:
         if any(forbidden_endpoint in line for line in youtube_rules):
             fail(f"non-ad YouTube endpoint must not be intercepted: {forbidden_endpoint}")
 
+    fanqie_rules = [
+        line
+        for line in lines
+        if not line.lower().startswith("hostname")
+        and ("pangolin-sdk-toutiao" in line or "pglstatp-toutiao" in line)
+    ]
+    expected_fanqie_rules = [
+        r"^https:\/\/api-access\.pangolin-sdk-toutiao(?:[1-5]|-b)?\.com\/api\/ad\/union\/sdk\/get_ads\/?(?:\?.*)?$ url reject-dict",
+        r"^https:\/\/sf3-fe-tos\.pglstatp-toutiao\.com\/obj\/ad-pattern\/.*$ url reject",
+        r"^https:\/\/sf3-be-pack\.pglstatp-toutiao\.com\/obj\/ad-app-package\/.*$ url reject",
+    ]
+    if fanqie_rules != expected_fanqie_rules:
+        fail("managed rewrite must contain only the three exact Fanqie ad rules")
+    else:
+        fanqie_patterns = [re.compile(line.split(" url ", 1)[0]) for line in fanqie_rules]
+        should_match = (
+            "https://api-access.pangolin-sdk-toutiao.com/api/ad/union/sdk/get_ads/",
+            "https://api-access.pangolin-sdk-toutiao1.com/api/ad/union/sdk/get_ads/?id=fixture",
+            "https://api-access.pangolin-sdk-toutiao-b.com/api/ad/union/sdk/get_ads/",
+            "https://sf3-fe-tos.pglstatp-toutiao.com/obj/ad-pattern/renderer/fixture",
+            "https://sf3-be-pack.pglstatp-toutiao.com/obj/ad-app-package/fixture",
+        )
+        should_not_match = (
+            "https://api-access.pangolin-sdk-toutiao.com/api/ad/union/sdk/settings/",
+            "https://v6-novelapp.fqnovelvod.com/fixture/video/chapter.mp4",
+            "https://gurd.snssdk.com/src/server/v3/package",
+            "https://is.snssdk.com/api/ad/fixture",
+            "https://vcs-lf.zijieapi.com/fixture",
+        )
+        for url in should_match:
+            if not any(pattern.search(url) for pattern in fanqie_patterns):
+                fail(f"Fanqie rewrite unexpectedly misses: {url}")
+        for url in should_not_match:
+            if any(pattern.search(url) for pattern in fanqie_patterns):
+                fail(f"Fanqie rewrite unexpectedly matches protected scope: {url}")
+
+    expected_fanqie_hosts = {
+        "api-access.pangolin-sdk-toutiao.com",
+        "api-access.pangolin-sdk-toutiao1.com",
+        "api-access.pangolin-sdk-toutiao2.com",
+        "api-access.pangolin-sdk-toutiao3.com",
+        "api-access.pangolin-sdk-toutiao4.com",
+        "api-access.pangolin-sdk-toutiao5.com",
+        "api-access.pangolin-sdk-toutiao-b.com",
+        "sf3-fe-tos.pglstatp-toutiao.com",
+        "sf3-be-pack.pglstatp-toutiao.com",
+    }
+    missing_fanqie_hosts = expected_fanqie_hosts - hostname_tokens
+    if missing_fanqie_hosts:
+        fail(f"missing exact Fanqie MitM hostname: {sorted(missing_fanqie_hosts)}")
+    for hostname in hostname_tokens:
+        if "*" in hostname and ("pangolin-sdk-toutiao" in hostname or "pglstatp-toutiao" in hostname):
+            fail(f"broad Fanqie/Pangle MitM hostname is forbidden: {hostname}")
+
     telecom_rules = [line for line in lines if r"wapside\.189\.cn" in line]
     if len(telecom_rules) != 1:
         fail("managed rewrite must contain exactly one China Telecom rule")

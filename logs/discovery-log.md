@@ -95,3 +95,11 @@
 - 隔离：正文复核确认 7 条启用来源包含 VIP、RevenueCat、收据或付费内容解锁，全部改为 `enabled=false`；可执行内容未复制、未合并到 `dist/`。
 - 去重：确认 blackmatrix7 Advertising、ddgksf2013 Applet、fmz200 rewrite 的镜像重复仍存在于历史总目录；受保护基线不变，本轮不重排历史条目。
 - 新增候选 0、确认迁移 0、HTTP 状态失效 0、内容失效 5、风险隔离 7；校验器新增对应的停用回归检查。
+
+## 2026-08-31 — 番茄小说安全去广
+
+- 公开来源：复核 [`zqzess/rule_for_quantumultX`](https://github.com/zqzess/rule_for_quantumultX/blob/master/QuantumultX/rewrite/FanQieNovel.qxrewrite) 的番茄小说规则；确认穿山甲 `get_ads` 和明确广告素材路径仍在当前版本中。
+- 误杀证据：该仓库 [Issue #66](https://github.com/zqzess/rule_for_quantumultX/issues/66) 于 2026-02-08 报告完整分流会使番茄 7.0.7 听书一直转圈。
+- 采用：自行整理 3 条精确重写，只拦广告清单、广告渲染素材和广告安装包；使用 9 个精确 hostname，不采用通配 MitM。
+- 保护：不拦 `fqnovelvod`、通用 `snssdk`、`gurd` 或 `zijieapi.com`，继续避免抖音安全验证和番茄听书误伤；不包含 Cookie、Token、会员或付费解锁。
+- 校验：为应命中和必须放行的 URL 增加静态回归检查；全部 `rules/protected-*.conf` 未修改。

@@ -1,8 +1,8 @@
 #!name=Robin 个人维护去开屏
-#!desc=腾讯视频与 YouTube 等已验证广告接口净化；仅供 000Robin 个人使用。
+#!desc=腾讯视频、YouTube 与番茄小说等已验证广告接口净化；仅供 000Robin 个人使用。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-08-28
+#!date=2026-08-31
 
 # Tencent Video startup/interactive ad transport and media
 ^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.* url reject-200
@@ -14,6 +14,12 @@
 
 # YouTube ads: exact API host and content endpoints; no googlevideo playback MitM.
 ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/youtube_ad_clean.js
+
+# Fanqie Novel safe ad blocking: Pangle ad manifest and explicit ad assets only.
+# Do not intercept fqnovelvod, generic snssdk, gurd or zijieapi traffic; those can break audiobook or verification.
+^https:\/\/api-access\.pangolin-sdk-toutiao(?:[1-5]|-b)?\.com\/api\/ad\/union\/sdk\/get_ads\/?(?:\?.*)?$ url reject-dict
+^https:\/\/sf3-fe-tos\.pglstatp-toutiao\.com\/obj\/ad-pattern\/.*$ url reject
+^https:\/\/sf3-be-pack\.pglstatp-toutiao\.com\/obj\/ad-app-package\/.*$ url reject
 
 # China Merchants Bank splash pre-cache
 ^https:\/\/mbasecc\.bcs\.cmbchina\.com\/Edge\/api\/mlife\.clientface\.clientservice\.api\.advertiseService\/preCacheAdvertiseSec(?:\?.*)?$ url reject-dict
@@ -35,4 +41,4 @@
 # Ctrip trip ad endpoint
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
 
-hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, youtubei.googleapis.com, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, m.ctrip.com
+hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, mbasecc.bcs.cmbchina.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, m.ctrip.com

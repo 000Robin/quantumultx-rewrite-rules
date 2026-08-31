@@ -44,6 +44,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
 
+番茄小说采用安全模式：只拦截穿山甲 `get_ads` 广告清单以及两个明确的广告素材路径，hostname 全部使用精确主机。不会拦截 `fqnovelvod` 听书视频、通用 `snssdk`、`gurd` 动态组件或 `zijieapi.com`；完整第三方分流在 2026 年已有影响听书的公开反馈，因此未直接合并。该规则也会使依赖同一广告接口的“观看广告领奖励”不可用。
+
 ### 会员解锁来源研究
 
 会员、VIP、RevenueCat、App Store 收据和订阅解锁来源只收录到 [`sources/restricted-membership-sources.md`](sources/restricted-membership-sources.md) 的不可执行风险目录。目录只保存仓库主页、维护状态、许可证和风险判断，不提供 Raw/CDN、一键导入、脚本正文或可执行规则；这些内容永远不得进入 `dist/`、候选资源或个人去广基线。
