@@ -1,0 +1,7 @@
+# Douyin domestic commerce: keep account, product and payment traffic on one direct exit.
+# Load before ad blocking and the overseas TikTok ruleset.
+host-suffix, ecombdapi.com, direct
+host-suffix, ecombdimg.com, direct
+host-suffix, ecombdpage.com, direct
+host, ecomuser.snssdk.com, direct
+host, tp-pay.snssdk.com, direct

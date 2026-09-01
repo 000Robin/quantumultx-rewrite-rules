@@ -412,6 +412,36 @@ def check_abc_direct() -> None:
         fail(f"{relative} must contain only the reviewed ABC direct domains in stable order")
 
 
+def check_douyin_commerce_direct() -> None:
+    relative = "dist/douyin-commerce-direct.list"
+    lines = active_lines(relative)
+    expected = [
+        "host-suffix, ecombdapi.com, direct",
+        "host-suffix, ecombdimg.com, direct",
+        "host-suffix, ecombdpage.com, direct",
+        "host, ecomuser.snssdk.com, direct",
+        "host, tp-pay.snssdk.com, direct",
+    ]
+    if lines != expected:
+        fail(
+            f"{relative} must contain only the HAR-confirmed Douyin commerce domains "
+            "in stable order"
+        )
+
+    text = (ROOT / relative).read_text(encoding="utf-8") if (ROOT / relative).is_file() else ""
+    for forbidden in (
+        "host-suffix, snssdk.com",
+        "host-suffix, zijieapi.com",
+        "host-suffix, amemv.com",
+        "host-keyword",
+        "host-wildcard",
+        "reject",
+        "proxy",
+    ):
+        if forbidden in text.lower():
+            fail(f"broad or non-direct Douyin commerce rule is forbidden: {forbidden}")
+
+
 def check_ai_filter() -> None:
     relative = "dist/managed-ai.list"
     lines = active_lines(relative)
@@ -689,6 +719,7 @@ def main() -> int:
     check_scripts()
     check_filter()
     check_abc_direct()
+    check_douyin_commerce_direct()
     check_ai_filter()
     check_candidates()
     check_source_catalog_safety()

@@ -129,3 +129,11 @@
 - 采用：新增自编 `railway_12306_splash_clean.js` 与精确 `script-analyze-echo-response` 规则。启动位立即返回无网络素材、`skipTime=0` 的 HTTP 200 JSON；其余广告位返回空列表，避免 404 等待。
 - 保护：只 MitM `ad.12306.cn` 的 `getAdList`；保留现有精确 `direct` 分流，不触碰 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票、支付或监测接口。全部 `rules/protected-*.conf` 未修改。
 - 交叉验证：公开实现普遍使用同一精确广告接口与 `script-analyze-echo-response`；另有公开响应净化实现将启动位 `skipTime` 设为 0。本仓库未复制第三方脚本，采用独立实现并新增回归测试。
+
+## 2026-09-01 — 抖音商城“网络异常”分流修复
+
+- 证据：用户提供约 20.9 MB、125 条记录的 Quantumult X HAR；原始 HAR 仅在本地分析，未加入仓库，也未复制 Cookie、Token、签名、设备标识、商品信息或完整参数。
+- 定位：商城 `ecombdapi.com` 接口返回 HTTP 200；同一页面还解析 `ecomuser.snssdk.com`，另一次商城支付请求 `tp-pay.snssdk.com/gateway-u` 返回状态 0。配置同时启用国内抖音与海外 TikTok，而上游 TikTok 列表包含整个 `snssdk.com`，导致商城 API 直连、用户/支付接口代理的分裂出口。
+- 采用：新增 `dist/douyin-commerce-direct.list`，只包含 `ecombdapi.com`、`ecombdimg.com`、`ecombdpage.com` 三个商城专用后缀和两个实测 `snssdk.com` 精确主机；该列表应位于广告分流与海外 TikTok 列表之前。
+- 未采用：不直连整个 `snssdk.com`、`zijieapi.com`、`amemv.com`、`byteimg.com` 或 `douyinpic.com`，避免绕开现有广告净化；未修改任何响应、账户、订单或支付数据。
+- 保护：全部 `rules/protected-*.conf` 未修改；新增文件只含 `direct` 分流，不含 MitM、脚本、Cookie、Token、会员或付费解锁。
