@@ -120,3 +120,12 @@
 - 收紧：不复制上游的 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管共享的 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、`featuregates.org`、整个 `statsigapi.net`、整个 `googleapis.com` 或整个 Bing/Microsoft 365；Statsig 只保留两个实际主机。
 - 策略：`AI服务` 默认使用仅含美国、日本、新加坡、台湾、韩国的 `AI自动`；`ChatGPT` 默认跟随 `AI服务`，两组均删除普通“自动选择”和 `proxy`，继续排除香港、澳门和俄罗斯。
 - 保护：全部 `rules/protected-*.conf` 未修改；新增规则不含 MitM、凭据、会员或响应改写。
+
+## 2026-09-01 — 12306 启动容器 / “跳过”按钮修复
+
+- 证据：用户提供约 12 秒、61 条记录的 Quantumult X HAR，覆盖两次冷启动；原始 HAR 只在本地分析，未加入仓库，也未复制请求头、Cookie、Token、设备标识或完整查询参数。
+- 定位：`ad.12306.cn/ad/ser/getAdList` 在每次启动连续返回空的 HTTP 404，约 4 秒后才出现广告监测请求；期间没有下载广告图片。说明素材已被阻断，但错误响应触发了 App 的本地超时容器，因此蓝色页面和“跳过”按钮仍存在。
+- 广告位：只记录请求体中的非敏感广告位编号 `0007`、`0075`、`G0054`，未保存请求体原文。
+- 采用：新增自编 `railway_12306_splash_clean.js` 与精确 `script-analyze-echo-response` 规则。启动位立即返回无网络素材、`skipTime=0` 的 HTTP 200 JSON；其余广告位返回空列表，避免 404 等待。
+- 保护：只 MitM `ad.12306.cn` 的 `getAdList`；保留现有精确 `direct` 分流，不触碰 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票、支付或监测接口。全部 `rules/protected-*.conf` 未修改。
+- 交叉验证：公开实现普遍使用同一精确广告接口与 `script-analyze-echo-response`；另有公开响应净化实现将启动位 `skipTime` 设为 0。本仓库未复制第三方脚本，采用独立实现并新增回归测试。

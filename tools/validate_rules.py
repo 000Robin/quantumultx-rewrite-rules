@@ -59,7 +59,7 @@ def check_rewrite() -> None:
         fail(f"{relative} must contain exactly one hostname line")
 
     allowed = re.compile(
-        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body))(?:\s|$)"
+        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-analyze-echo-response)(?:\s|$)"
     )
     for line in lines:
         if line.lower().startswith("hostname"):
@@ -121,6 +121,41 @@ def check_rewrite() -> None:
     for playback_host in ("vv.video.qq.com", "vv6.video.qq.com", "playproxy.video.qq.com"):
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
+
+    railway_rule = (
+        r"^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?.*)?$ "
+        "url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/"
+        "quantumultx-rewrite-rules/main/scripts/railway_12306_splash_clean.js"
+    )
+    railway_rules = [line for line in lines if r"12306\.cn" in line]
+    if railway_rules != [railway_rule]:
+        fail("managed rewrite must contain only the exact 12306 splash response rule")
+    else:
+        try:
+            railway_pattern = re.compile(railway_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid 12306 splash regex: {exc}")
+        else:
+            should_match = (
+                "https://ad.12306.cn/ad/ser/getAdList",
+                "http://ad.12306.cn/ad/ser/getAdList?fixture=1",
+            )
+            should_not_match = (
+                "https://ad.12306.cn/ad/mon/mzc",
+                "https://mobile.12306.cn/otsmobile/app/mgs/mgw.htm",
+                "https://kyfw.12306.cn/otn/login/init",
+            )
+            for url in should_match:
+                if not railway_pattern.search(url):
+                    fail(f"12306 splash rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if railway_pattern.search(url):
+                    fail(f"12306 splash rewrite unexpectedly matches protected scope: {url}")
+    if "ad.12306.cn" not in hostname_tokens:
+        fail("missing exact 12306 ad MitM hostname")
+    for protected_host in ("mobile.12306.cn", "kyfw.12306.cn"):
+        if protected_host in hostname_tokens:
+            fail(f"12306 core host must not be intercepted: {protected_host}")
 
     youtube_rule = (
         r"^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/"
@@ -264,6 +299,14 @@ def check_scripts() -> None:
             "$persistentstore",
             "$prefs",
         ),
+        "scripts/railway_12306_splash_clean.js": (
+            "authorization",
+            "cookie",
+            "mobile.12306.cn",
+            "kyfw.12306.cn",
+            "$persistentstore",
+            "$prefs",
+        ),
     }
 
     for relative, forbidden_terms in scripts.items():
@@ -297,6 +340,7 @@ def check_scripts() -> None:
     tests = (
         "tests/tencent_video_popup_clean.test.js",
         "tests/youtube_ad_clean.test.js",
+        "tests/railway_12306_splash_clean.test.js",
     )
     for test_relative in tests:
         test_path = ROOT / test_relative

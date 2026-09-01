@@ -56,6 +56,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 番茄小说采用安全模式：只拦截穿山甲 `get_ads` 广告清单以及两个明确的广告素材路径，hostname 全部使用精确主机。不会拦截 `fqnovelvod` 听书视频、通用 `snssdk`、`gurd` 动态组件或 `zijieapi.com`；完整第三方分流在 2026 年已有影响听书的公开反馈，因此未直接合并。该规则也会使依赖同一广告接口的“观看广告领奖励”不可用。
 
+12306 采用“合法空响应”而不是连接拒绝：2026-09-01 的启动 HAR 显示，`getAdList` 连续返回 404 后，App 仍会保留约 4 秒的蓝色本地启动容器并显示“跳过”。`scripts/railway_12306_splash_clean.js` 只读取请求中的广告位编号，并立即返回 HTTP 200；启动位 `0007` 使用无网络素材和 `skipTime=0`，其余广告位返回空列表。`ad.12306.cn` 的精确 `direct` 分流必须保留，供 `script-analyze-echo-response` 读取请求并生成响应；不会 MitM 或改写 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票或支付接口。
+
 ### 会员解锁来源研究
 
 会员、VIP、RevenueCat、App Store 收据和订阅解锁来源只收录到 [`sources/restricted-membership-sources.md`](sources/restricted-membership-sources.md) 的不可执行风险目录。目录只保存仓库主页、维护状态、许可证和风险判断，不提供 Raw/CDN、一键导入、脚本正文或可执行规则；这些内容永远不得进入 `dist/`、候选资源或个人去广基线。
@@ -102,6 +104,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频个人页广告移除及观看历史、VIP、账号、播放字段保留测试。
 - `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。
 - `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
+- `scripts/railway_12306_splash_clean.js`：12306 广告清单的本地合成响应，避免 404 触发启动页等待。
+- `tests/railway_12306_splash_clean.test.js`：12306 启动位零延迟、其他广告位空列表和异常请求体回归测试。
 - `examples/optimized-policy.conf`：脱敏的个人策略组参考，包含 AI/地区自动选择与低频按需测速；不是可直接加载的远程资源。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。
