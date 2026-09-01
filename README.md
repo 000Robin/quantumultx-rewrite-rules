@@ -42,7 +42,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 该列表内置 `ChatGPT` 与 `AI服务` 两个策略名：OpenAI 登录、上传、静态资源、功能配置和实时连接统一进入 `ChatGPT`；Claude、Gemini、Copilot、Grok、Perplexity 与 Poe 进入 `AI服务`。它必须放在广告分流、Google/微软通用分流和全球代理规则之前，并且**不要设置 `force-policy`**。
 
-规则按官方产品/API 文档与上游列表逐项收紧，不采用 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、整个 `googleapis.com` 或整个 Microsoft/Bing 域名。OpenAI 核心域名仍应排除 MitM，避免 TLS 检查破坏上传或 WebSocket。
+规则按官方产品/API 文档与上游列表逐项收紧，不采用 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、`featuregates.org`、整个 `statsigapi.net`、整个 `googleapis.com` 或整个 Microsoft/Bing 域名。仅保留 ChatGPT 实际使用的 `api.statsig.com` 与 `events.statsigapi.net` 精确主机。OpenAI 核心域名仍应排除 MitM，避免 TLS 检查破坏上传或 WebSocket。
 
 ### 去广重写
 

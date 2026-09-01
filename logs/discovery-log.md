@@ -117,6 +117,6 @@
 - 问题：原 `ChatGPT` 组仍暴露“自动选择”和 `proxy`，可能绕回香港等不支持地区；综合 AI 上游又位于广告规则之后，非 OpenAI 服务可能被抢先误判。
 - 官方复核：OpenAI 网络建议明确列出 `chatgpt.com`、`openai.com`、`oaistatic.com`、`oaiusercontent.com`、`oaistatsig.com`、`openaimerge.com` 与 WorkOS 等依赖，并建议关闭这些域名的 TLS 检查；Google 官方 Gemini API 使用 `generativelanguage.googleapis.com`；Anthropic 官方 API 使用 `api.anthropic.com`。
 - 采用：新增 `dist/managed-ai.list`，OpenAI 进入 `ChatGPT`，Claude、Gemini、Copilot、Grok、Perplexity 与 Poe 进入 `AI服务`；列表应放在广告、Google/微软通用规则和全球兜底之前。
-- 收紧：不复制上游的 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管共享的 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、整个 `googleapis.com` 或整个 Bing/Microsoft 365。
+- 收紧：不复制上游的 `HOST-KEYWORD`、IP-CIDR、IP-ASN，也不接管共享的 `stripe.com`、`auth0.com`、`sentry.io`、`segment.io`、`algolia.net`、`featuregates.org`、整个 `statsigapi.net`、整个 `googleapis.com` 或整个 Bing/Microsoft 365；Statsig 只保留两个实际主机。
 - 策略：`AI服务` 默认使用仅含美国、日本、新加坡、台湾、韩国的 `AI自动`；`ChatGPT` 默认跟随 `AI服务`，两组均删除普通“自动选择”和 `proxy`，继续排除香港、澳门和俄罗斯。
 - 保护：全部 `rules/protected-*.conf` 未修改；新增规则不含 MitM、凭据、会员或响应改写。

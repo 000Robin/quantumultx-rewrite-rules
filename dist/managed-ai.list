@@ -10,7 +10,7 @@ host-suffix, oaistatsig.com, ChatGPT
 host, cdn.openaimerge.com, ChatGPT
 host, cdn.workos.com, ChatGPT
 host, api.statsig.com, ChatGPT
-host-suffix, statsigapi.net, ChatGPT
+host, events.statsigapi.net, ChatGPT
 host-suffix, chatgpt.livekit.cloud, ChatGPT
 host, host.livekit.cloud, ChatGPT
 host, turn.livekit.cloud, ChatGPT
@@ -20,7 +20,6 @@ host, chat.openai.com.cdn.cloudflare.net, ChatGPT
 host, openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net, ChatGPT
 host, openaicomproductionae4b.blob.core.windows.net, ChatGPT
 host, production-openaicom-storage.azureedge.net, ChatGPT
-host-suffix, featuregates.org, ChatGPT
 host-suffix, openaiapi-site.azureedge.net, ChatGPT
 host-suffix, openaicom.imgix.net, ChatGPT
 

@@ -379,9 +379,11 @@ def check_ai_filter() -> None:
         "algolia.net",
         "auth0.com",
         "browser-intake-datadoghq.com",
+        "featuregates.org",
         "segment.io",
         "sentry.io",
         "static.cloudflareinsights.com",
+        "statsigapi.net",
         "stripe.com",
     }
     required = {
@@ -389,6 +391,8 @@ def check_ai_filter() -> None:
         ("host-suffix", "openai.com", "ChatGPT"),
         ("host-suffix", "oaistatic.com", "ChatGPT"),
         ("host-suffix", "oaiusercontent.com", "ChatGPT"),
+        ("host", "api.statsig.com", "ChatGPT"),
+        ("host", "events.statsigapi.net", "ChatGPT"),
         ("host-suffix", "anthropic.com", "AI服务"),
         ("host-suffix", "claude.ai", "AI服务"),
         ("host", "gemini.google.com", "AI服务"),
