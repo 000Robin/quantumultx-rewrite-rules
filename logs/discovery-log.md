@@ -137,3 +137,11 @@
 - 采用：新增 `dist/douyin-commerce-direct.list`，只包含 `ecombdapi.com`、`ecombdimg.com`、`ecombdpage.com` 三个商城专用后缀和两个实测 `snssdk.com` 精确主机；该列表应位于广告分流与海外 TikTok 列表之前。
 - 未采用：不直连整个 `snssdk.com`、`zijieapi.com`、`amemv.com`、`byteimg.com` 或 `douyinpic.com`，避免绕开现有广告净化；未修改任何响应、账户、订单或支付数据。
 - 保护：全部 `rules/protected-*.conf` 未修改；新增文件只含 `direct` 分流，不含 MitM、脚本、Cookie、Token、会员或付费解锁。
+
+## 2026-09-02 — 蒙电 e 家开屏广告 HAR 增量
+
+- 证据：用户提供约 13 秒、49 条记录的 Quantumult X HAR，包含两次冷启动；原始 HAR 仅在本地分析，未加入仓库，也未复制请求头、Cookie、Token、用户、户号、设备标识或完整参数。
+- 定位：`mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList` 在冷启动约 0.6 秒时返回资源清单；同一 `data` 数组包含应用更新 APK 与 JPG 开屏素材，不能拒绝整个接口。
+- 采用：新增自编 `mengdian_splash_clean.js` 与精确响应重写。只有 `wjlx` 和 `fileFullPath` 扩展名同时确认为 JPG/JPEG/PNG/GIF/WebP 时才移除记录；APK、顶层状态和未知字段保持不变。
+- 保护：只 MitM `mdej.impc.com.cn` 的该精确路径，不匹配登录、用户、缴费、账单、户号、消息或公告接口；异常 JSON 原样放行。HAR 第二轮的多接口 502 未被当作广告请求，也未扩大拦截范围。
+- 未采用：不拒绝整个 `mdej.impc.com.cn`，不拦截 DCloud 启动统计域名，不保存或改写账户数据。全部 `rules/protected-*.conf` 未修改。

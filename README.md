@@ -68,6 +68,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 12306 采用“合法空响应”而不是连接拒绝：2026-09-01 的启动 HAR 显示，`getAdList` 连续返回 404 后，App 仍会保留约 4 秒的蓝色本地启动容器并显示“跳过”。`scripts/railway_12306_splash_clean.js` 只读取请求中的广告位编号，并立即返回 HTTP 200；启动位 `0007` 使用无网络素材和 `skipTime=0`，其余广告位返回空列表。`ad.12306.cn` 的精确 `direct` 分流必须保留，供 `script-analyze-echo-response` 读取请求并生成响应；不会 MitM 或改写 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票或支付接口。
 
+蒙电 e 家采用精确资源清单净化：2026-09-02 HAR 显示，冷启动请求 `mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList` 的同一响应同时包含应用更新 APK 和 JPG 开屏素材。`scripts/mengdian_splash_clean.js` 仅在声明文件类型与下载路径扩展名同时确认为图片时删除该条目，保留 APK、接口状态和其他字段；不会匹配登录、用户、缴费、账单、消息或公告接口。解析失败和未知响应原样放行。
+
 ### 会员解锁来源研究
 
 会员、VIP、RevenueCat、App Store 收据和订阅解锁来源只收录到 [`sources/restricted-membership-sources.md`](sources/restricted-membership-sources.md) 的不可执行风险目录。目录只保存仓库主页、维护状态、许可证和风险判断，不提供 Raw/CDN、一键导入、脚本正文或可执行规则；这些内容永远不得进入 `dist/`、候选资源或个人去广基线。
@@ -118,6 +120,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
 - `scripts/railway_12306_splash_clean.js`：12306 广告清单的本地合成响应，避免 404 触发启动页等待。
 - `tests/railway_12306_splash_clean.test.js`：12306 启动位零延迟、其他广告位空列表和异常请求体回归测试。
+- `scripts/mengdian_splash_clean.js`：蒙电 e 家启动资源清单净化，只移除明确图片项并保留应用更新包。
+- `tests/mengdian_splash_clean.test.js`：蒙电 e 家图片移除、APK/字段保留和异常响应原样放行测试。
 - `examples/optimized-policy.conf`：脱敏的个人策略组参考，包含 AI/地区自动选择与低频按需测速；不是可直接加载的远程资源。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。

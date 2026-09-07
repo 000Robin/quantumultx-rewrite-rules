@@ -157,6 +157,39 @@ def check_rewrite() -> None:
         if protected_host in hostname_tokens:
             fail(f"12306 core host must not be intercepted: {protected_host}")
 
+    mengdian_rule = (
+        r"^https:\/\/mdej\.impc\.com\.cn\/hlwyy\/business-mdej\/sycd\/"
+        "queryResourcesList(?:\\?.*)?$ url script-response-body "
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/mengdian_splash_clean.js"
+    )
+    mengdian_rules = [line for line in lines if r"mdej\.impc\.com\.cn" in line]
+    if mengdian_rules != [mengdian_rule]:
+        fail("managed rewrite must contain only the exact Mengdian splash resource rule")
+    else:
+        try:
+            mengdian_pattern = re.compile(mengdian_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid Mengdian splash regex: {exc}")
+        else:
+            should_match = (
+                "https://mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList",
+                "https://mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList?fixture=1",
+            )
+            should_not_match = (
+                "https://mdej.impc.com.cn/hlwyy/business-jffw/znjf/queryDfInfoNew_new",
+                "https://mdej.impc.com.cn/hlwyy/business-ggfw/communal/getUser",
+                "https://mdej.impc.com.cn/hlwyy/business-mdej/wdxx/queryWdxxList",
+            )
+            for url in should_match:
+                if not mengdian_pattern.search(url):
+                    fail(f"Mengdian splash rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if mengdian_pattern.search(url):
+                    fail(f"Mengdian splash rewrite unexpectedly matches core scope: {url}")
+    if "mdej.impc.com.cn" not in hostname_tokens:
+        fail("missing exact Mengdian MitM hostname")
+
     youtube_rule = (
         r"^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/"
         r"(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ "
@@ -307,6 +340,14 @@ def check_scripts() -> None:
             "$persistentstore",
             "$prefs",
         ),
+        "scripts/mengdian_splash_clean.js": (
+            "authorization",
+            "cookie",
+            "password",
+            "token",
+            "$persistentstore",
+            "$prefs",
+        ),
     }
 
     for relative, forbidden_terms in scripts.items():
@@ -341,6 +382,7 @@ def check_scripts() -> None:
         "tests/tencent_video_popup_clean.test.js",
         "tests/youtube_ad_clean.test.js",
         "tests/railway_12306_splash_clean.test.js",
+        "tests/mengdian_splash_clean.test.js",
     )
     for test_relative in tests:
         test_path = ROOT / test_relative
