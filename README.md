@@ -68,7 +68,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 12306 采用“合法空响应”而不是连接拒绝：2026-09-01 的启动 HAR 显示，`getAdList` 连续返回 404 后，App 仍会保留约 4 秒的蓝色本地启动容器并显示“跳过”。`scripts/railway_12306_splash_clean.js` 只读取请求中的广告位编号，并立即返回 HTTP 200；启动位 `0007` 使用无网络素材和 `skipTime=0`，其余广告位返回空列表。`ad.12306.cn` 的精确 `direct` 分流必须保留，供 `script-analyze-echo-response` 读取请求并生成响应；不会 MitM 或改写 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票或支付接口。
 
-蒙电 e 家采用精确资源清单净化：2026-09-02 HAR 显示，冷启动请求 `mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList` 的同一响应同时包含应用更新 APK 和 JPG 开屏素材。`scripts/mengdian_splash_clean.js` 仅在声明文件类型与下载路径扩展名同时确认为图片时删除该条目，保留 APK、接口状态和其他字段；不会匹配登录、用户、缴费、账单、消息或公告接口。解析失败和未知响应原样放行。
+蒙电 e 家采用精确资源清单净化：2026-09-02 HAR 显示，冷启动请求 `mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList` 的同一响应同时包含应用更新 APK 和 JPG 开屏素材。`scripts/mengdian_splash_clean.js` 仅在声明文件类型与下载路径扩展名同时确认为图片时删除该条目，保留 APK、接口状态和其他字段；不会改写登录、用户、缴费、账单、消息或公告接口。解析失败和未知响应原样放行。Quantumult X 的 MitM `hostname` 粒度是整台主机，因此 `mdej.impc.com.cn` 上的 HTTPS 会被解密，但只有上述精确路径会执行脚本；若未来 App 启用证书固定校验，应停用该重写并重新抓取不解密的连接证据。
 
 ### 会员解锁来源研究
 
