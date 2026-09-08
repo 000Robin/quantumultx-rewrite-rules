@@ -41,6 +41,13 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 3. `*.ctyun.cn` 属于宽 MitM 风险，已从默认管理片段隔离；原始保护参考仍保留，取得新 HAR 并定位实际广告主机后再以精确 hostname 恢复。
 4. 不启用 `hostname=*`，不因广告规则关闭证书校验，不把 Cookie、Token、订阅或 MitM 私钥写入仓库。
 
+## 2026-09-08 增量复核
+
+- AWAvenue Quantumult X 仍为 v1.7.6，902 行、31,765 B，当前提交 `9f5bc853`；没有需要迁移或替换的低开销主列表。
+- Cats-Team `qx.conf` 已更新为 blob `08428d5d`，当前 7,804,760 B，较上次审计快照减少 24,639 B。该列表仍覆盖广告、跟踪、恶意域名、HTTPDNS 与 PCDN，体积和误杀面较大，继续保持 `enabled=false`。
+- blackmatrix7 Advertising 已更新至提交 `0700cb25`，上游统计 283,593 条，较上次审计记录增加 3,711 条。上游仍明确提示可能误拦截，并建议该列表单独使用，因此继续保持 `enabled=false`，不与 Cats-Team 叠加。
+- 本轮没有新增分流候选、确认迁移或运行配置变更；`dist/`、图标链接和受保护规则均未修改。
+
 ## 2026-08-28 完整配置复核与策略优化
 
 - 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。

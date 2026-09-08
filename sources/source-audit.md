@@ -63,3 +63,10 @@
 - 复核历史目录正文后，确认 7 条启用项属于 VIP、RevenueCat、收据或付费内容解锁，而不是广告净化：`dandanvip.conf`、`nnjk.js`、`QQYD.js`、`bdyy.js`、`BPZJ.js`、`xt.js`、`Reheji.js`。已全部改为 `enabled=false`，未复制或改写脚本正文。
 - 已登记分流候选均可读取；AWAvenue 仍为 v1.7.6（2026-08-20），没有需要替换的主去广列表。新检索来源要么属于旧合集/个人整包配置，要么混有功能解锁及宽泛 MitM，本轮新增候选 0。
 - 新增离线校验，防止上述受限来源或返回 HTML 的旧地址再次被设为启用；`dist/` 与全部 `rules/protected-*.conf` 未修改。
+
+## 增量复核（2026-09-08）
+
+- 复核 54 条重写来源、19 条分流候选和 1 条停用重写候选。61 个 GitHub 文件可直接读取；Cats-Team 与 blackmatrix7 的超大文件通过官方仓库树、提交和统计信息核验；jsDelivr 镜像的连接器限制未被误判为来源失效。
+- 5 条 `ddgksf2013.top` 旧地址仍重定向到 HTML 资源首页，不是可解析的 Quantumult X 配置或 JavaScript；它们继续保持停用，本轮新增确认失效 0 条。
+- 3 条 `yfamilys.com` 规则均返回 HTTP 200 和纯文本正文。`limbopro.com/Adblock4limbo.conf` 本次环境返回 403，但作者的活跃 GitHub 仓库仍将该地址列为官方安装入口，因此只记为访问受限，不判定失效，也不采用第三方镜像。
+- 公开检索结果主要为旧版个人整包、现有上游镜像、混合功能解锁内容或带宽泛 MitM 的合集；没有安全、可信且可验证的新候选。新增候选 0，确认迁移 0；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。

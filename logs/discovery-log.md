@@ -145,3 +145,10 @@
 - 采用：新增自编 `mengdian_splash_clean.js` 与精确响应重写。只有 `wjlx` 和 `fileFullPath` 扩展名同时确认为 JPG/JPEG/PNG/GIF/WebP 时才移除记录；APK、顶层状态和未知字段保持不变。
 - 保护：Quantumult X 会按主机解密 `mdej.impc.com.cn`，但重写规则只匹配资源清单的精确路径，不改写登录、用户、缴费、账单、户号、消息或公告接口；异常 JSON 原样放行。HAR 第二轮的多接口 502 未被当作广告请求，也未扩大拦截范围。
 - 未采用：不拒绝整个 `mdej.impc.com.cn`，不拦截 DCloud 启动统计域名，不保存或改写账户数据。全部 `rules/protected-*.conf` 未修改。
+
+## 2026-09-08 — 三日来源与安全复核
+
+- 全量复核 54 条重写来源、19 条分流候选和 1 条停用重写候选；没有确认 404、迁移或可安全新增的候选。
+- AWAvenue 仍为 v1.7.6（902 行）；Cats-Team `qx.conf` 更新为 7,804,760 B；blackmatrix7 Advertising 更新为 283,593 条。后两者继续因体积、重叠和误杀风险保持停用。
+- 5 条已停用的 `ddgksf2013.top` 旧地址仍返回 HTML 资源页；Limbopro 官方入口在当前环境返回 403，但作者仓库仍活跃且继续推荐原地址，暂记访问受限，不采用镜像。
+- 未修改 `dist/`、脚本/节点图标链接或 `rules/protected-*.conf`；未吸收会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
