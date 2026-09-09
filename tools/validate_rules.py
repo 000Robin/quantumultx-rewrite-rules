@@ -285,6 +285,49 @@ def check_rewrite() -> None:
         if "*" in hostname and ("pangolin-sdk-toutiao" in hostname or "pglstatp-toutiao" in hostname):
             fail(f"broad Fanqie/Pangle MitM hostname is forbidden: {hostname}")
 
+    fanqie_video_rules = [line for line in lines if r"fqnovelvod\.com" in line]
+    expected_fanqie_video_rules = [
+        r"^https:\/\/v(?:3|5|6|9)-novelapp\.fqnovelvod\.com\/.*\/video\/.*$ url reject",
+        r"^https:\/\/v(?:3|5|9)-reading-video\.fqnovelvod\.com\/.*$ url reject",
+    ]
+    if fanqie_video_rules != expected_fanqie_video_rules:
+        fail("managed rewrite must contain only the reviewed aggressive Fanqie video rules")
+    else:
+        video_patterns = [re.compile(line.split(" url ", 1)[0]) for line in fanqie_video_rules]
+        should_match = (
+            "https://v3-novelapp.fqnovelvod.com/fixture/video/chapter.mp4",
+            "https://v6-novelapp.fqnovelvod.com/path/video/reward.mp4?fixture=1",
+            "https://v9-reading-video.fqnovelvod.com/fixture/short-drama.mp4",
+        )
+        should_not_match = (
+            "https://v6-novelapp.fqnovelvod.com/fixture/audio/chapter.m4a",
+            "https://v6-fq-tts.fqnovelvod.com/fixture/audio/chapter.m4a",
+            "https://api5-normal.fqnovel.com/reading/bookapi/fixture",
+            "https://vcs-lf.zijieapi.com/fixture",
+        )
+        for url in should_match:
+            if not any(pattern.search(url) for pattern in video_patterns):
+                fail(f"Fanqie aggressive video rule unexpectedly misses: {url}")
+        for url in should_not_match:
+            if any(pattern.search(url) for pattern in video_patterns):
+                fail(f"Fanqie aggressive video rule unexpectedly matches protected scope: {url}")
+
+    expected_video_hosts = {
+        "v3-novelapp.fqnovelvod.com",
+        "v5-novelapp.fqnovelvod.com",
+        "v6-novelapp.fqnovelvod.com",
+        "v9-novelapp.fqnovelvod.com",
+        "v3-reading-video.fqnovelvod.com",
+        "v5-reading-video.fqnovelvod.com",
+        "v9-reading-video.fqnovelvod.com",
+    }
+    missing_video_hosts = expected_video_hosts - hostname_tokens
+    if missing_video_hosts:
+        fail(f"missing exact Fanqie video MitM hostname: {sorted(missing_video_hosts)}")
+    for hostname in hostname_tokens:
+        if "fqnovelvod.com" in hostname and ("*" in hostname or "fq-tts" in hostname):
+            fail(f"Fanqie audiobook/wildcard MitM is forbidden: {hostname}")
+
     telecom_rules = [line for line in lines if r"wapside\.189\.cn" in line]
     if len(telecom_rules) != 1:
         fail("managed rewrite must contain exactly one China Telecom rule")

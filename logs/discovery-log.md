@@ -152,3 +152,10 @@
 - AWAvenue 仍为 v1.7.6（902 行）；Cats-Team `qx.conf` 更新为 7,804,760 B；blackmatrix7 Advertising 更新为 283,593 条。后两者继续因体积、重叠和误杀风险保持停用。
 - 5 条已停用的 `ddgksf2013.top` 旧地址仍返回 HTML 资源页；Limbopro 官方入口在当前环境返回 403，但作者仓库仍活跃且继续推荐原地址，暂记访问受限，不采用镜像。
 - 未修改 `dist/`、脚本/节点图标链接或 `rules/protected-*.conf`；未吸收会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 2026-09-09 — 番茄小说激进视频去广
+
+- 用户确认不需要番茄短剧，并要求将激进视频拦截加入个人 GitHub；因此在既有穿山甲清单/素材规则之外增加两个视频规则。
+- 章内视频规则只匹配公开规则中实际出现的 `v3/v5/v6/v9-novelapp.fqnovelvod.com`，且路径必须包含 `/video/`；短剧规则只覆盖 `v3/v5/v9-reading-video.fqnovelvod.com`。
+- 未采用 `*.fqnovelvod.com` 通配 MitM，也未接管 `fq-tts`、通用 `snssdk`、`gurd`、`zijieapi.com` 或书籍接口；听书音频和抖音商城分流保持原状。
+- 预期代价：章内视频、短剧和观看广告领奖励不可用。未修改 `rules/protected-*.conf`、脚本/节点图标链接或其他应用规则。

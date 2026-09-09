@@ -64,7 +64,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
 
-番茄小说采用安全模式：只拦截穿山甲 `get_ads` 广告清单以及两个明确的广告素材路径，hostname 全部使用精确主机。不会拦截 `fqnovelvod` 听书视频、通用 `snssdk`、`gurd` 动态组件或 `zijieapi.com`；完整第三方分流在 2026 年已有影响听书的公开反馈，因此未直接合并。该规则也会使依赖同一广告接口的“观看广告领奖励”不可用。
+番茄小说默认拦截穿山甲 `get_ads` 广告清单和两个明确广告素材路径。2026-09-09 按所有者明确选择增加激进视频模式：只解密公开规则中实际出现的 `v3/v5/v6/v9-novelapp.fqnovelvod.com`，并且只有 URL 路径包含 `/video/` 时拒绝；同时拒绝 `v3/v5/v9-reading-video.fqnovelvod.com` 的短剧流量。该模式会使章内视频广告、短剧和“观看广告领奖励”不可用，但不会 MitM `*-fq-tts.fqnovelvod.com`，也不拦截通用 `snssdk`、`gurd`、`zijieapi.com`、书籍接口或普通音频路径。
 
 12306 采用“合法空响应”而不是连接拒绝：2026-09-01 的启动 HAR 显示，`getAdList` 连续返回 404 后，App 仍会保留约 4 秒的蓝色本地启动容器并显示“跳过”。`scripts/railway_12306_splash_clean.js` 只读取请求中的广告位编号，并立即返回 HTTP 200；启动位 `0007` 使用无网络素材和 `skipTime=0`，其余广告位返回空列表。`ad.12306.cn` 的精确 `direct` 分流必须保留，供 `script-analyze-echo-response` 读取请求并生成响应；不会 MitM 或改写 `mobile.12306.cn`、`kyfw.12306.cn`、登录、购票或支付接口。
 
