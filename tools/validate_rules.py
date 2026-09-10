@@ -122,6 +122,42 @@ def check_rewrite() -> None:
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
+    cib_life_rule = (
+        r"^https:\/\/gap\.cibfintech\.com\/entry\/queryLaunchAdListV2(?:\?.*)?$ "
+        "url reject-dict"
+    )
+    cib_life_rules = [line for line in lines if r"gap\.cibfintech\.com" in line]
+    if cib_life_rules != [cib_life_rule]:
+        fail("managed rewrite must contain only the exact CIB Life launch-ad rule")
+    else:
+        try:
+            cib_life_pattern = re.compile(cib_life_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid CIB Life launch-ad regex: {exc}")
+        else:
+            should_match = (
+                "https://gap.cibfintech.com/entry/queryLaunchAdListV2",
+                "https://gap.cibfintech.com/entry/queryLaunchAdListV2?fixture=1",
+            )
+            should_not_match = (
+                "https://gap.cibfintech.com/entry/queryLaunchAdListV20",
+                "https://gap.cibfintech.com/entry/naviMatrix/general",
+                "https://gap.cibfintech.com/entry/appUpdateInfo/v3",
+                "https://gap.cibfintech.com/entry/iosOpenApp/queryIOSJumpInfo",
+                "https://gap.cibfintech.com/entry/appNotice/queryNotice",
+            )
+            for url in should_match:
+                if not cib_life_pattern.search(url):
+                    fail(f"CIB Life launch-ad rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if cib_life_pattern.search(url):
+                    fail(f"CIB Life launch-ad rewrite unexpectedly matches core scope: {url}")
+    if "gap.cibfintech.com" not in hostname_tokens:
+        fail("missing exact CIB Life MitM hostname")
+    for hostname in hostname_tokens:
+        if "cibfintech.com" in hostname and "*" in hostname:
+            fail(f"broad CIB Life MitM hostname is forbidden: {hostname}")
+
     railway_rule = (
         r"^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?.*)?$ "
         "url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/"

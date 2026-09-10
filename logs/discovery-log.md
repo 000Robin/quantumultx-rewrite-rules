@@ -159,3 +159,11 @@
 - 章内视频规则只匹配公开规则中实际出现的 `v3/v5/v6/v9-novelapp.fqnovelvod.com`，且路径必须包含 `/video/`；短剧规则只覆盖 `v3/v5/v9-reading-video.fqnovelvod.com`。
 - 未采用 `*.fqnovelvod.com` 通配 MitM，也未接管 `fq-tts`、通用 `snssdk`、`gurd`、`zijieapi.com` 或书籍接口；听书音频和抖音商城分流保持原状。
 - 预期代价：章内视频、短剧和观看广告领奖励不可用。未修改 `rules/protected-*.conf`、脚本/节点图标链接或其他应用规则。
+
+## 2026-09-10 — 兴业生活开屏广告 HAR 增量
+
+- 证据：用户提供约 8 秒的 Quantumult X HAR，覆盖两次冷启动；原始 HAR 只在本地分析，未加入仓库，也未复制请求头、请求体、Cookie、Token、设备标识或账户信息。
+- 定位：两次启动均请求 `gap.cibfintech.com/entry/queryLaunchAdListV2`；接口名称和时序明确指向开屏广告清单。HAR 只记录请求而没有有效响应体，因此没有臆造服务端 JSON 结构。
+- 采用：新增一条精确 `queryLaunchAdListV2` 请求拒绝和一个精确 MitM hostname；不拒绝整个 `gap.cibfintech.com`。
+- 保护：新增回归检查，确保规则不匹配导航、应用更新、iOS 跳转、通知或相似路径；未修改登录、支付、账户、会员、Cookie/Token、`rules/protected-*.conf`、脚本图标或节点图标链接。
+- 风险：该主机还承载兴业生活核心接口。若证书固定校验导致 TLS 或页面异常，应停用此重写并以新的可读取响应 HAR 设计保守响应净化。

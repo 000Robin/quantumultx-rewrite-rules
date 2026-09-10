@@ -70,6 +70,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 
 蒙电 e 家采用精确资源清单净化：2026-09-02 HAR 显示，冷启动请求 `mdej.impc.com.cn/hlwyy/business-mdej/sycd/queryResourcesList` 的同一响应同时包含应用更新 APK 和 JPG 开屏素材。`scripts/mengdian_splash_clean.js` 仅在声明文件类型与下载路径扩展名同时确认为图片时删除该条目，保留 APK、接口状态和其他字段；不会改写登录、用户、缴费、账单、消息或公告接口。解析失败和未知响应原样放行。Quantumult X 的 MitM `hostname` 粒度是整台主机，因此 `mdej.impc.com.cn` 上的 HTTPS 会被解密，但只有上述精确路径会执行脚本；若未来 App 启用证书固定校验，应停用该重写并重新抓取不解密的连接证据。
 
+兴业生活采用精确请求拒绝：2026-09-10 HAR 的两次冷启动均调用 `gap.cibfintech.com/entry/queryLaunchAdListV2`。管理片段只对该路径返回空字典，不拒绝整个主机，也不匹配导航、登录、更新、通知、跳转或微应用接口。HAR 没有取得该接口的响应结构，因此当前不伪造响应；若 App 仍保留本地开屏容器，需重新抓取可读取响应体的 HAR 后再做结构化净化。由于 Quantumult X 的 MitM 以主机为粒度，若兴业生活出现 TLS 或核心页面异常，应先停用此条重写并反馈新 HAR。
+
 ### 会员解锁来源研究
 
 会员、VIP、RevenueCat、App Store 收据和订阅解锁来源只收录到 [`sources/restricted-membership-sources.md`](sources/restricted-membership-sources.md) 的不可执行风险目录。目录只保存仓库主页、维护状态、许可证和风险判断，不提供 Raw/CDN、一键导入、脚本正文或可执行规则；这些内容永远不得进入 `dist/`、候选资源或个人去广基线。
