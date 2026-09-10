@@ -628,6 +628,23 @@ def check_candidates() -> None:
             if line.startswith("http") and "enabled=false" not in line.replace(" ", "").lower():
                 fail(f"candidate must remain disabled in {relative}: {line}")
 
+    filter_lines = active_lines("sources/filter-candidates.conf")
+    expected_heidai = {
+        "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/"
+        "adblockqxlite.conf, tag=候选-217heidai去广分流（国内Lite）, "
+        "update-interval=28800, opt-parser=false, inserted-resource=true, enabled=false",
+        "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/"
+        "adblockqx.conf, tag=候选-217heidai去广分流（超大型完整）, "
+        "update-interval=28800, opt-parser=false, inserted-resource=true, enabled=false",
+    }
+    actual_heidai = {line for line in filter_lines if "217heidai/adblockfilters" in line}
+    if actual_heidai != expected_heidai:
+        fail("217heidai Full/Lite candidates must remain exact, native and disabled")
+    for line in actual_heidai:
+        compact = line.replace(" ", "").lower()
+        if "force-policy=" in compact or "opt-parser=false" not in compact:
+            fail(f"217heidai native filter candidate has unsafe options: {line}")
+
 
 def check_source_catalog_safety() -> None:
     relative = "sources/all-rewrite-sources.conf"

@@ -167,3 +167,11 @@
 - 采用：新增一条精确 `queryLaunchAdListV2` 请求拒绝和一个精确 MitM hostname；不拒绝整个 `gap.cibfintech.com`。
 - 保护：新增回归检查，确保规则不匹配导航、应用更新、iOS 跳转、通知或相似路径；未修改登录、支付、账户、会员、Cookie/Token、`rules/protected-*.conf`、脚本图标或节点图标链接。
 - 风险：该主机还承载兴业生活核心接口。若证书固定校验导致 TLS 或页面异常，应停用此重写并以新的可读取响应 HAR 设计保守响应净化。
+
+## 2026-09-10 — 217heidai 去广分流审计
+
+- 来源：审计 `217heidai/adblockfilters` 的 Quantumult X Full 与 Lite 官方 Raw；仓库为 GPL-3.0，并声明每 8 小时合并、去重和剔除无法解析域名。
+- 快照：提交 `7405f810`，版本 `20260910204948`。Full 为 214,643 条/8,522,393 B，Lite 为 5,323 条/205,590 B；全部活动行均为三字段 `host-suffix` 拒绝规则，未发现重复活动行。
+- 重叠：Lite 与 AWAvenue 当前 949 个字面模式重合 501 个，不能作为第二个主列表叠加。Full/Lite 均拒绝 `ad.12306.cn`，Full 另涉及 AI 与 Apple 共享服务，存在明确顺序冲突和误杀风险。
+- 采用：新增两条停用候选，推荐仅在 AWAvenue 覆盖不足时单独测试 Lite；`managed-ai`、专用直连列表与 `managed-filter` 必须位于其前。Full 只作高风险备选。
+- 保护：未复制第三方规则正文，未修改 `dist/`、`rules/protected-*.conf`、脚本图标或节点图标链接，未吸收会员、Cookie/Token、定位或 MitM 内容。

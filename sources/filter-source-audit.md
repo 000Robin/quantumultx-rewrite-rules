@@ -14,6 +14,8 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 | fmz200 `filter.list` | `7fb19fa1` | 123,444 B | 中等规模，和其 `filterFix.list` 配套较自然；当前个人配置存在重复入口。 |
 | Cats-Team `qx.conf` | `616fa398` | 7,829,399 B | 覆盖广告、跟踪、恶意域名、HTTPDNS、PCDN；覆盖广但误杀和资源开销更高。 |
 | blackmatrix7 Advertising | `2df6b08d` | 11,982,485 B；上游统计 279,882 条 | 超大型生成列表，上游明确提示可能误拦截；不应与 Cats-Team 同时启用。 |
+| 217heidai Quantumult X Lite | `7405f810` / `20260910204948` | 5,323 条，205,590 B | 仅国内域名；相对完整版本显著精简，但仍需放在直连修正之后并单独测试。 |
+| 217heidai Quantumult X Full | `7405f810` / `20260910204948` | 214,643 条，8,522,393 B | 多上游聚合且每 8 小时更新；覆盖极广，存在共享服务误杀，不适合与其他主列表叠加。 |
 
 以上只登记上游 URL、版本和统计，不复制第三方完整规则正文。候选全部保持 `enabled=false`。
 
@@ -47,6 +49,15 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 - Cats-Team `qx.conf` 已更新为 blob `08428d5d`，当前 7,804,760 B，较上次审计快照减少 24,639 B。该列表仍覆盖广告、跟踪、恶意域名、HTTPDNS 与 PCDN，体积和误杀面较大，继续保持 `enabled=false`。
 - blackmatrix7 Advertising 已更新至提交 `0700cb25`，上游统计 283,593 条，较上次审计记录增加 3,711 条。上游仍明确提示可能误拦截，并建议该列表单独使用，因此继续保持 `enabled=false`，不与 Cats-Team 叠加。
 - 本轮没有新增分流候选、确认迁移或运行配置变更；`dist/`、图标链接和受保护规则均未修改。
+
+## 2026-09-10 — 217heidai Quantumult X 来源审计
+
+- 上游仓库采用 GPL-3.0，说明其每 8 小时合并、去重并通过多组 DNS 剔除无法解析域名；本轮读取提交 `7405f810`，Full 与 Lite 版本号均为 `20260910204948`。
+- 语法：Full 版 214,643 条、8,522,393 B；Lite 版 5,323 条、205,590 B。活动规则全部为 Quantumult X 可识别的 `host-suffix,<domain>,reject`，字段数正确，未发现重复活动行。
+- 去重关系：Lite 与 AWAvenue v1.7.6 的 949 个域名/关键词字面项重合 501 个；Lite 另有 4,822 个字面域名。两者不能据此判定语义完全包含，但已经证明不应叠加作为两个主去广列表。
+- 冲突：Full 与 Lite 都包含 `ad.12306.cn,reject`，会与本仓库用于合法空响应脚本的 `direct` 修正规则冲突；Full 还包含 `api.statsig.com` 与 Apple DoH/分析等共享服务，可能影响 ChatGPT 功能配置或系统服务。聚合源还可能从其他上游重新引入单个来源已删除的误杀域名。
+- 采用：只登记 Full 与 Lite 两条规范 Raw URL，均保持 `enabled=false`。优先测试 Lite，且必须置于 `dist/managed-ai.list`、专用直连列表和 `dist/managed-filter.list` 之后；完整版本仅作覆盖优先的高风险备选。
+- 未复制 21 万条第三方正文，未修改 `dist/`、保护基线、脚本/节点图标链接，也未加入会员、Cookie/Token 或 MitM 内容。
 
 ## 2026-08-28 完整配置复核与策略优化
 

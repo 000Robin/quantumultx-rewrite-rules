@@ -85,8 +85,10 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 3. 使用国内抖音商城时加载 `dist/douyin-commerce-direct.list`，必须放在 AWAvenue 和海外 TikTok 列表之前。
 4. 加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
 5. 分流修正列表按需选择一个，不要无差别叠加。
-6. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200，覆盖优先可继续使用 Cats-Team；不建议再叠加 blackmatrix7 超大型列表。
+6. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200；若前两者覆盖不足，可单独测试 217heidai Lite。Cats-Team、217heidai Full 与 blackmatrix7 都属于大型或超大型方案，不要叠加。
 7. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
+
+217heidai 的 Quantumult X Full/Lite 已作为停用候选登记。Lite 仍包含 `ad.12306.cn,reject`，所以 `dist/managed-filter.list` 必须排在它之前；Full 还会拒绝部分 AI 与 Apple 共享服务，不建议日常启用。两份上游都是原生 Quantumult X 三字段格式，导入时不要设置 `force-policy`，也不要与 AWAvenue、fmz200、Cats-Team 或 blackmatrix7 同时开启。
 
 候选 URL、快照规模、冲突和采用判断见 `sources/filter-candidates.conf` 与 `sources/filter-source-audit.md`。
 
