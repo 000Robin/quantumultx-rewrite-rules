@@ -70,3 +70,11 @@
 - 5 条 `ddgksf2013.top` 旧地址仍重定向到 HTML 资源首页，不是可解析的 Quantumult X 配置或 JavaScript；它们继续保持停用，本轮新增确认失效 0 条。
 - 3 条 `yfamilys.com` 规则均返回 HTTP 200 和纯文本正文。`limbopro.com/Adblock4limbo.conf` 本次环境返回 403，但作者的活跃 GitHub 仓库仍将该地址列为官方安装入口，因此只记为访问受限，不判定失效，也不采用第三方镜像。
 - 公开检索结果主要为旧版个人整包、现有上游镜像、混合功能解锁内容或带宽泛 MitM 的合集；没有安全、可信且可验证的新候选。新增候选 0，确认迁移 0；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 增量复核（2026-09-11）
+
+- 检查 54 条重写来源、1 条停用重写候选和 21 条分流候选。55 个规范 Raw/公开地址直接返回 HTTP 200；12 个 GitHub `/raw/` 跳转地址通过同仓库官方 Raw 或 GitHub Contents API 复核可达；jsDelivr 重复入口由对应 blackmatrix7 官方 Raw 验证。
+- 新增确认失效 1 条：`Yu9191/wloc/main/modules/wloc.conf` 返回 HTTP 404，GitHub Contents API 同样返回 404，且已无法检索到原作者仓库。该条属于定位修改、原本已停用；只更新失效标签，不采用搜索结果中的第三方镜像。
+- 5 条 `ddgksf2013.top` 旧地址仍维持“HTML 资源页、停用待迁移”的既有结论；当前环境无法直接连接该自定义域名，不据此新增失效判断。Limbopro 入口的内容类型仍不适合当前抓取器解析，作者入口不替换。
+- 公开检索结果仍以现有来源、旧版个人整包、会员/功能增强混合集或宽泛 MitM 为主；`ZenmoFeiShi/Reject-AD` 的既有语法、宽 MitM 和许可证风险未消除。新增可采纳候选 0、确认迁移 0。
+- 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。

@@ -59,6 +59,14 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 - 采用：只登记 Full 与 Lite 两条规范 Raw URL，均保持 `enabled=false`。优先测试 Lite，且必须置于 `dist/managed-ai.list`、专用直连列表和 `dist/managed-filter.list` 之后；完整版本仅作覆盖优先的高风险备选。
 - 未复制 21 万条第三方正文，未修改 `dist/`、保护基线、脚本/节点图标链接，也未加入会员、Cookie/Token 或 MitM 内容。
 
+## 2026-09-11 — 分流候选增量复核
+
+- AWAvenue 仍为 v1.7.6，文件 33,511 B；fmz200 `filter.list` 仍为 123,444 B，均没有迁移。
+- Cats-Team `qx.conf` 更新至 7,849,561 B；blackmatrix7 Advertising 更新至 280,506 条/12,017,477 B。两者仍为大型或超大型聚合源，继续保持 `enabled=false`，不与其他主列表叠加。
+- 217heidai 更新至版本 `20260911030253`：Full 为 214,739 条/8,526,110 B，Lite 为 5,322 条/205,544 B。两版仍全部为合法三字段 `host-suffix` 拒绝规则且无重复活动行。
+- 已知冲突未消失：Full/Lite 仍拒绝 `ad.12306.cn`，Full 仍拒绝 `api.statsig.com`、Apple DoH 与招商银行日志等共享服务；因此两条候选继续停用，推荐顺序和单主列表原则不变。
+- 新增分流候选 0、失效 0、迁移 0；未修改运行分流、保护基线或图标链接。
+
 ## 2026-08-28 完整配置复核与策略优化
 
 - 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。

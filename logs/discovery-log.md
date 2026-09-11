@@ -175,3 +175,11 @@
 - 重叠：Lite 与 AWAvenue 当前 949 个字面模式重合 501 个，不能作为第二个主列表叠加。Full/Lite 均拒绝 `ad.12306.cn`，Full 另涉及 AI 与 Apple 共享服务，存在明确顺序冲突和误杀风险。
 - 采用：新增两条停用候选，推荐仅在 AWAvenue 覆盖不足时单独测试 Lite；`managed-ai`、专用直连列表与 `managed-filter` 必须位于其前。Full 只作高风险备选。
 - 保护：未复制第三方规则正文，未修改 `dist/`、`rules/protected-*.conf`、脚本图标或节点图标链接，未吸收会员、Cookie/Token、定位或 MitM 内容。
+
+## 2026-09-11 — 三日来源与安全复核
+
+- 全量检查 54 条重写来源、1 条停用重写候选和 21 条分流候选；新增确认失效 1 条、迁移 0、新增候选 0。
+- `Yu9191/wloc/main/modules/wloc.conf` 的 Raw 与 GitHub Contents API 均返回 404，原作者仓库已不可检索。该来源属于定位修改且早已停用；仅标注失效，不采用第三方镜像。
+- Cats-Team、blackmatrix7 与 217heidai Full/Lite 均有生成内容变化，但超大型列表的误杀结论及 `enabled=false` 状态不变；217heidai 对 12306、AI 和 Apple 共享服务的已知冲突仍存在。
+- 公开检索未发现安全、可信且有实机/HAR证据的新广告候选；混合会员/增强内容、宽泛 MitM 和无许可证来源均未吸收。
+- 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制会员/VIP、RevenueCat、Cookie/Token 或定位伪造内容。
