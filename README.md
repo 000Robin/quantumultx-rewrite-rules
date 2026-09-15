@@ -16,6 +16,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 该文件同时包含 `direct` 修正和 `reject` 规则，必须放在大型去广列表之前，且**不要设置 `force-policy`**。
 
+云闪付采用连接层精确拦截：仅拒绝 `ads.95516.com`、`tysdk.95516.com` 和 `ads.cup.com.cn` 三个公开规则持续使用的广告主机。不会拦截 `wallet.95516.com`、登录或支付接口，也不拒绝个推共享基础设施及用途不明确的 `switch.cup.com.cn`，因此无需为云闪付扩大 MitM hostname。更新该分流资源后需强制关闭云闪付并重新打开；若仍出现广告，应提供冷启动 HAR 以定位新接口，不应继续猜测整域规则。
+
 ### 中国农业银行安全直连
 
 ```ini

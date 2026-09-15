@@ -484,8 +484,8 @@ def check_filter() -> None:
     managed_path = "dist/managed-filter.list"
     baseline = active_lines(baseline_path)
     managed = active_lines(managed_path)
-    if baseline != managed:
-        fail(f"{managed_path} must preserve {baseline_path} line-for-line")
+    if managed[: len(baseline)] != baseline:
+        fail(f"{managed_path} must preserve {baseline_path} as an unchanged prefix")
 
     seen: set[str] = set()
     first_reject = len(managed)
@@ -518,6 +518,31 @@ def check_filter() -> None:
             critical_direct.remove(fields[1])
     for host in sorted(critical_direct):
         fail(f"missing critical unbreak host: {host}")
+
+    unionpay_rules = {
+        tuple(part.strip() for part in line.split(","))
+        for line in managed
+        if any(domain in line for domain in ("95516.com", "cup.com.cn"))
+    }
+    expected_unionpay = {
+        ("host", "ads.95516.com", "reject"),
+        ("host", "tysdk.95516.com", "reject"),
+        ("host", "ads.cup.com.cn", "reject"),
+    }
+    if unionpay_rules != expected_unionpay:
+        fail("UnionPay filtering must contain only the three reviewed advertising hosts")
+
+    managed_text = (ROOT / managed_path).read_text(encoding="utf-8").lower()
+    for forbidden in (
+        "wallet.95516.com",
+        "switch.cup.com.cn",
+        "getui.com",
+        "host-suffix, 95516.com",
+        "host-suffix, cup.com.cn",
+        "host-wildcard",
+    ):
+        if forbidden in managed_text:
+            fail(f"broad or shared UnionPay filtering is forbidden: {forbidden}")
 
 
 def check_abc_direct() -> None:

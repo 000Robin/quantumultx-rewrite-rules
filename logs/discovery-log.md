@@ -1,5 +1,13 @@
 # Discovery log
 
+## 2026-09-15 — 云闪付广告分流修复
+
+- 现象：所有者反馈原有通用广告资源已无法稳定屏蔽云闪付广告；自维护分流此前没有云闪付专属规则。
+- 公开交叉验证：[`fmz200/wool_scripts` 云闪付片段](https://github.com/fmz200/wool_scripts/blob/main/QuantumultX/rewrite/split/partY/UnionPayCloudPay.snippet)仍列出 `ads.95516.com`、`tysdk.95516.com` 与 `ads.cup.com.cn`；[`zirawell/R-Store`](https://github.com/zirawell/R-Store/tree/main/Rule/QuanX/Adblock/App/Y/%E4%BA%91%E9%97%AA%E4%BB%98)用于确认其他方案仍需 MitM 钱包主机，因此未在无 HAR 情况下采用。
+- 采用：把三个语义明确的广告主机加入 `dist/managed-filter.list`，使用 Quantumult X 原生精确 `host ... reject`，不依赖远程重写解析。
+- 排除：不拦截 `wallet.95516.com`、`switch.cup.com.cn`、个推共享域名、登录、支付或整段 `95516.com` / `cup.com.cn`，不新增 MitM hostname。
+- 保护：`rules/protected-*.conf`、脚本图标和节点/策略图标链接均未修改。
+
 ## 2026-08-19 — 初始化
 
 - 从用户提供配置的 `[rewrite_remote]` 脱敏提取 54 条来源。
