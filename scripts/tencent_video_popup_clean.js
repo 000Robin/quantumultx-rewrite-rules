@@ -1,10 +1,61 @@
 /*
  * Tencent Video in-app popup/ad card cleaner.
- * Scope: JSON responses from https://i.video.qq.com/ only.
+ * Scope: JSON and binary responses from https://i.video.qq.com/ only.
  * It does not alter account, VIP, playback, or paid-access fields.
  */
 
 const rawBody = $response.body || "";
+const rawBodyBytes = $response.bodyBytes;
+
+const toAsciiBytes = (value) => {
+  const output = new Uint8Array(value.length);
+  for (let index = 0; index < value.length; index += 1) {
+    output[index] = value.charCodeAt(index);
+  }
+  return output;
+};
+
+const replaceAllBytes = (source, searchText, replacementText) => {
+  if (searchText.length !== replacementText.length) return 0;
+  const search = toAsciiBytes(searchText);
+  const replacement = toAsciiBytes(replacementText);
+  let replacements = 0;
+
+  for (let offset = 0; offset <= source.length - search.length; offset += 1) {
+    let matched = true;
+    for (let index = 0; index < search.length; index += 1) {
+      if (source[offset + index] !== search[index]) {
+        matched = false;
+        break;
+      }
+    }
+    if (!matched) continue;
+
+    source.set(replacement, offset);
+    replacements += 1;
+    offset += search.length - 1;
+  }
+
+  return replacements;
+};
+
+const cleanBinaryAdTypes = (bodyBytes) => {
+  if (!(bodyBytes instanceof ArrayBuffer)) return null;
+  const output = new Uint8Array(bodyBytes.slice(0));
+  let replacements = 0;
+
+  // Tencent's protobuf Any type names and MVL module titles are length-prefixed.
+  // Same-length substitutions preserve every surrounding binary length field while
+  // making only explicitly typed ad payloads unavailable to the client.
+  replacements += replaceAllBytes(
+    output,
+    "com.tencent.qqlive.protocol.pb.Ad",
+    "com.tencent.qqlive.protocol.pb.No"
+  );
+  replacements += replaceAllBytes(output, "ad_block_", "no_block_");
+
+  return replacements > 0 ? output.buffer : null;
+};
 
 const normalizeKey = (key) => String(key).replace(/[^a-z0-9]/gi, "").toLowerCase();
 
@@ -150,10 +201,15 @@ const clean = (value) => {
   return output;
 };
 
-try {
-  const parsed = JSON.parse(rawBody);
-  $done({ body: JSON.stringify(clean(parsed)) });
-} catch (_) {
-  // Binary, JSONP, or malformed responses pass through unchanged.
-  $done({ body: rawBody });
+const cleanedBinary = cleanBinaryAdTypes(rawBodyBytes);
+if (cleanedBinary) {
+  $done({ bodyBytes: cleanedBinary });
+} else {
+  try {
+    const parsed = JSON.parse(rawBody);
+    $done({ body: JSON.stringify(clean(parsed)) });
+  } catch (_) {
+    // Unknown binary, JSONP, or malformed responses pass through unchanged.
+    $done(rawBodyBytes instanceof ArrayBuffer ? {} : { body: rawBody });
+  }
 }

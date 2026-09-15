@@ -87,6 +87,13 @@ def check_rewrite() -> None:
     )
     if popup_rule not in lines:
         fail("missing exact Tencent Video in-app popup cleaner rule")
+    request_rule = (
+        r"^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-request-body "
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/tencent_video_request_clean.js"
+    )
+    if request_rule not in lines:
+        fail("missing exact Tencent Video content-update popup preference rule")
     if not host_lines or "i.video.qq.com" not in hostname_tokens:
         fail("missing Tencent Video popup MitM hostname")
     pause_ad_rule = (

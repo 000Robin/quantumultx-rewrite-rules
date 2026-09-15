@@ -9,7 +9,10 @@
 ^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.* url reject
 ^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.* url reject
 
-# Tencent Video in-app popup/ad cards; exact root endpoint only.
+# Tencent Video content-update popup preference; exact binary flag and equal-length value only.
+^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-request-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_request_clean.js
+
+# Tencent Video in-app popup/ad cards; exact root endpoint and explicit binary ad types only.
 ^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_popup_clean.js
 
 # Tencent Video pause-ad image confirmed by 2026-08-31 HAR; keep the scope on the ad-exchange CDN path.

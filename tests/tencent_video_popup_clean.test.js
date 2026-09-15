@@ -8,16 +8,18 @@ const vm = require("node:vm");
 const scriptPath = path.join(__dirname, "..", "scripts", "tencent_video_popup_clean.js");
 const script = fs.readFileSync(scriptPath, "utf8");
 
-const run = (body) => {
+const run = (body, bodyBytes) => {
   let completion;
   vm.runInNewContext(script, {
-    $response: { body },
+    $response: { body, bodyBytes },
     $done: (result = {}) => {
       completion = { ...result };
     },
     console,
     Object,
     Set,
+    Uint8Array,
+    ArrayBuffer,
   });
   assert.notEqual(completion, undefined, "script must call $done");
   return completion;
@@ -75,5 +77,41 @@ assert.equal(page.sections[1].sectionId, "normal-content");
 
 const malformed = "{not-json";
 assert.equal(run(malformed).body, malformed, "malformed JSON must pass through unchanged");
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+const binaryFixtureText = [
+  "qqlive_rsp_head",
+  "type.googleapis.com/com.tencent.qqlive.protocol.pb.AdFeedInfo",
+  "type.googleapis.com/com.tencent.qqlive.protocol.pb.AdFocusPoster",
+  "type.googleapis.com/com.tencent.qqlive.protocol.pb.AdJumpAction",
+  "ad_block_2",
+  "poster_focus_card",
+  "watch_history",
+  "vip_identity",
+  "playback",
+].join("\u0000");
+const binaryFixture = encoder.encode(binaryFixtureText);
+const binaryResult = run(undefined, binaryFixture.buffer);
+assert.ok(binaryResult.bodyBytes instanceof ArrayBuffer);
+assert.equal(binaryResult.bodyBytes.byteLength, binaryFixture.byteLength);
+const cleanedBinaryText = decoder.decode(binaryResult.bodyBytes);
+assert.equal(cleanedBinaryText.includes("protocol.pb.Ad"), false);
+assert.equal(cleanedBinaryText.includes("ad_block_"), false);
+assert.match(cleanedBinaryText, /protocol\.pb\.NoFeedInfo/);
+assert.match(cleanedBinaryText, /protocol\.pb\.NoFocusPoster/);
+assert.match(cleanedBinaryText, /protocol\.pb\.NoJumpAction/);
+assert.match(cleanedBinaryText, /no_block_2/);
+assert.match(cleanedBinaryText, /poster_focus_card/);
+assert.match(cleanedBinaryText, /watch_history/);
+assert.match(cleanedBinaryText, /vip_identity/);
+assert.match(cleanedBinaryText, /playback/);
+
+const unknownBinary = encoder.encode("qqlive_rsp_head\u0000poster_focus_card");
+assert.deepEqual(
+  run(undefined, unknownBinary.buffer),
+  {},
+  "unrecognized binary payload must pass through unchanged"
+);
 
 console.log("Tencent Video popup cleaner tests passed.");
