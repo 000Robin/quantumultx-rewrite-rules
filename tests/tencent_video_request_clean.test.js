@@ -12,10 +12,10 @@ const script = fs.readFileSync(
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-const run = (bodyBytes) => {
+const run = (bodyBytes, body = "") => {
   let completion;
   vm.runInNewContext(script, {
-    $request: { bodyBytes },
+    $request: { bodyBytes, body, method: "POST", url: "https://i.video.qq.com/" },
     $done: (result = {}) => { completion = result; },
     Uint8Array,
     ArrayBuffer,
@@ -25,13 +25,17 @@ const run = (bodyBytes) => {
 };
 
 const fixture = encoder.encode(
-  "page_home_channel\u0000no_show_update_tip\u0012\u00010\u0000watch_history\u0000vip_identity\u0000playback"
+  "page_home_channel\u0000no_show_update_tip\u0012\u00010\u0000" +
+  "type.googleapis.com/com.tencent.qqlive.protocol.pb.AdRequestContextInfo\u0000" +
+  "watch_history\u0000vip_identity\u0000playback"
 );
 const result = run(fixture.buffer);
 assert.ok(result.bodyBytes instanceof ArrayBuffer);
 assert.equal(result.bodyBytes.byteLength, fixture.byteLength);
 const cleaned = decoder.decode(result.bodyBytes);
 assert.match(cleaned, /no_show_update_tip\u0012\u00011/);
+assert.equal(cleaned.includes("protocol.pb.AdRequestContextInfo"), false);
+assert.match(cleaned, /protocol\.pb\.NoRequestContextInfo/);
 assert.match(cleaned, /watch_history/);
 assert.match(cleaned, /vip_identity/);
 assert.match(cleaned, /playback/);
@@ -39,5 +43,20 @@ assert.match(cleaned, /playback/);
 const alreadyEnabled = encoder.encode("no_show_update_tip\u0012\u00011");
 assert.equal(Object.keys(run(alreadyEnabled.buffer)).length, 0);
 assert.equal(Object.keys(run(undefined)).length, 0);
+
+for (const service of [
+  "trpc.reward_ad_ssp.reward_ad_ssp_service.adService/GetFollowHeartRewardAdInfo",
+  "trpc.activity.memberExperience.ActivityTcp/getHomeGrowPopupUrl",
+]) {
+  const blocked = run(encoder.encode(`qqlive_head\u0000${service}`).buffer);
+  assert.equal(blocked.status, "HTTP/1.1 204 No Content");
+  assert.equal(blocked.body, "");
+  assert.match(blocked.headers["Cache-Control"], /no-store/);
+}
+
+const ordinaryService = encoder.encode(
+  "trpc.anywhere_door.account.Account/Refresh\u0000watch_history\u0000playback"
+);
+assert.equal(Object.keys(run(ordinaryService.buffer)).length, 0);
 
 console.log("Tencent Video request cleaner tests passed.");

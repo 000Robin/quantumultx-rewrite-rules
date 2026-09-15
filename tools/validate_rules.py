@@ -505,6 +505,17 @@ def check_scripts() -> None:
             "entitlement",
             "getvinfo",
         ),
+        "scripts/tencent_video_request_clean.js": (
+            "annualvip",
+            "endtime",
+            "getvinfo",
+            "batchvinfo",
+            "playproxy",
+            "receipt",
+            "subscription",
+            "$persistentstore",
+            "$prefs",
+        ),
         "scripts/youtube_ad_clean.js": (
             "account",
             "backgroundplayer",
@@ -573,6 +584,17 @@ def check_scripts() -> None:
                     fail(f"{relative} missing native profile-card safeguard: {marker}")
             if "1688" in text:
                 fail(f"{relative} must not depend on one advertiser's copy")
+
+        if relative == "scripts/tencent_video_request_clean.js":
+            required_markers = (
+                "trpc.reward_ad_ssp.reward_ad_ssp_service.adService",
+                "trpc.activity.memberExperience.ActivityTcp/getHomeGrowPopupUrl",
+                "com.tencent.qqlive.protocol.pb.AdRequestContextInfo",
+                "com.tencent.qqlive.protocol.pb.NoRequestContextInfo",
+            )
+            for marker in required_markers:
+                if marker not in text:
+                    fail(f"{relative} missing HAR-confirmed marker: {marker}")
 
         if node:
             result = subprocess.run(

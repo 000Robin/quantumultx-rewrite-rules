@@ -62,7 +62,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/managed-rewrite.snippet, tag=Robin个人维护去开屏, update-interval=259200, opt-parser=false, enabled=true
 ```
 
-两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，`scripts/tencent_video_request_clean.js` 仅将这个单字节值等长改成 `1`，用于关闭内容更新推广弹窗。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
+两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，并在同一 `i.video.qq.com` 请求通道出现 `reward_ad_ssp...adService`、`memberExperience...getHomeGrowPopupUrl` 及 `AdRequestContextInfo`。`scripts/tencent_video_request_clean.js` 会在请求阶段对前两项精确返回 204，将广告上下文类型等长改名，并把更新提示开关改为 `1`；普通首页、账号、历史和播放请求原样放行。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
 
 智联招聘恢复 2026-08-21 HAR 已验证的六组商业化/开屏接口净化，并覆盖同次抓包确认的六种竖横屏大图尺寸。`scripts/zhaopin_splash_clean.js` 对纯广告接口保留状态外壳并清空载荷，对首页灰度和实验配置只中和明确命名的广告容器与开关；登录、职位、消息、账号和普通实验字段保留。响应不是 JSON 时原样放行，避免 404 触发本地缓存开屏。
 
@@ -123,9 +123,9 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `dist/douyin-commerce-direct.list`：抖音国内商城 API、素材、用户和支付接口的精确直连列表，避免与海外 TikTok 的 `snssdk.com` 规则冲突。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 与二进制净化脚本，不处理会员或正片播放接口。
-- `scripts/tencent_video_request_clean.js`：腾讯视频内容更新推广弹窗偏好开关，仅修改 `no_show_update_tip` 的单字节值。
+- `scripts/tencent_video_request_clean.js`：腾讯视频请求阶段广告/推广净化，仅处理 HAR 确认的服务名、广告上下文类型和更新提示开关。
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频 JSON 与二进制广告类型移除，以及观看历史、VIP、账号、普通推荐和播放字段保留测试。
-- `tests/tencent_video_request_clean.test.js`：腾讯视频更新提示开关的等长修改及保护字段保留测试。
+- `tests/tencent_video_request_clean.test.js`：腾讯视频广告 RPC 拦截、等长广告上下文修改及普通账号/历史/播放请求放行测试。
 - `scripts/zhaopin_splash_clean.js`：智联招聘精确商业化/开屏响应净化，保留响应外壳及普通首页、实验配置。
 - `tests/zhaopin_splash_clean.test.js`：智联纯广告载荷清空、普通配置保护和异常响应放行测试。
 - `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。

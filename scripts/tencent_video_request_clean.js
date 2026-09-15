@@ -1,12 +1,79 @@
 /*
- * Tencent Video home-page request preference cleaner.
+ * Tencent Video request-stage ad/promotion cleaner.
  * Scope: binary requests to https://i.video.qq.com/ only.
- * It enables the existing no_show_update_tip preference without changing length.
+ * It rejects two HAR-confirmed ad/popup RPCs and neutralizes the explicit
+ * AdRequestContextInfo protobuf Any type with an equal-length substitution.
  */
 
 const rawBodyBytes = $request.bodyBytes;
+const rawBody = typeof $request.body === "string" ? $request.body : "";
 
-if (!(rawBodyBytes instanceof ArrayBuffer)) {
+const toAsciiBytes = (value) => {
+  const output = new Uint8Array(value.length);
+  for (let index = 0; index < value.length; index += 1) {
+    output[index] = value.charCodeAt(index);
+  }
+  return output;
+};
+
+const containsBytes = (source, text) => {
+  const search = toAsciiBytes(text);
+  for (let offset = 0; offset <= source.length - search.length; offset += 1) {
+    let matched = true;
+    for (let index = 0; index < search.length; index += 1) {
+      if (source[offset + index] !== search[index]) {
+        matched = false;
+        break;
+      }
+    }
+    if (matched) return true;
+  }
+  return false;
+};
+
+const replaceAllBytes = (source, searchText, replacementText) => {
+  if (searchText.length !== replacementText.length) return 0;
+  const search = toAsciiBytes(searchText);
+  const replacement = toAsciiBytes(replacementText);
+  let replacements = 0;
+  for (let offset = 0; offset <= source.length - search.length; offset += 1) {
+    let matched = true;
+    for (let index = 0; index < search.length; index += 1) {
+      if (source[offset + index] !== search[index]) {
+        matched = false;
+        break;
+      }
+    }
+    if (!matched) continue;
+    source.set(replacement, offset);
+    replacements += 1;
+    offset += search.length - 1;
+  }
+  return replacements;
+};
+
+const confirmedAdServices = [
+  "trpc.reward_ad_ssp.reward_ad_ssp_service.adService",
+  "trpc.activity.memberExperience.ActivityTcp/getHomeGrowPopupUrl",
+];
+
+const sourceBytes = rawBodyBytes instanceof ArrayBuffer
+  ? new Uint8Array(rawBodyBytes)
+  : toAsciiBytes(rawBody);
+const matchedAdService = confirmedAdServices.some(
+  (service) => rawBody.includes(service) || containsBytes(sourceBytes, service)
+);
+
+if (matchedAdService) {
+  $done({
+    status: "HTTP/1.1 204 No Content",
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Type": "application/octet-stream",
+    },
+    body: "",
+  });
+} else if (!(rawBodyBytes instanceof ArrayBuffer)) {
   $done({});
 } else {
   const output = new Uint8Array(rawBodyBytes.slice(0));
@@ -38,6 +105,15 @@ if (!(rawBodyBytes instanceof ArrayBuffer)) {
       changed = true;
     }
   }
+
+  // The 2026-09-15 HAR shows this Any type only inside the main MVL page
+  // request. Equal-length renaming keeps the protobuf frame intact while
+  // preventing the server from treating the nested payload as ad context.
+  changed = replaceAllBytes(
+    output,
+    "com.tencent.qqlive.protocol.pb.AdRequestContextInfo",
+    "com.tencent.qqlive.protocol.pb.NoRequestContextInfo"
+  ) > 0 || changed;
 
   $done(changed ? { bodyBytes: output.buffer } : {});
 }
