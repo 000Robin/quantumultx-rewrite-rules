@@ -35,8 +35,17 @@
 # CIB Life launch-ad list; exact endpoint only because this host also serves core app functions.
 ^https:\/\/gap\.cibfintech\.com\/entry\/queryLaunchAdListV2(?:\?.*)?$ url reject-dict
 
-# Zhaopin splash media
-^https://storage-public\.zhaopin\.cn/information/team/public/.*2000x1080.* url reject
+# Zhaopin commercial/startup responses observed in the 2026-08-21 HAR. Return valid empty
+# payloads instead of 404 so the app does not fall back to a cached splash creative.
+^https:\/\/capi\.zhaopin\.com\/capi\/commercialize\/getConfig(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/fe-api\.zhaopin\.com\/experiment\/config\/c\/app(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/bdp\/entrance\/appGrayHomeConfig(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/positionbusiness\/exposure\/extExposureUser(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/operation\/operationAd\/getJdCardAd(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+
+# Zhaopin splash/large creative fallback; dimensions came from the same verified capture.
+^https:\/\/storage-public\.zhaopin\.cn\/information\/team\/public\/.*(?:2000x1080|1080x2000|1290x2796|2796x1290|1179x2556|2556x1179).* url reject
 
 # Hunliji startup ad
 ^https:\/\/api\.hunliji\.com\/hms\/hljLego\/appApi\/startAD\/info(?:\?.*)?$ url reject-dict
@@ -62,4 +71,4 @@
 # Ctrip trip ad endpoint
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
 
-hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com
+hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com

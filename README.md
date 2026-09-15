@@ -64,6 +64,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，`scripts/tencent_video_request_clean.js` 仅将这个单字节值等长改成 `1`，用于关闭内容更新推广弹窗。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
 
+智联招聘恢复 2026-08-21 HAR 已验证的六组商业化/开屏接口净化，并覆盖同次抓包确认的六种竖横屏大图尺寸。`scripts/zhaopin_splash_clean.js` 对纯广告接口保留状态外壳并清空载荷，对首页灰度和实验配置只中和明确命名的广告容器与开关；登录、职位、消息、账号和普通实验字段保留。响应不是 JSON 时原样放行，避免 404 触发本地缓存开屏。
+
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。
 
 番茄小说默认拦截穿山甲 `get_ads` 广告清单和两个明确广告素材路径。2026-09-09 按所有者明确选择增加激进视频模式：只解密公开规则中实际出现的 `v3/v5/v6/v9-novelapp.fqnovelvod.com`，并且只有 URL 路径包含 `/video/` 时拒绝；同时拒绝 `v3/v5/v9-reading-video.fqnovelvod.com` 的短剧流量。该模式会使章内视频广告、短剧和“观看广告领奖励”不可用，但不会 MitM `*-fq-tts.fqnovelvod.com`，也不拦截通用 `snssdk`、`gurd`、`zijieapi.com`、书籍接口或普通音频路径。
@@ -124,6 +126,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `scripts/tencent_video_request_clean.js`：腾讯视频内容更新推广弹窗偏好开关，仅修改 `no_show_update_tip` 的单字节值。
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频 JSON 与二进制广告类型移除，以及观看历史、VIP、账号、普通推荐和播放字段保留测试。
 - `tests/tencent_video_request_clean.test.js`：腾讯视频更新提示开关的等长修改及保护字段保留测试。
+- `scripts/zhaopin_splash_clean.js`：智联招聘精确商业化/开屏响应净化，保留响应外壳及普通首页、实验配置。
+- `tests/zhaopin_splash_clean.test.js`：智联纯广告载荷清空、普通配置保护和异常响应放行测试。
 - `scripts/youtube_ad_clean.js`：YouTube JSON/二进制播放响应的纯广告清理脚本，不拦截视频 CDN。
 - `tests/youtube_ad_clean.test.js`：YouTube 广告字段移除、正常播放字段保留和异常放行回归测试。
 - `scripts/railway_12306_splash_clean.js`：12306 广告清单的本地合成响应，避免 404 触发启动页等待。

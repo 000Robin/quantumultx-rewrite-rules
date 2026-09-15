@@ -129,6 +129,66 @@ def check_rewrite() -> None:
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
+    zhaopin_rules = [
+        line
+        for line in lines
+        if any(host in line for host in (r"capi\.zhaopin\.com", r"fe-api\.zhaopin\.com", r"cgate\.zhaopin\.com", r"storage-public\.zhaopin\.cn"))
+    ]
+    zhaopin_script = (
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/zhaopin_splash_clean.js"
+    )
+    expected_zhaopin_rules = [
+        rf"^https:\/\/capi\.zhaopin\.com\/capi\/commercialize\/getConfig(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        rf"^https:\/\/fe-api\.zhaopin\.com\/experiment\/config\/c\/app(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        rf"^https:\/\/cgate\.zhaopin\.com\/bdp\/entrance\/appGrayHomeConfig(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        rf"^https:\/\/cgate\.zhaopin\.com\/positionbusiness\/exposure\/extExposureUser(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        rf"^https:\/\/cgate\.zhaopin\.com\/operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        rf"^https:\/\/cgate\.zhaopin\.com\/operation\/operationAd\/getJdCardAd(?:\?.*)?$ url script-response-body {zhaopin_script}",
+        r"^https:\/\/storage-public\.zhaopin\.cn\/information\/team\/public\/.*(?:2000x1080|1080x2000|1290x2796|2796x1290|1179x2556|2556x1179).* url reject",
+    ]
+    if zhaopin_rules != expected_zhaopin_rules:
+        fail("managed rewrite must preserve the seven reviewed Zhaopin splash rules")
+    else:
+        patterns = [re.compile(line.split(" url ", 1)[0]) for line in zhaopin_rules]
+        should_match = (
+            "https://capi.zhaopin.com/capi/commercialize/getConfig",
+            "https://fe-api.zhaopin.com/experiment/config/c/app?fixture=1",
+            "https://cgate.zhaopin.com/bdp/entrance/appGrayHomeConfig",
+            "https://cgate.zhaopin.com/positionbusiness/exposure/extExposureUser",
+            "https://cgate.zhaopin.com/operation/ad/bidMainPage",
+            "https://cgate.zhaopin.com/operation/ad/getAdRecommend?fixture=1",
+            "https://cgate.zhaopin.com/operation/ad/bidAdvertisingInformation",
+            "https://cgate.zhaopin.com/operation/ad/listMyBannerAd",
+            "https://cgate.zhaopin.com/operation/operationAd/getJdCardAd",
+            "https://storage-public.zhaopin.cn/information/team/public/fixture_1179x2556.jpg",
+        )
+        should_not_match = (
+            "https://capi.zhaopin.com/capi/user/login",
+            "https://fe-api.zhaopin.com/experiment/config/c/account",
+            "https://cgate.zhaopin.com/position/search/jobList",
+            "https://cgate.zhaopin.com/message/list",
+            "https://storage-public.zhaopin.cn/information/team/public/avatar_200x200.jpg",
+        )
+        for url in should_match:
+            if not any(pattern.search(url) for pattern in patterns):
+                fail(f"Zhaopin splash rewrite unexpectedly misses: {url}")
+        for url in should_not_match:
+            if any(pattern.search(url) for pattern in patterns):
+                fail(f"Zhaopin splash rewrite unexpectedly matches protected scope: {url}")
+    expected_zhaopin_hosts = {
+        "storage-public.zhaopin.cn",
+        "capi.zhaopin.com",
+        "fe-api.zhaopin.com",
+        "cgate.zhaopin.com",
+    }
+    missing_zhaopin_hosts = expected_zhaopin_hosts - hostname_tokens
+    if missing_zhaopin_hosts:
+        fail(f"missing exact Zhaopin MitM hostname: {sorted(missing_zhaopin_hosts)}")
+    for hostname in hostname_tokens:
+        if "zhaopin.com" in hostname and "*" in hostname:
+            fail(f"broad Zhaopin MitM hostname is forbidden: {hostname}")
+
     cib_life_rule = (
         r"^https:\/\/gap\.cibfintech\.com\/entry\/queryLaunchAdListV2(?:\?.*)?$ "
         "url reject-dict"
@@ -484,6 +544,16 @@ def check_scripts() -> None:
             "$persistentstore",
             "$prefs",
         ),
+        "scripts/zhaopin_splash_clean.js": (
+            "authorization",
+            "cookie",
+            "password",
+            "premium",
+            "receipt",
+            "subscription",
+            "$persistentstore",
+            "$prefs",
+        ),
     }
 
     for relative, forbidden_terms in scripts.items():
@@ -516,10 +586,12 @@ def check_scripts() -> None:
 
     tests = (
         "tests/tencent_video_popup_clean.test.js",
+        "tests/tencent_video_request_clean.test.js",
         "tests/youtube_ad_clean.test.js",
         "tests/railway_12306_splash_clean.test.js",
         "tests/mengdian_splash_clean.test.js",
         "tests/iscreen_splash_clean.test.js",
+        "tests/zhaopin_splash_clean.test.js",
     )
     for test_relative in tests:
         test_path = ROOT / test_relative
