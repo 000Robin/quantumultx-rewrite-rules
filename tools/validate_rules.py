@@ -226,6 +226,45 @@ def check_rewrite() -> None:
     if "mdej.impc.com.cn" not in hostname_tokens:
         fail("missing exact Mengdian MitM hostname")
 
+    iscreen_rule = (
+        r"^https:\/\/cs\.kuso\.xyz\/(?:configs|configs2\/default)(?:\?.*)?$ "
+        "url script-response-body https://raw.githubusercontent.com/000Robin/"
+        "quantumultx-rewrite-rules/main/scripts/iscreen_splash_clean.js"
+    )
+    iscreen_rules = [line for line in lines if r"kuso\.xyz" in line]
+    if iscreen_rules != [iscreen_rule]:
+        fail("managed rewrite must contain only the exact iScreen configuration rule")
+    else:
+        try:
+            iscreen_pattern = re.compile(iscreen_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid iScreen splash regex: {exc}")
+        else:
+            should_match = (
+                "https://cs.kuso.xyz/configs",
+                "https://cs.kuso.xyz/configs?fixture=1",
+                "https://cs.kuso.xyz/configs2/default",
+                "https://cs.kuso.xyz/configs2/default?fixture=1",
+            )
+            should_not_match = (
+                "https://cs.kuso.xyz/configs2/user",
+                "https://cs.kuso.xyz/configs/extra",
+                "https://hzm.kuso.xyz/widget/index-tab",
+                "https://cdnq.kuso.xyz/wallpaper/fixture.png",
+                "https://cs.kuso.xyz/user/info",
+            )
+            for url in should_match:
+                if not iscreen_pattern.search(url):
+                    fail(f"iScreen splash rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if iscreen_pattern.search(url):
+                    fail(f"iScreen splash rewrite unexpectedly matches protected scope: {url}")
+    if "cs.kuso.xyz" not in hostname_tokens:
+        fail("missing exact iScreen configuration MitM hostname")
+    for hostname in hostname_tokens:
+        if "kuso.xyz" in hostname and hostname != "cs.kuso.xyz":
+            fail(f"broad or non-configuration iScreen MitM hostname is forbidden: {hostname}")
+
     youtube_rule = (
         r"^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/"
         r"(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ "
@@ -427,6 +466,17 @@ def check_scripts() -> None:
             "$persistentstore",
             "$prefs",
         ),
+        "scripts/iscreen_splash_clean.js": (
+            "authorization",
+            "cookie",
+            "password",
+            "premium",
+            "receipt",
+            "subscription",
+            "buy.itunes.apple.com",
+            "$persistentstore",
+            "$prefs",
+        ),
     }
 
     for relative, forbidden_terms in scripts.items():
@@ -462,6 +512,7 @@ def check_scripts() -> None:
         "tests/youtube_ad_clean.test.js",
         "tests/railway_12306_splash_clean.test.js",
         "tests/mengdian_splash_clean.test.js",
+        "tests/iscreen_splash_clean.test.js",
     )
     for test_relative in tests:
         test_path = ROOT / test_relative

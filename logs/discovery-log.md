@@ -191,3 +191,12 @@
 - Cats-Team、blackmatrix7 与 217heidai Full/Lite 均有生成内容变化，但超大型列表的误杀结论及 `enabled=false` 状态不变；217heidai 对 12306、AI 和 Apple 共享服务的已知冲突仍存在。
 - 公开检索未发现安全、可信且有实机/HAR证据的新广告候选；混合会员/增强内容、宽泛 MitM 和无许可证来源均未吸收。
 - 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制会员/VIP、RevenueCat、Cookie/Token 或定位伪造内容。
+
+## 2026-09-15 — iScreen 开屏广告 HAR 增量
+
+- 证据：用户提供约 3.6 MB、226 条记录的 Quantumult X HAR，包含两次 iScreen 启动；原始 HAR 仅在本地分析，未加入仓库，也未复制请求头、请求体、Cookie、Token、设备标识或完整查询参数。
+- 定位：两次启动均先请求 `cs.kuso.xyz/configs` 与 `cs.kuso.xyz/configs2/default`；响应明确包含 `launchAd`、`SplashTimeout`、`oLaunch`（开屏广告）、`oCommon`（开屏全局控制）、`sOverseaLaunch`（热启动）和 `sLaunch`（开屏完成后插屏）控制。
+- 采用：新增自编 `iscreen_splash_clean.js` 与一条精确响应重写。旧配置只把 `launchAd`、`SplashTimeout` 设为 0；分组配置只把上述四个启动组的 `rate` 设为 0，并在已有时把启动组的 `maxDisplayCount` 设为 0。
+- 保护：不拦截 `hzm.kuso.xyz` 的首页/用户接口或 `cdnq.kuso.xyz` 的壁纸/组件素材；不拒绝整个广告 SDK 主机，不改 Banner、信息流、账号、付费或内容字段，未知响应原样放行。
+- 隔离：历史目录中的 `89996462/Quantumult-X` 两条 iScreen 脚本属于收据/订阅改写，不是开屏去广，继续保持 `enabled=false`，未复制其脚本或 hostname。
+- 未修改 `rules/protected-*.conf`、脚本图标、节点/策略图标链接或其他应用规则；未保存或改写会员、收据、Cookie、Token 与设备信息。

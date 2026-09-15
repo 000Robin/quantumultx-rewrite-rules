@@ -128,6 +128,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `tests/railway_12306_splash_clean.test.js`：12306 启动位零延迟、其他广告位空列表和异常请求体回归测试。
 - `scripts/mengdian_splash_clean.js`：蒙电 e 家启动资源清单净化，只移除明确图片项并保留应用更新包。
 - `tests/mengdian_splash_clean.test.js`：蒙电 e 家图片移除、APK/字段保留和异常响应原样放行测试。
+- `scripts/iscreen_splash_clean.js`：iScreen 首方启动配置净化，只关闭已实测的冷/热启动广告控制，不改壁纸、组件或付费状态。
+- `tests/iscreen_splash_clean.test.js`：iScreen 启动广告开关、非启动广告设置保留和异常响应原样放行测试。
 - `examples/optimized-policy.conf`：脱敏的个人策略组参考，包含 AI/地区自动选择与低频按需测速；不是可直接加载的远程资源。
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。
