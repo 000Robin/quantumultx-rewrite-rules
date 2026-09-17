@@ -2,7 +2,7 @@
 #!desc=低误杀连接层拦截与关键直连修正；导入时不要设置 force-policy。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-09-15
+#!date=2026-09-17
 
 # China Telecom login: never intercept or reject certificate-pinned authentication.
 host, appgologinhd.189.cn, direct
@@ -24,3 +24,21 @@ host, ad.reward.qq.com, reject
 host, ads.95516.com, reject
 host, tysdk.95516.com, reject
 host, ads.cup.com.cn, reject
+
+# China Telecom advertising hosts only.
+# Preserve appgologin*.189.cn, wapside.189.cn, e.dlife.cn and open.e.189.cn.
+host, ad.21cn.com, reject
+host, ad.k.21cn.com, reject
+host, admarket.21cn.com, reject
+host, adshows.21cn.com, reject
+
+# QQ Music advertising delivery hosts.
+# Do not block u6.y.qq.com or shared music/playback/CDN hosts.
+host, adstats.tencentmusic.com, reject
+host, ad.tencentmusic.com, reject
+host, adcdn.tencentmusic.com, reject
+host, adcdn6.tencentmusic.com, reject
+host, adexpo.tencentmusic.com, reject
+host, adclick.tencentmusic.com, reject
+host, tmeadcomm.y.qq.com, reject
+host, tmead.y.qq.com, reject

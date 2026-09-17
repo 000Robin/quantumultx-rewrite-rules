@@ -208,3 +208,10 @@
 - 217heidai 当前 Full/Lite 仍拒绝 `ad.12306.cn` 和 `log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`；不适合作为无条件替换或与其他主列表叠加。
 - 公开检索只发现现有上游、旧镜像、个人整包和混合会员/增强内容；没有安全、可信且有实机/HAR 证据的新候选。
 - 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 2026-09-17 — 中国电信与 QQ 音乐广告域名精确拦截
+
+- 用户确认仅使用中国电信移动网络，并要求直接拦截 QQ 音乐中出现的电信广告；采用公开规则交叉确认的广告专用主机，不拒绝运营商或 QQ 音乐整域。
+- 新增 4 个中国电信广告主机：`ad.21cn.com`、`ad.k.21cn.com`、`admarket.21cn.com`、`adshows.21cn.com`。
+- 新增 8 个 QQ 音乐广告投放主机，覆盖 `tencentmusic.com` 广告分发和 `y.qq.com` 的 TME 广告主机；不拦截签到使用的 `u6.y.qq.com`、播放接口或共享 CDN。
+- 保留 `appgologin*.189.cn` 登录、`wapside.189.cn` 话费 Cookie、`e.dlife.cn` 登录态及 `open.e.189.cn` 认证；未增加 MitM，不修改脚本/节点图标或受保护规则。
