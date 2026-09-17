@@ -200,3 +200,11 @@
 - 保护：不拦截 `hzm.kuso.xyz` 的首页/用户接口或 `cdnq.kuso.xyz` 的壁纸/组件素材；不拒绝整个广告 SDK 主机，不改 Banner、信息流、账号、付费或内容字段，未知响应原样放行。
 - 隔离：历史目录中的 `89996462/Quantumult-X` 两条 iScreen 脚本属于收据/订阅改写，不是开屏去广，继续保持 `enabled=false`，未复制其脚本或 hostname。
 - 未修改 `rules/protected-*.conf`、脚本图标、节点/策略图标链接或其他应用规则；未保存或改写会员、收据、Cookie、Token 与设备信息。
+
+## 2026-09-17 — 三日来源与安全复核
+
+- 检查 54 条重写来源、1 条停用重写候选和 21 条分流候选；新增候选 0、确认失效 0、迁移 0。既有 1 条 404、5 条 HTML 伪响应与 1 条访问受限来源状态不变。
+- AWAvenue 与 fmz200 轻量/中量来源没有迁移；Cats-Team、blackmatrix7、217heidai Full/Lite 的生成内容发生变化，但其超大体积、重叠和误杀结论不变，全部继续保持 `enabled=false`。
+- 217heidai 当前 Full/Lite 仍拒绝 `ad.12306.cn` 和 `log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`；不适合作为无条件替换或与其他主列表叠加。
+- 公开检索只发现现有上游、旧镜像、个人整包和混合会员/增强内容；没有安全、可信且有实机/HAR 证据的新候选。
+- 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
