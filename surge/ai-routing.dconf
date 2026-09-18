@@ -1,0 +1,4 @@
+[Rule]
+# Keep these two lines above generic Google/Microsoft/global rules and before FINAL.
+RULE-SET,https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/rules/ai-chatgpt.list,ChatGPT,update-interval=86400
+RULE-SET,https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/rules/ai-services.list,AI服务,update-interval=86400

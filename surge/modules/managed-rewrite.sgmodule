@@ -1,0 +1,36 @@
+#!name=Robin Surge 去广重写
+#!desc=由仓库 Quantumult X 重写独立转换；使用 Surge 原生请求/响应脚本与精确 MitM。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-18
+
+[Rule]
+# Static advertising transports and media.
+URL-REGEX,^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.*,REJECT
+URL-REGEX,^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.*,REJECT-TINYGIF
+URL-REGEX,^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.*,REJECT
+URL-REGEX,^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\.(?:jpe?g|png|gif|webp)(?:\?.*)?$,REJECT-TINYGIF
+URL-REGEX,^https:\/\/sf3-fe-tos\.pglstatp-toutiao\.com\/obj\/ad-pattern\/.*$,REJECT
+URL-REGEX,^https:\/\/sf3-be-pack\.pglstatp-toutiao\.com\/obj\/ad-app-package\/.*$,REJECT
+URL-REGEX,^https:\/\/v(?:3|5|6|9)-novelapp\.fqnovelvod\.com\/.*\/video\/.*$,REJECT
+URL-REGEX,^https:\/\/v(?:3|5|9)-reading-video\.fqnovelvod\.com\/.*$,REJECT
+URL-REGEX,^https:\/\/storage-public\.zhaopin\.cn\/information\/team\/public\/.*(?:2000x1080|1080x2000|1290x2796|2796x1290|1179x2556|2556x1179).*,REJECT
+URL-REGEX,^https?:\/\/autoload\.bank\.ecitic\.com\/imcslego\/cloud\/[^?]+\.(?:png|jpg|jpeg|gif|webp)\?[^#]*(?:width=750&height=1624|height=1624&width=750)(?:&.*)?$,REJECT-TINYGIF
+URL-REGEX,^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds,REJECT
+
+[Script]
+tencent-video-request = type=http-request,pattern=^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,engine=webview,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/tencent_video_request_clean.js
+tencent-video-response = type=http-response,pattern=^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=2097152,engine=webview,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/tencent_video_popup_clean.js
+youtube-ad-response = type=http-response,pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=2097152,engine=webview,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/youtube_ad_clean.js
+fanqie-ad-list = type=http-request,pattern=^https:\/\/api-access\.pangolin-sdk-toutiao(?:[1-5]|-b)?\.com\/api\/ad\/union\/sdk\/get_ads\/?(?:\?.*)?$,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/empty_json_response.js
+cmb-splash = type=http-request,pattern=^https:\/\/mbasecc\.bcs\.cmbchina\.com\/Edge\/api\/mlife\.clientface\.clientservice\.api\.advertiseService\/preCacheAdvertiseSec(?:\?.*)?$,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/empty_json_response.js
+cib-life-splash = type=http-request,pattern=^https:\/\/gap\.cibfintech\.com\/entry\/queryLaunchAdListV2(?:\?.*)?$,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/empty_json_response.js
+zhaopin-config = type=http-response,pattern=^https:\/\/(?:capi\.zhaopin\.com\/capi\/commercialize\/getConfig|fe-api\.zhaopin\.com\/experiment\/config\/c\/app|cgate\.zhaopin\.com\/(?:bdp\/entrance\/appGrayHomeConfig|positionbusiness\/exposure\/extExposureUser|operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)|operation\/operationAd\/getJdCardAd))(?:\?.*)?$,requires-body=true,max-size=2097152,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/zhaopin_splash_clean.js
+hunliji-splash = type=http-request,pattern=^https:\/\/api\.hunliji\.com\/hms\/hljLego\/appApi\/startAD\/info(?:\?.*)?$,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/empty_json_response.js
+telecom-splash = type=http-request,pattern=^https?:\/\/wapside\.189\.cn(?::\d+)?\/.*(?:splash|advert|advertisement|startup|launch).*,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/empty_json_response.js
+railway-12306-splash = type=http-request,pattern=^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?.*)?$,requires-body=true,max-size=65536,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/railway_12306_splash_clean.js
+mengdian-splash = type=http-response,pattern=^https:\/\/mdej\.impc\.com\.cn\/hlwyy\/business-mdej\/sycd\/queryResourcesList(?:\?.*)?$,requires-body=true,max-size=2097152,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/mengdian_splash_clean.js
+iscreen-splash = type=http-response,pattern=^https:\/\/cs\.kuso\.xyz\/(?:configs|configs2\/default)(?:\?.*)?$,requires-body=true,max-size=2097152,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/iscreen_splash_clean.js
+
+[MITM]
+hostname = %INSERT% -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com
