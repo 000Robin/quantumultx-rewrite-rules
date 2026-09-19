@@ -6,6 +6,14 @@
 
 const rawBody = $response.body || "";
 const requestUrl = ($request && $request.url) || "";
+const adOnlyEndpoint = /\/(?:capi\/commercialize\/getConfig|positionbusiness\/exposure\/extExposureUser|operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)|operation\/operationAd\/getJdCardAd)(?:\?|$)/.test(requestUrl);
+const grayConfigEndpoint = /\/bdp\/entrance\/appGrayHomeConfig(?:\?|$)/.test(requestUrl);
+const experimentEndpoint = /\/experiment\/config\/c\/app(?:\?|$)/.test(requestUrl);
+
+const disabledStartupGrayCodes = new Set([
+  "AdThirdPlatform",
+  "AdThirdPlatformWakeup",
+]);
 
 const emptyLike = (value) => {
   if (Array.isArray(value)) return [];
@@ -82,6 +90,14 @@ const cleanConfig = (value) => {
       output[key] = cleanConfig(child);
     }
   }
+  if (grayConfigEndpoint && disabledStartupGrayCodes.has(String(output.grayCode || ""))) {
+    output.grayState = 0;
+  }
+  if (experimentEndpoint && output.variables && typeof output.variables === "object") {
+    if (Object.prototype.hasOwnProperty.call(output.variables, "spring_encourage_popup")) {
+      output.variables.spring_encourage_popup = "0";
+    }
+  }
   return output;
 };
 
@@ -107,10 +123,22 @@ const clearAdEndpointPayload = (value) => {
 
 try {
   const parsed = JSON.parse(rawBody);
-  const adOnlyEndpoint = /\/(?:capi\/commercialize\/getConfig|positionbusiness\/exposure\/extExposureUser|operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)|operation\/operationAd\/getJdCardAd)(?:\?|$)/.test(requestUrl);
   const cleaned = adOnlyEndpoint ? clearAdEndpointPayload(parsed) : cleanConfig(parsed);
-  $done({ body: JSON.stringify(cleaned) });
+  if (adOnlyEndpoint) {
+    $done({ response: { status: 200, body: JSON.stringify(cleaned) } });
+  } else {
+    $done({ body: JSON.stringify(cleaned) });
+  }
 } catch (_) {
-  // Unknown or malformed payloads pass through; never replace core data blindly.
-  $done({ body: rawBody });
+  if (adOnlyEndpoint) {
+    $done({
+      response: {
+        status: 200,
+        body: JSON.stringify({ code: 200, data: null, message: "成功" }),
+      },
+    });
+  } else {
+    // Unknown or malformed non-ad payloads pass through; never replace core data blindly.
+    $done({ body: rawBody });
+  }
 }

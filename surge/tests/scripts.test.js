@@ -77,4 +77,34 @@ function run(name, globals) {
   assert.strictEqual(Object.prototype.hasOwnProperty.call(payload, "playerAds"), false);
 }
 
+{
+  const body = JSON.stringify({
+    code: 200,
+    data: {
+      value: [
+        { grayCode: "AdThirdPlatform", grayState: 1 },
+        { grayCode: "AdThirdPlatformWakeup", grayState: 1 },
+        { grayCode: "HomepageMainModuleRefactoring", grayState: 1 },
+      ],
+    },
+  });
+  const result = run("zhaopin_splash_clean.js", {
+    $request: { url: "https://cgate.zhaopin.com/bdp/entrance/appGrayHomeConfig" },
+    $response: { body },
+  });
+  const payload = JSON.parse(result.body);
+  assert.strictEqual(payload.data.value[0].grayState, 0);
+  assert.strictEqual(payload.data.value[1].grayState, 0);
+  assert.strictEqual(payload.data.value[2].grayState, 1);
+}
+
+{
+  const result = run("zhaopin_splash_clean.js", {
+    $request: { url: "https://cgate.zhaopin.com/operation/ad/bidMainPage" },
+    $response: { body: "" },
+  });
+  assert.strictEqual(result.response.status, 200);
+  assert.strictEqual(JSON.parse(result.response.body).code, 200);
+}
+
 console.log("Surge script adapter tests passed.");

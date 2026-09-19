@@ -22,14 +22,16 @@ const run = (url, body) => {
     JSON,
   });
   assert.notEqual(completion, undefined, "script must call $done");
-  return completion.body;
+  return completion;
 };
 
 const adEndpoint = JSON.stringify({ code: 200, message: "ok", data: [{ adId: "fixture" }], total: 1 });
-const emptied = JSON.parse(run(
+const adCompletion = run(
   "https://cgate.zhaopin.com/operation/ad/getAdRecommend?fixture=1",
   adEndpoint
-));
+);
+assert.equal(adCompletion.status, "HTTP/1.1 200 OK");
+const emptied = JSON.parse(adCompletion.body);
 assert.equal(emptied.code, 200);
 assert.equal(emptied.message, "ok");
 assert.deepEqual(emptied.data, []);
@@ -49,7 +51,7 @@ const config = {
 const cleanedConfig = JSON.parse(run(
   "https://cgate.zhaopin.com/bdp/entrance/appGrayHomeConfig",
   JSON.stringify(config)
-));
+).body);
 assert.equal(cleanedConfig.data.loginEnabled, true);
 assert.deepEqual(cleanedConfig.data.homeTabs, config.data.homeTabs);
 assert.equal(cleanedConfig.data.address, "Beijing");
@@ -58,7 +60,38 @@ assert.equal(cleanedConfig.data.showLaunchAd, 0);
 assert.deepEqual(cleanedConfig.data.nested.bannerAds, []);
 assert.deepEqual(cleanedConfig.data.nested.account, { id: "safe" });
 
+const grayConfig = {
+  code: 200,
+  data: {
+    value: [
+      { grayCode: "AdThirdPlatform", grayState: 1, grayName: "校园冷启联盟广告" },
+      { grayCode: "AdThirdPlatformWakeup", grayState: 1, grayName: "校园热启联盟广告" },
+      { grayCode: "HomepageMainModuleRefactoring", grayState: 1, grayName: "功能开关" },
+    ],
+  },
+};
+const cleanedGrayConfig = JSON.parse(run(
+  "https://cgate.zhaopin.com/bdp/entrance/appGrayHomeConfig",
+  JSON.stringify(grayConfig)
+).body);
+assert.equal(cleanedGrayConfig.data.value[0].grayState, 0);
+assert.equal(cleanedGrayConfig.data.value[1].grayState, 0);
+assert.equal(cleanedGrayConfig.data.value[2].grayState, 1);
+
+const experimentConfig = {
+  code: 200,
+  data: { variables: { spring_encourage_popup: "2", safe_experiment: "B" } },
+};
+const cleanedExperiment = JSON.parse(run(
+  "https://fe-api.zhaopin.com/experiment/config/c/app",
+  JSON.stringify(experimentConfig)
+).body);
+assert.equal(cleanedExperiment.data.variables.spring_encourage_popup, "0");
+assert.equal(cleanedExperiment.data.variables.safe_experiment, "B");
+
 const malformed = "{not-json";
-assert.equal(run("https://capi.zhaopin.com/capi/commercialize/getConfig", malformed), malformed);
+const malformedCompletion = run("https://capi.zhaopin.com/capi/commercialize/getConfig", malformed);
+assert.equal(malformedCompletion.status, "HTTP/1.1 200 OK");
+assert.deepEqual(JSON.parse(malformedCompletion.body).data, null);
 
 console.log("Zhaopin splash cleaner tests passed.");
