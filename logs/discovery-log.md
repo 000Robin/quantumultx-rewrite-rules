@@ -215,3 +215,11 @@
 - 新增 4 个中国电信广告主机：`ad.21cn.com`、`ad.k.21cn.com`、`admarket.21cn.com`、`adshows.21cn.com`。
 - 新增 8 个 QQ 音乐广告投放主机，覆盖 `tencentmusic.com` 广告分发和 `y.qq.com` 的 TME 广告主机；不拦截签到使用的 `u6.y.qq.com`、播放接口或共享 CDN。
 - 保留 `appgologin*.189.cn` 登录、`wapside.189.cn` 话费 Cookie、`e.dlife.cn` 登录态及 `open.e.189.cn` 认证；未增加 MitM，不修改脚本/节点图标或受保护规则。
+
+## 2026-09-20 — 三日来源与安全复核
+
+- 全量复核 54 条重写来源、1 条停用重写候选和 21 条分流候选；新增候选 0、确认失效 0、迁移 0。既有 1 条 404、5 条 HTML 伪响应和 Limbopro 访问受限状态不变；当前环境无法直接读取的自定义域名未被误判为失效。
+- AWAvenue 仍为 v1.7.6-release（33,511 B、952 条活动规则），但复核正文确认其包含 `ad.12306.cn,reject` 与 `api.statsig.com,reject`。前者会绕过本仓库的 12306 精确空响应处理，后者可能影响 AI 共享服务；该候选继续保持 `enabled=false`，手动测试时必须置于相应直连/AI 修正规则之后。
+- Cats-Team 更新至 7,962,559 B/199,908 条，blackmatrix7 更新至 12,176,344 B/284,202 条；217heidai 更新至版本 `20260920023137`，Full 为 8,558,507 B/215,535 条，Lite 为 203,773 B/5,278 条。四份活动规则语法有效且未发现重复活动行，但超大体积、重叠和共享服务误杀风险未消失，全部继续停用。
+- 公开检索复核了 2026-09-04 新建的 `hwind2021/QuantumultX-AdBlock-CN`。该仓库虽有 MIT 许可证，但为零采用量的自动聚合源，包含宽泛 `HOST-KEYWORD`、通用广告 SDK 范围，并缺少实机/HAR 验证；与现有候选高度重叠，本轮不登记。
+- 未修改运行规则、`dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。

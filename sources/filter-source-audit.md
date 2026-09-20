@@ -76,6 +76,14 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 - 已知冲突未消失：Full/Lite 仍拒绝 `ad.12306.cn` 与 `log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`。两版继续保持 `enabled=false`，不得与其他主去广列表叠加。
 - 新增分流候选 0、失效 0、迁移 0；未修改运行分流、保护基线或脚本/节点图标链接。
 
+## 2026-09-20 — 分流候选增量复核
+
+- AWAvenue 仍为 v1.7.6-release，33,511 B、952 条活动规则，语法有效且无重复；正文确认仍包含 `ad.12306.cn,reject` 和 `api.statsig.com,reject`。它不再视为可无条件启用的低风险主列表：必须置于 12306 精确直连/空响应规则和 AI 修正规则之后，并继续保持 `enabled=false`。
+- Cats-Team 更新至 7,962,559 B、199,908 条活动规则；blackmatrix7 Advertising 更新至 12,176,344 B、284,202 条。两者语法有效且未发现重复活动行，但仍覆盖共享服务域名并具有显著资源与误杀成本，继续停用且不得叠加。
+- 217heidai 更新至提交 `732248a2`、版本 `20260920023137`：Full 为 8,558,507 B/215,535 条，Lite 为 203,773 B/5,278 条；语法有效、无重复活动行。Full/Lite 仍拒绝 `ad.12306.cn`、`log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`，既有排序和停用要求不变。
+- 新检索的 `hwind2021/QuantumultX-AdBlock-CN` 创建时间短、采用量为零，且把宽泛 `HOST-KEYWORD`、通用广告 SDK 与大型聚合列表结合；缺少实机/HAR 验证且与当前候选重叠，本轮不登记。
+- 新增分流候选 0、确认失效 0、迁移 0；未修改运行分流、保护基线、脚本/节点图标链接或任何受保护文件。
+
 ## 2026-08-28 完整配置复核与策略优化
 
 - 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。
