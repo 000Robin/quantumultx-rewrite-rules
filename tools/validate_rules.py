@@ -684,6 +684,18 @@ def check_filter() -> None:
     if unionpay_rules != expected_unionpay:
         fail("UnionPay filtering must contain only the three reviewed advertising hosts")
 
+    dongchedi_rules = {
+        tuple(part.strip() for part in line.split(","))
+        for line in managed
+        if "-pack.byteimg.com" in line
+    }
+    expected_dongchedi = {
+        ("host", "p3-pack.byteimg.com", "reject"),
+        ("host", "p6-pack.byteimg.com", "reject"),
+    }
+    if dongchedi_rules != expected_dongchedi:
+        fail("Dongchedi filtering must contain only the two reviewed package hosts")
+
     managed_text = (ROOT / managed_path).read_text(encoding="utf-8").lower()
     for forbidden in (
         "wallet.95516.com",
@@ -695,6 +707,20 @@ def check_filter() -> None:
     ):
         if forbidden in managed_text:
             fail(f"broad or shared UnionPay filtering is forbidden: {forbidden}")
+
+    for forbidden in (
+        "dig.bdurl.net",
+        "www.bytedance.com",
+        "vod-license-m.volccdn.com",
+        "vod-settings.volcvod.com",
+        "host-suffix, byteimg.com",
+        "host-keyword, byteimg",
+        "host-suffix, bytedance.com",
+        "host-suffix, volccdn.com",
+        "host-suffix, volcvod.com",
+    ):
+        if forbidden in managed_text:
+            fail(f"broad or shared Dongchedi filtering is forbidden: {forbidden}")
 
 
 def check_abc_direct() -> None:

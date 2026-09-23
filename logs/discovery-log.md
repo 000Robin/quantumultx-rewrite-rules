@@ -231,3 +231,11 @@
 - AWAvenue 仍拒绝 `ad.12306.cn` 和 `api.statsig.com`，因此继续保持 `enabled=false`，不得绕过 12306 精确处理与 AI 修正规则直接启用。
 - Cats-Team、blackmatrix7 和 217heidai 的生成列表发生常规刷新，语法与重复检查通过；已知共享服务冲突未消失，全部继续停用。近期公开检索只返回现有上游、镜像或此前已拒绝的自动聚合源，没有新增可采纳候选。
 - 未修改运行规则、`dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 2026-09-23 — 懂车帝开屏广告 PCAP 复核
+
+- 证据：用户提供约 30.3 秒、101 个数据包的短时 PCAP；原始抓包仅在本地解析，未加入仓库，也未记录 Cookie、Token、设备标识、完整查询参数或其他敏感字段。
+- 抓包边界：应用启动末段只出现 `dig.bdurl.net`、`www.bytedance.com`、`vod-license-m.volccdn.com` 与 `vod-settings.volcvod.com` 的 DNS 查询和建连，没有捕获可解析的广告 HTTPS 请求或响应体，不能仅凭 DNS 把这些域名判定为开屏广告。
+- 公开交叉验证：`fmz200/wool_scripts` 的懂车帝专用 Quantumult X 规则持续使用 `p3-pack.byteimg.com` 与 `p6-pack.byteimg.com`；其他公开列表对 `dig.bdurl.net` 的分类存在直连、广告与白名单冲突，因此不采用该域名。
+- 采用：在 `dist/managed-filter.list` 新增两个精确 `host` 拒绝；相较上游 `host-keyword` 进一步收紧匹配范围，不增加 MitM，也不拦截整个 `byteimg.com`、`bytedance.com`、`volccdn.com` 或 `volcvod.com`。
+- 保护：新增校验锁定这两条精确规则，并禁止把本次抓包中的共享/核心服务或整个字节图片、视频域加入管理分流。
