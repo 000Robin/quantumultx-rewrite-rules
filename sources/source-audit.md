@@ -93,3 +93,11 @@
 - 分流正文复核新增一项明确冲突：AWAvenue v1.7.6-release 当前同时拒绝 `ad.12306.cn` 和 `api.statsig.com`，会分别影响本仓库 12306 定制处理和 AI 共享服务。候选仍为 `enabled=false`，不得无条件启用。
 - 新检索的 `hwind2021/QuantumultX-AdBlock-CN` 创建于 2026-09-04，虽带 MIT 许可证，但属于自动生成的大型聚合源，采用量为零，包含宽泛关键词/SDK 规则且没有实机或 HAR 证据；不登记为候选。
 - 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 增量复核（2026-09-23）
+
+- 检查 54 条重写来源、1 条停用重写候选和 21 条分流候选。新增候选 0、确认失效 0、迁移 0；GitHub 文本资源的既有 1 条 404 状态未变，二进制图标无法按 UTF-8 读取不计为链接失效。
+- 5 条 `ddgksf2013.top` HTML 伪响应、3 条 `yfamilys.com` 和 AI 自定义域名在当前环境仍无法直接读取；Limbopro 返回不受抓取器支持的二进制内容类型。保留既有结论，不采用镜像，也不据此制造失效标记。
+- AWAvenue 的 Quantumult X 文件已更新至 v1.7.8-release。上游 GPL-3.0 许可证、版本日志、当前正文和 v1.7.6 历史快照均已交叉核对；新增 13 条、删除 0 条，活动规则语法有效且无重复。
+- 公开检索只发现现有上游、`wool_scripts` 派生镜像和此前已审计的自动聚合源；没有比现有候选更可信且具备实机/HAR 证据的新来源。
+- 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
