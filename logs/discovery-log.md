@@ -239,3 +239,11 @@
 - 公开交叉验证：`fmz200/wool_scripts` 的懂车帝专用 Quantumult X 规则持续使用 `p3-pack.byteimg.com` 与 `p6-pack.byteimg.com`；其他公开列表对 `dig.bdurl.net` 的分类存在直连、广告与白名单冲突，因此不采用该域名。
 - 采用：在 `dist/managed-filter.list` 新增两个精确 `host` 拒绝；相较上游 `host-keyword` 进一步收紧匹配范围，不增加 MitM，也不拦截整个 `byteimg.com`、`bytedance.com`、`volccdn.com` 或 `volcvod.com`。
 - 保护：新增校验锁定这两条精确规则，并禁止把本次抓包中的共享/核心服务或整个字节图片、视频域加入管理分流。
+
+## 2026-09-24 — 百度网盘开屏广告 HAR 复核
+
+- 证据：用户提供约 29 秒、394 条记录的 Quantumult X HAR；原始 HAR 仅在本地分析，未加入仓库，也未保存请求头、Cookie、Token、设备标识、账号、完整查询参数或其他敏感字段。
+- 定位：两次冷启动均请求同一张 1000×1000 JPEG 广告素材，路径为 `fancydsp.oss-cn-beijing.aliyuncs.com/upload/ftx/advertiser/…jpg`；图片内容经本地解码确认是广告创意。同期 `api-v3.mentamob.com/api/v2/config` 返回包含 `MentaVL37SplashAdapter` 的广告 SDK 配置，`api-nxs-v4.mentamob.com/api/v1/nx_campaign` 返回投放活动，`ad-api.adn-plus.com.cn/mb/sdk1/json` 返回广告响应。
+- 采用：在 `dist/managed-filter.list` 新增上述四个精确广告主机的连接层拒绝，无需 MitM；素材 URL 中的具体文件名不入库。
+- 未采用：旧公开规则中的 `pan.baidu.com/rest/2.0/pcs/adx`、`act/api/activityentry` 和 `issuecdn.baidupcs.com/…/guanggao` 未在本次成功广告链路中出现；当前 HAR 中相关旧接口为空或返回 404，因此不添加无效重写。
+- 保护：保持 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、整个 `aliyuncs.com` 及百度账号、文件、缩略图、会员接口可达；新增校验禁止扩大到这些核心或共享域名。

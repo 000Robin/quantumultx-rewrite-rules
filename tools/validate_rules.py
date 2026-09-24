@@ -696,6 +696,27 @@ def check_filter() -> None:
     if dongchedi_rules != expected_dongchedi:
         fail("Dongchedi filtering must contain only the two reviewed package hosts")
 
+    baidupan_rules = {
+        tuple(part.strip() for part in line.split(","))
+        for line in managed
+        if any(
+            domain in line
+            for domain in (
+                "mentamob.com",
+                "adn-plus.com.cn",
+                "fancydsp.oss-cn-beijing.aliyuncs.com",
+            )
+        )
+    }
+    expected_baidupan = {
+        ("host", "api-v3.mentamob.com", "reject"),
+        ("host", "api-nxs-v4.mentamob.com", "reject"),
+        ("host", "ad-api.adn-plus.com.cn", "reject"),
+        ("host", "fancydsp.oss-cn-beijing.aliyuncs.com", "reject"),
+    }
+    if baidupan_rules != expected_baidupan:
+        fail("Baidu Netdisk filtering must contain only the four HAR-reviewed ad hosts")
+
     managed_text = (ROOT / managed_path).read_text(encoding="utf-8").lower()
     for forbidden in (
         "wallet.95516.com",
@@ -721,6 +742,19 @@ def check_filter() -> None:
     ):
         if forbidden in managed_text:
             fail(f"broad or shared Dongchedi filtering is forbidden: {forbidden}")
+
+    for forbidden in (
+        "host-suffix, baidu.com",
+        "host-suffix, pan.baidu.com",
+        "host, pan.baidu.com, reject",
+        "host, diskapi.baidu.com, reject",
+        "host, panpic.baidu.com, reject",
+        "host-suffix, aliyuncs.com",
+        "host-suffix, mentamob.com",
+        "host-suffix, adn-plus.com.cn",
+    ):
+        if forbidden in managed_text:
+            fail(f"broad or core Baidu Netdisk filtering is forbidden: {forbidden}")
 
 
 def check_abc_direct() -> None:

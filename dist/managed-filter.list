@@ -2,7 +2,7 @@
 #!desc=低误杀连接层拦截与关键直连修正；导入时不要设置 force-policy。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-09-23
+#!date=2026-09-24
 
 # China Telecom login: never intercept or reject certificate-pinned authentication.
 host, appgologinhd.189.cn, direct
@@ -22,6 +22,13 @@ host, ad.reward.qq.com, reject
 # Dongchedi splash-ad package hosts; keep shared ByteDance services reachable.
 host, p3-pack.byteimg.com, reject
 host, p6-pack.byteimg.com, reject
+
+# Baidu Netdisk splash-ad SDK and creative delivery hosts.
+# Keep pan.baidu.com, diskapi.baidu.com and panpic.baidu.com reachable.
+host, api-v3.mentamob.com, reject
+host, api-nxs-v4.mentamob.com, reject
+host, ad-api.adn-plus.com.cn, reject
+host, fancydsp.oss-cn-beijing.aliyuncs.com, reject
 
 # UnionPay Cloud QuickPass: exact advertising hosts only.
 # Keep wallet/login/payment hosts and shared Getui infrastructure untouched.
