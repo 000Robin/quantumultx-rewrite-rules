@@ -162,8 +162,8 @@ def check_rewrite() -> None:
 
 def check_scripts() -> None:
     scripts = sorted((SURGE / "scripts").glob("*.js"))
-    if len(scripts) != 8:
-        fail(f"expected 8 independent Surge scripts, found {len(scripts)}")
+    if len(scripts) != 9:
+        fail(f"expected 9 independent Surge scripts, found {len(scripts)}")
     for path in scripts:
         text = path.read_text(encoding="utf-8")
         if ".bodyBytes" in text:

@@ -129,6 +129,42 @@ def check_rewrite() -> None:
         if any(playback_host in line for line in lines):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
+    baidupan_rule = (
+        r"^https:\/\/afd\.baidu\.com\/afd\/entry\?action=query(?:&.*)?$ "
+        "url script-response-body https://raw.githubusercontent.com/000Robin/"
+        "quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js"
+    )
+    baidupan_rewrite_rules = [line for line in lines if r"afd\.baidu\.com" in line]
+    if baidupan_rewrite_rules != [baidupan_rule]:
+        fail("managed rewrite must contain only the exact Baidu Netdisk AFD query rule")
+    else:
+        try:
+            baidupan_pattern = re.compile(baidupan_rule.split(" url ", 1)[0])
+        except re.error as exc:
+            fail(f"invalid Baidu Netdisk splash regex: {exc}")
+        else:
+            should_match = (
+                "https://afd.baidu.com/afd/entry?action=query",
+                "https://afd.baidu.com/afd/entry?action=query&product_id=35",
+            )
+            should_not_match = (
+                "https://afd.baidu.com/afd/entry?action=report",
+                "https://afd.baidu.com/afd/entry?cmd=query",
+                "https://pan.baidu.com/api/list",
+                "https://thumbnail0.baidupcs.com/thumbnail/fixture",
+            )
+            for url in should_match:
+                if not baidupan_pattern.search(url):
+                    fail(f"Baidu Netdisk splash rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if baidupan_pattern.search(url):
+                    fail(f"Baidu Netdisk splash rewrite unexpectedly matches protected scope: {url}")
+    if "afd.baidu.com" not in hostname_tokens:
+        fail("missing exact Baidu Netdisk AFD MitM hostname")
+    for hostname in hostname_tokens:
+        if "baidu.com" in hostname and ("*" in hostname or hostname == "pan.baidu.com"):
+            fail(f"broad or core Baidu Netdisk MitM hostname is forbidden: {hostname}")
+
     zhaopin_rules = [
         line
         for line in lines
@@ -555,6 +591,16 @@ def check_scripts() -> None:
             "$persistentstore",
             "$prefs",
         ),
+        "scripts/baidupan_splash_clean.js": (
+            "authorization",
+            "cookie",
+            "password",
+            "premium",
+            "receipt",
+            "subscription",
+            "$persistentstore",
+            "$prefs",
+        ),
         "scripts/zhaopin_splash_clean.js": (
             "authorization",
             "cookie",
@@ -613,6 +659,7 @@ def check_scripts() -> None:
         "tests/railway_12306_splash_clean.test.js",
         "tests/mengdian_splash_clean.test.js",
         "tests/iscreen_splash_clean.test.js",
+        "tests/baidupan_splash_clean.test.js",
         "tests/zhaopin_splash_clean.test.js",
     )
     for test_relative in tests:
