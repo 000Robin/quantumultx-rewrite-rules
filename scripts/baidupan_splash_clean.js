@@ -1,25 +1,20 @@
 /*
- * Baidu Netdisk splash-ad response cleaner for Quantumult X.
+ * Baidu Netdisk splash-ad response for Quantumult X.
  *
- * Scope: https://afd.baidu.com/afd/entry?action=query only.
- * A 2026-09-26 HAR captured both the service's valid no-ad response and a
- * splash response. Preserve the response envelope and clear only the ad list.
+ * Scope: GET https://afd.baidu.com/afd/entry?action=query only.
+ * The service itself returned this no-ad structure in two HAR captures. Reply
+ * before the network request so a later bidding response cannot reach the app.
  */
 
-const rawBody = ($response && $response.body) || "";
-
-try {
-  const payload = JSON.parse(rawBody);
-  const result = payload && payload.res;
-  if (!result || typeof result !== "object" || Array.isArray(result) || !Array.isArray(result.ad)) {
-    $done({ body: rawBody });
-  } else if (result.ad.length === 0) {
-    $done({ body: rawBody });
-  } else {
-    result.ad = [];
-    if (Object.prototype.hasOwnProperty.call(result, "splash")) delete result.splash;
-    $done({ body: JSON.stringify(payload) });
-  }
-} catch (_) {
-  $done({ body: rawBody });
-}
+$done({
+  status: "HTTP/1.1 200 OK",
+  headers: {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+  },
+  body: JSON.stringify({
+    errno: 0,
+    errmsg: "",
+    res: { ad: [] },
+  }),
+});

@@ -131,7 +131,7 @@ def check_rewrite() -> None:
 
     baidupan_rule = (
         r"^https:\/\/afd\.baidu\.com\/afd\/entry\?action=query(?:&.*)?$ "
-        "url script-response-body https://raw.githubusercontent.com/000Robin/"
+        "url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/"
         "quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js"
     )
     baidupan_rewrite_rules = [line for line in lines if r"afd\.baidu\.com" in line]

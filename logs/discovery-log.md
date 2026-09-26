@@ -261,3 +261,9 @@
 - 定位：旧 Menta/ADN Plus/阿里云素材主机已不再出现，但 `afd.baidu.com/afd/entry?action=query` 先返回服务端合法空广告结构 `res.ad=[]`，随后返回非空 `res.ad` 与 `res.splash`；紧接着下载多张广告图片并上报 `iOS_key_splash_ad_show_iphone`，确认是实际开屏回退链路。
 - 采用：新增自编 `baidupan_splash_clean.js`，只处理上述精确接口。仅当 `res.ad` 是非空数组时清空并删除同级 `res.splash`；保留状态、请求标识、未知字段，非 JSON、未知结构和已为空的合法响应逐字节放行。
 - 保护：只新增 `afd.baidu.com` 精确 MitM，不拦 `pan.baidu.com`、百度文件/缩略图/上传主机、`pic.rmb.bdstatic.com`、美团共享图片域或整个百度域名；不修改会员、账号、文件和设备状态。Quantumult X 与 Surge 实现同步并有回归测试。
+
+## 2026-09-26 — 百度网盘 AFD 请求阶段空响应
+
+- 证据：部署响应净化后，第二份用户 HAR 的三次冷启动中，`buy/ad/conf` 均已被拒绝，但 `afd.baidu.com/afd/entry?action=query` 的第三次查询仍分别返回 10 条广告；随后下载了响应中对应的 WebP 与 Lottie 素材。原始抓包只在本地分析，未提交任何身份信息、请求参数或素材。
+- 调整：把 Quantumult X 的同一精确 URL 从 `script-response-body` 改为 `script-analyze-echo-response`，在请求发出前直接返回服务端已实际出现的合法空广告 JSON；Surge 同步改为 `http-request` 响应脚本。
+- 保护：URL、MitM 主机与旧连接层拒绝范围均未扩大；继续放行网盘文件、缩略图、上传、账号、会员及共享百度图片/CDN 主机。脚本不读取 Cookie、Token、请求正文或设备标识。

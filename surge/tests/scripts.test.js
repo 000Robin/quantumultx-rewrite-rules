@@ -32,16 +32,13 @@ function run(name, globals) {
 }
 
 {
-  const body = JSON.stringify({
-    errno: 0,
-    errmsg: "",
-    res: { ad: [{ id: "creative" }], splash: { cmd: "query" }, safeField: "preserve" },
+  const result = run("baidupan_splash_clean.js", {
+    $request: { url: "https://afd.baidu.com/afd/entry?action=query" },
   });
-  const result = run("baidupan_splash_clean.js", { $response: { body } });
-  const payload = JSON.parse(result.body);
+  const payload = JSON.parse(result.response.body);
+  assert.strictEqual(result.response.status, 200);
   assert.deepStrictEqual(payload.res.ad, []);
   assert.strictEqual(Object.prototype.hasOwnProperty.call(payload.res, "splash"), false);
-  assert.strictEqual(payload.res.safeField, "preserve");
 }
 
 {

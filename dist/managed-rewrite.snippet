@@ -18,9 +18,9 @@
 # Tencent Video pause-ad image confirmed by 2026-08-31 HAR; keep the scope on the ad-exchange CDN path.
 ^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\.(?:jpe?g|png|gif|webp)(?:\?.*)?$ url reject-img
 
-# Baidu Netdisk splash response. Return the service's own valid empty-ad structure;
-# keep file, account, membership, thumbnail and upload endpoints untouched.
-^https:\/\/afd\.baidu\.com\/afd\/entry\?action=query(?:&.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js
+# Baidu Netdisk splash query. Immediately return the service's own valid empty-ad
+# structure; keep file, account, membership, thumbnail and upload endpoints untouched.
+^https:\/\/afd\.baidu\.com\/afd\/entry\?action=query(?:&.*)?$ url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js
 
 # YouTube ads: exact API host and content endpoints; no googlevideo playback MitM.
 ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:browse|next|player|search|reel\/reel_watch_sequence)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/youtube_ad_clean.js

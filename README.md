@@ -18,7 +18,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 懂车帝开屏采用连接层精确拦截：只拒绝公开规则持续使用的 `p3-pack.byteimg.com` 与 `p6-pack.byteimg.com` 两个广告包主机，并将上游的宽泛 `host-keyword` 收紧为精确 `host`。2026-09-23 的短时 PCAP 只捕获到 `dig.bdurl.net`、字节官网及火山视频许可证/设置域名的 DNS 查询，没有捕获可解析的广告 HTTPS 响应；这些共享或核心服务均保持放行，避免误伤视频播放、许可证校验和普通图片 CDN。该方案无需 MitM。
 
-百度网盘开屏采用“连接层旧链路拦截 + 精确响应净化”：2026-09-24 HAR 的两次冷启动均下载同一张 `fancydsp.oss-cn-beijing.aliyuncs.com/upload/ftx/advertiser/` 广告图片，因此管理分流继续拒绝 Menta、ADN Plus 与该精确素材主机。2026-09-26 新 HAR 证明旧链路被拦后，App 改用 `afd.baidu.com/afd/entry?action=query`；该接口先返回服务端自己的合法空广告结构，随后一次响应返回非空 `res.ad` 和 `res.splash`，紧接着下载多张广告素材并上报 `iOS_key_splash_ad_show_iphone`。新脚本只把这个精确响应的 `res.ad` 清空并删除同级 `res.splash`，保留 `errno`、`errmsg`、请求标识和未知字段。不拦截 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、百度缩略图或整个图片/OSS 域名，不影响文件上传、下载、账号和会员查询。
+百度网盘开屏采用“连接层旧链路拦截 + 精确空广告响应”：2026-09-24 HAR 的两次冷启动均下载同一张 `fancydsp.oss-cn-beijing.aliyuncs.com/upload/ftx/advertiser/` 广告图片，因此管理分流继续拒绝 Menta、ADN Plus 与该精确素材主机。2026-09-26 两轮 HAR 证明旧链路被拦后，App 改用 `afd.baidu.com/afd/entry?action=query`；该接口先返回服务端自己的合法空广告结构，随后一次响应返回非空 `res.ad` 和 `res.splash`，紧接着下载广告素材。第二轮三次冷启动又分别收到 10 条广告并下载对应 WebP/Lottie 素材，证明响应后清理没有可靠落地。管理脚本现改为在请求阶段直接返回服务端已经实际使用的 `{"errno":0,"errmsg":"","res":{"ad":[]}}`，使竞价响应与素材不再进入 App。不拦截 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、百度缩略图或整个图片/OSS 域名，不影响文件上传、下载、账号和会员查询。
 
 云闪付采用连接层精确拦截：仅拒绝 `ads.95516.com`、`tysdk.95516.com` 和 `ads.cup.com.cn` 三个公开规则持续使用的广告主机。不会拦截 `wallet.95516.com`、登录或支付接口，也不拒绝个推共享基础设施及用途不明确的 `switch.cup.com.cn`，因此无需为云闪付扩大 MitM hostname。更新该分流资源后需强制关闭云闪付并重新打开；若仍出现广告，应提供冷启动 HAR 以定位新接口，不应继续猜测整域规则。
 
