@@ -12,7 +12,7 @@
 https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/modules/managed-routing.sgmodule
 ```
 
-该模块包含仓库现有的中国电信登录、12306、农行和抖音商城精确直连，以及腾讯视频、云闪付、中国电信和 QQ 音乐广告主机拒绝。直连规则排在拒绝规则之前。
+该模块包含仓库现有的中国电信登录、12306、农行和抖音商城精确直连，以及腾讯视频、懂车帝、百度网盘、云闪付、中国电信和 QQ 音乐广告主机拒绝。直连规则排在拒绝规则之前。
 
 ### 2. 去广重写
 

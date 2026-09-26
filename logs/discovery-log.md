@@ -247,3 +247,10 @@
 - 采用：在 `dist/managed-filter.list` 新增上述四个精确广告主机的连接层拒绝，无需 MitM；素材 URL 中的具体文件名不入库。
 - 未采用：旧公开规则中的 `pan.baidu.com/rest/2.0/pcs/adx`、`act/api/activityentry` 和 `issuecdn.baidupcs.com/…/guanggao` 未在本次成功广告链路中出现；当前 HAR 中相关旧接口为空或返回 404，因此不添加无效重写。
 - 保护：保持 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、整个 `aliyuncs.com` 及百度账号、文件、缩略图、会员接口可达；新增校验禁止扩大到这些核心或共享域名。
+
+## 2026-09-26 — 三日来源与转换一致性复核
+
+- 全量复核 54 条重写来源、1 条停用重写候选和 21 条分流候选；新增候选 0、确认失效 0、迁移 0。既有失效、HTML 伪响应与访问受限来源没有出现可验证迁移，未采用镜像替换。
+- AWAvenue 仍为 v1.7.8-release/965 条；Cats-Team、blackmatrix7 与 217heidai Full/Lite 发生常规生成更新。`ad.12306.cn`、`log.cmbchina.com`、`api.statsig.com` 等已知共享服务冲突仍存在，大型主拒绝候选全部继续保持 `enabled=false`。
+- 一致性校验发现 Surge 基础分流缺少 Quantumult X 已审查并在运行列表中的懂车帝 2 条、百度网盘 4 条精确主机拒绝。仅在 `surge/modules/managed-routing.sgmodule` 补齐六条一对一 `DOMAIN` 转换，并同步说明；没有修改 Quantumult X `dist/`、扩大 MitM 或更改脚本/节点图标链接。
+- 未修改 `rules/protected-*.conf`；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。Quantumult X 与 Surge 校验均通过。

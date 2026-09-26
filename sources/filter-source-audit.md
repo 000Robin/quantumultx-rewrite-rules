@@ -92,6 +92,13 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 - 217heidai 更新至版本 `20260923033942`：Full 为 8,554,656 B/215,307 条，Lite 为 206,130 B/5,343 条；两版语法有效且无重复，既有 `ad.12306.cn`、`log.cmbchina.com` 及 Full 的 `api.statsig.com` 冲突仍存在。
 - 新增分流候选 0、确认失效 0、迁移 0；所有主拒绝候选继续停用，未修改运行分流、保护基线或图标链接。
 
+## 2026-09-26 — 分流候选与转换一致性复核
+
+- AWAvenue 仍为 v1.7.8-release，965 条活动规则；`ad.12306.cn` 和 `api.statsig.com` 冲突仍存在，继续保持 `enabled=false`。
+- Cats-Team 更新至 8,041,249 字符/201,979 条活动规则；blackmatrix7 Advertising 更新至 12,263,757 字符/286,237 条。两者仍包含共享服务冲突，体积、重叠和误杀风险没有消失。
+- 217heidai 更新至版本 `20260926035630`：Full 为 214,134 条，Lite 为 5,300 条；Full/Lite 仍拒绝 `ad.12306.cn`、`log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`，继续保持停用且不得与其他主列表叠加。
+- 新增分流候选 0、确认失效 0、迁移 0；发现 Surge 基础分流未同步 Quantumult X 已审查的懂车帝 2 条和百度网盘 4 条精确主机拒绝，已补齐六条一对一 `DOMAIN` 转换，未扩大域名范围或 MitM。
+
 ## 2026-08-28 完整配置复核与策略优化
 
 - 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。
