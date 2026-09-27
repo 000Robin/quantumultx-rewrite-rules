@@ -33,7 +33,7 @@ function run(name, globals) {
 
 {
   const result = run("baidupan_splash_clean.js", {
-    $request: { url: "https://afd.baidu.com/afd/entry?action=query" },
+    $request: { url: "https://afd.baidu.com/afd/entry?action=update&product_id=35" },
   });
   const payload = JSON.parse(result.response.body);
   assert.strictEqual(result.response.status, 200);

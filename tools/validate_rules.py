@@ -130,7 +130,7 @@ def check_rewrite() -> None:
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
     baidupan_rule = (
-        r"^https:\/\/afd\.baidu\.com\/afd\/entry\?action=query(?:&.*)?$ "
+        r"^https:\/\/afd\.baidu\.com\/afd\/entry\?action=(?:query|update)(?:&.*)?$ "
         "url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/"
         "quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js"
     )
@@ -146,6 +146,7 @@ def check_rewrite() -> None:
             should_match = (
                 "https://afd.baidu.com/afd/entry?action=query",
                 "https://afd.baidu.com/afd/entry?action=query&product_id=35",
+                "https://afd.baidu.com/afd/entry?action=update&product_id=35",
             )
             should_not_match = (
                 "https://afd.baidu.com/afd/entry?action=report",

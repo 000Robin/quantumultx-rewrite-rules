@@ -1,7 +1,7 @@
 /*
  * Baidu Netdisk splash-ad response for Quantumult X.
  *
- * Scope: GET https://afd.baidu.com/afd/entry?action=query only.
+ * Scope: GET https://afd.baidu.com/afd/entry?action=query|update only.
  * The service itself returned this no-ad structure in two HAR captures. Reply
  * before the network request so a later bidding response cannot reach the app.
  */
