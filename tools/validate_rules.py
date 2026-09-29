@@ -735,14 +735,15 @@ def check_filter() -> None:
     dongchedi_rules = {
         tuple(part.strip() for part in line.split(","))
         for line in managed
-        if "-pack.byteimg.com" in line
+        if "-pack.byteimg.com" in line or "g.cn.miaozhen.com" in line
     }
     expected_dongchedi = {
         ("host", "p3-pack.byteimg.com", "reject"),
         ("host", "p6-pack.byteimg.com", "reject"),
+        ("host", "g.cn.miaozhen.com", "reject"),
     }
     if dongchedi_rules != expected_dongchedi:
-        fail("Dongchedi filtering must contain only the two reviewed package hosts")
+        fail("Dongchedi filtering must contain only the three HAR-reviewed advertising hosts")
 
     baidupan_rules = {
         tuple(part.strip() for part in line.split(","))

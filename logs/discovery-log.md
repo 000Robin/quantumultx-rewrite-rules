@@ -280,3 +280,10 @@
 - AWAvenue 仍为 v1.7.8-release/965 条；Cats-Team、blackmatrix7 与 217heidai Full/Lite 发生常规生成更新，语法与重复检查通过。`ad.12306.cn`、`log.cmbchina.com`、`api.statsig.com` 等共享服务冲突仍存在，候选全部保持 `enabled=false`。
 - 新检索的 `TPCTPCTPC/Adblock-gist` 有 MIT 许可证和 Quantumult X 支持，但同时包含宽泛关键词、多个派生域名集合和需要 MitM 的 HTTPS 重写；与现有来源高度重叠且无实机/HAR 证据，本轮不登记。
 - 未修改运行规则、`dist/`、Surge 输出、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 2026-09-29 — 懂车帝开屏广告 HAR 增量
+
+- 证据：用户提供约 2.3 MB、98 条记录的 Quantumult X HAR；原始 HAR 仅在本地分析，未加入仓库，也未保存 Cookie、Token、账号、设备标识、位置或完整查询参数。
+- 定位：懂车帝启动后的同一时段内，旧 `p3-pack.byteimg.com`、`p6-pack.byteimg.com` 没有再次请求，但 `g.cn.miaozhen.com` 连续出现 5 次，成功响应为 35 字节 GIF；秒针官方 Campaigns API 文档把同一路径列为广告曝光 `impression_url`。
+- 采用：在 Quantumult X 与 Surge 分流中新增 `g.cn.miaozhen.com` 精确主机拒绝，保留旧两个广告包主机；不增加 MitM。
+- 保护：继续放行 `api5-normal-sinfonlinec.dcarapi.com` 内容接口、`lf3-config.bytetcc.com` 配置、整个 `byteimg.com`、`dig.bdurl.net`、`vod-license-m.volccdn.com` 与 `vod-settings.volcvod.com`。抓包中的远程配置只包含通用 CDN/存储映射，不据此扩大广告拦截。

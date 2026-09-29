@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 该文件同时包含 `direct` 修正和 `reject` 规则，必须放在大型去广列表之前，且**不要设置 `force-policy`**。
 
-懂车帝开屏采用连接层精确拦截：只拒绝公开规则持续使用的 `p3-pack.byteimg.com` 与 `p6-pack.byteimg.com` 两个广告包主机，并将上游的宽泛 `host-keyword` 收紧为精确 `host`。2026-09-23 的短时 PCAP 只捕获到 `dig.bdurl.net`、字节官网及火山视频许可证/设置域名的 DNS 查询，没有捕获可解析的广告 HTTPS 响应；这些共享或核心服务均保持放行，避免误伤视频播放、许可证校验和普通图片 CDN。该方案无需 MitM。
+懂车帝开屏采用连接层精确拦截：拒绝公开规则持续使用的 `p3-pack.byteimg.com`、`p6-pack.byteimg.com` 两个广告包主机，并将上游的宽泛 `host-keyword` 收紧为精确 `host`。2026-09-29 的冷启动 HAR 在开屏出现时另捕获到 5 次 `g.cn.miaozhen.com` 请求；成功响应是 35 字节 GIF，秒针官方文档把同一路径定义为广告曝光 `impression_url`，因此增加该精确主机拒绝。`dig.bdurl.net`、懂车帝内容 API、字节图片 CDN及火山视频许可证/设置域名继续放行，避免误伤内容、图片和视频播放。该方案无需 MitM。
 
 百度网盘开屏采用“连接层旧链路拦截 + 精确空广告响应”：2026-09-24 HAR 的两次冷启动均下载同一张 `fancydsp.oss-cn-beijing.aliyuncs.com/upload/ftx/advertiser/` 广告图片，因此管理分流继续拒绝 Menta、ADN Plus 与该精确素材主机。2026-09-26 至 27 日的 HAR 证明旧链路被拦后，App 改用 `afd.baidu.com/afd/entry`：`action=query` 返回服务端自己的合法空广告结构，而真正提供 10 条开屏竞价广告的是同一路径的 `action=update`。管理脚本在请求阶段对这两个精确动作直接返回服务端已经实际使用的 `{"errno":0,"errmsg":"","res":{"ad":[]}}`，使竞价响应不再进入 App。不匹配该端点的其他动作，也不拦截 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、百度缩略图或整个图片/OSS 域名，不影响文件上传、下载、账号和会员查询。
 
