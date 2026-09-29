@@ -1,0 +1,11 @@
+#!name=Robin | 铁路 12306重写
+#!desc=开屏接口直连与合法空响应；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# China Railway 12306 splash. A rejected/404 response leaves the native timeout screen active;
+# synthesize a valid, zero-delay ad result instead. Exact ad host only.
+^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?.*)?$ url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/railway_12306_splash_clean.js
+
+hostname = ad.12306.cn

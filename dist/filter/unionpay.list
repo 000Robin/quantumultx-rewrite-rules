@@ -1,0 +1,11 @@
+#!name=Robin | 云闪付分流
+#!desc=广告主机精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# UnionPay Cloud QuickPass: exact advertising hosts only.
+# Keep wallet/login/payment hosts and shared Getui infrastructure untouched.
+host, ads.95516.com, reject
+host, tysdk.95516.com, reject
+host, ads.cup.com.cn, reject

@@ -1,0 +1,8 @@
+#!name=Robin | 铁路 12306分流
+#!desc=开屏接口直连与合法空响应；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# Railway app stability: keep the known service endpoint reachable.
+host, ad.12306.cn, direct

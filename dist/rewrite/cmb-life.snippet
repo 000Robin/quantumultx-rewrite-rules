@@ -1,0 +1,10 @@
+#!name=Robin | 掌上生活重写
+#!desc=开屏广告预缓存拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# China Merchants Bank splash pre-cache
+^https:\/\/mbasecc\.bcs\.cmbchina\.com\/Edge\/api\/mlife\.clientface\.clientservice\.api\.advertiseService\/preCacheAdvertiseSec(?:\?.*)?$ url reject-dict
+
+hostname = mbasecc.bcs.cmbchina.com

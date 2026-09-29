@@ -1,0 +1,8 @@
+#!name=Robin | 抖音安全验证分流
+#!desc=安全验证接口直连修正；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# Douyin security verification: exact exception only; do not bypass whole domains.
+host, vcs-lf.zijieapi.com, direct

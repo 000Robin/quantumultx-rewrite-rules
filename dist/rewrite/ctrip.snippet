@@ -1,0 +1,10 @@
+#!name=Robin | 携程重写
+#!desc=行程广告接口拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Ctrip trip ad endpoint
+^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
+
+hostname = m.ctrip.com

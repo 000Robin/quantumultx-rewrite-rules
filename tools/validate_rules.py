@@ -51,6 +51,72 @@ def check_sensitive_data() -> None:
                 fail(f"{path.relative_to(ROOT)} contains possible {label}")
 
 
+def check_modular_resources() -> None:
+    builder = ROOT / "tools/build_modular_rules.py"
+    result = subprocess.run(
+        [sys.executable, str(builder), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        details = (result.stderr or result.stdout).strip()
+        fail(f"modular resources are not synchronized: {details}")
+        return
+
+    aggregate_filter = set(active_lines("dist/managed-filter.list"))
+    modular_filter: set[str] = set()
+    for path in sorted((ROOT / "dist/filter").glob("*.list")):
+        relative = str(path.relative_to(ROOT))
+        for line in active_lines(relative):
+            if not re.match(r"^(?:host|host-suffix|host-keyword|ip-cidr|ip6-cidr|geoip),\s*[^,]+,\s*(?:direct|reject|proxy|[\w\u4e00-\u9fff -]+)$", line, re.IGNORECASE):
+                fail(f"invalid modular filter line in {relative}: {line}")
+            if line in modular_filter:
+                fail(f"duplicate modular filter rule: {line}")
+            modular_filter.add(line)
+    if modular_filter != aggregate_filter:
+        fail("modular filter resources must exactly cover managed-filter.list")
+
+    aggregate_rewrite_lines = active_lines("dist/managed-rewrite.snippet")
+    aggregate_rewrite = {line for line in aggregate_rewrite_lines if not line.lower().startswith("hostname")}
+    aggregate_host_line = next(
+        (line for line in aggregate_rewrite_lines if line.lower().startswith("hostname")), ""
+    )
+    aggregate_hosts = {
+        item.strip() for item in aggregate_host_line.split("=", 1)[1].split(",")
+    } if "=" in aggregate_host_line else set()
+
+    modular_rewrite: set[str] = set()
+    modular_hosts: set[str] = set()
+    allowed = re.compile(
+        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-analyze-echo-response)(?:\s|$)"
+    )
+    for path in sorted((ROOT / "dist/rewrite").glob("*.snippet")):
+        relative = str(path.relative_to(ROOT))
+        lines = active_lines(relative)
+        host_lines = [line for line in lines if line.lower().startswith("hostname")]
+        if len(host_lines) != 1 or "=" not in host_lines[0]:
+            fail(f"{relative} must contain exactly one hostname line")
+            continue
+        for line in lines:
+            if line in host_lines:
+                continue
+            if not line.startswith("^") or not allowed.search(line):
+                fail(f"invalid modular rewrite line in {relative}: {line}")
+            if line in modular_rewrite:
+                fail(f"duplicate modular rewrite rule: {line}")
+            modular_rewrite.add(line)
+        for hostname in (item.strip() for item in host_lines[0].split("=", 1)[1].split(",")):
+            if hostname in modular_hosts:
+                fail(f"duplicate modular MitM hostname: {hostname}")
+            modular_hosts.add(hostname)
+    if modular_rewrite != aggregate_rewrite:
+        fail("modular rewrite resources must exactly cover managed-rewrite.snippet rules")
+    if modular_hosts != aggregate_hosts:
+        fail("modular rewrite hostnames must exactly cover managed-rewrite.snippet hostnames")
+
+
 def check_rewrite() -> None:
     relative = "dist/managed-rewrite.snippet"
     lines = active_lines(relative)
@@ -1139,6 +1205,7 @@ def check_policy_example() -> None:
 
 def main() -> int:
     check_sensitive_data()
+    check_modular_resources()
     check_rewrite()
     check_scripts()
     check_filter()

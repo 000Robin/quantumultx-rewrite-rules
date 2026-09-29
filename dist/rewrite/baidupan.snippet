@@ -1,0 +1,11 @@
+#!name=Robin | 百度网盘重写
+#!desc=开屏 SDK、素材与竞价响应净化；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Baidu Netdisk splash query/update. Immediately return the service's own valid empty-ad
+# structure; keep file, account, membership, thumbnail and upload endpoints untouched.
+^https:\/\/afd\.baidu\.com\/afd\/entry\?action=(?:query|update)(?:&.*)?$ url script-analyze-echo-response https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/baidupan_splash_clean.js
+
+hostname = afd.baidu.com

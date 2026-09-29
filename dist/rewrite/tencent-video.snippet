@@ -1,0 +1,21 @@
+#!name=Robin | 腾讯视频重写
+#!desc=开屏、互动广告、弹窗与暂停广告净化；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Tencent Video startup/interactive ad transport and media
+^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.* url reject-200
+^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.* url reject
+^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.* url reject
+
+# Tencent Video content-update popup preference; exact binary flag and equal-length value only.
+^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-request-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_request_clean.js
+
+# Tencent Video in-app popup/ad cards; exact root endpoint and explicit binary ad types only.
+^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_popup_clean.js
+
+# Tencent Video pause-ad image confirmed by 2026-08-31 HAR; keep the scope on the ad-exchange CDN path.
+^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\.(?:jpe?g|png|gif|webp)(?:\?.*)?$ url reject-img
+
+hostname = i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com

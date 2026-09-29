@@ -1,0 +1,11 @@
+#!name=Robin | 懂车帝分流
+#!desc=开屏广告包与曝光监测精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# Dongchedi splash-ad package hosts and HAR-confirmed impression endpoint;
+# keep shared ByteDance services reachable.
+host, p3-pack.byteimg.com, reject
+host, p6-pack.byteimg.com, reject
+host, g.cn.miaozhen.com, reject

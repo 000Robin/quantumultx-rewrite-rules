@@ -1,0 +1,15 @@
+#!name=Robin | 番茄小说重写
+#!desc=广告清单、素材与视频广告拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Fanqie Novel: Pangle ad manifest/assets plus the user-selected aggressive video mode.
+# Video rules intentionally disable chapter video ads and short drama; fq-tts audiobook hosts remain untouched.
+^https:\/\/api-access\.pangolin-sdk-toutiao(?:[1-5]|-b)?\.com\/api\/ad\/union\/sdk\/get_ads\/?(?:\?.*)?$ url reject-dict
+^https:\/\/sf3-fe-tos\.pglstatp-toutiao\.com\/obj\/ad-pattern\/.*$ url reject
+^https:\/\/sf3-be-pack\.pglstatp-toutiao\.com\/obj\/ad-app-package\/.*$ url reject
+^https:\/\/v(?:3|5|6|9)-novelapp\.fqnovelvod\.com\/.*\/video\/.*$ url reject
+^https:\/\/v(?:3|5|9)-reading-video\.fqnovelvod\.com\/.*$ url reject
+
+hostname = api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com

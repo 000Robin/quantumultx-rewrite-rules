@@ -66,7 +66,34 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/managed-rewrite.snippet, tag=Robin个人维护去开屏, update-interval=259200, opt-parser=false, enabled=true
 ```
 
-两个公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，并在同一 `i.video.qq.com` 请求通道出现 `reward_ad_ssp...adService`、`memberExperience...getHomeGrowPopupUrl` 及 `AdRequestContextInfo`。`scripts/tencent_video_request_clean.js` 会在请求阶段对前两项精确返回 204，将广告上下文类型等长改名，并把更新提示开关改为 `1`；普通首页、账号、历史和播放请求原样放行。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
+### 按 App 拆分订阅
+
+拆分版与上面的聚合版覆盖范围完全一致，但每个 App 可以独立更新、停用和排查误杀。两种模式二选一：已经启用 `managed-filter.list` 或 `managed-rewrite.snippet` 时，不要再重复启用对应的拆分文件。某个 App 同时列出“分流”和“重写”时，应同时加载两项，分流负责连接层拦截/直连，重写负责返回合法空响应或精确净化内容。
+
+| App | 分流链接 | 重写链接 |
+| --- | --- | --- |
+| 腾讯视频 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/tencent-video.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/tencent-video.snippet) |
+| 百度网盘 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/baidupan.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/baidupan.snippet) |
+| 铁路 12306 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/railway-12306.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/railway-12306.snippet) |
+| 中国电信 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/china-telecom.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/china-telecom.snippet) |
+| 懂车帝 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/dongchedi.list) | — |
+| 云闪付 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/unionpay.list) | — |
+| QQ 音乐 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/qqmusic.list) | — |
+| 抖音安全验证 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/douyin-security.list) | — |
+| YouTube | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/youtube.snippet) |
+| 番茄小说 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/fanqie-novel.snippet) |
+| 掌上生活 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/cmb-life.snippet) |
+| 兴业生活 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/cib-life.snippet) |
+| 智联招聘 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/zhaopin.snippet) |
+| 婚礼纪 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/hunliji.snippet) |
+| 中信银行 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/citic.snippet) |
+| 蒙电 e 家 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/mengdian.snippet) |
+| iScreen | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/iscreen.snippet) |
+| 携程 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/ctrip.snippet) |
+
+分流链接放入 `[filter_remote]`，不要设置 `force-policy`；重写链接放入 `[rewrite_remote]`。模块不增加新广告规则，只隔离现有已审计规则，因此不会因为拆分而扩大 MitM 或广告匹配范围。`tools/build_modular_rules.py` 从聚合文件生成模块，`tools/validate_rules.py` 会校验 22 个模块与聚合版逐条一致，防止后续只更新一边。
+
+上述公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，并在同一 `i.video.qq.com` 请求通道出现 `reward_ad_ssp...adService`、`memberExperience...getHomeGrowPopupUrl` 及 `AdRequestContextInfo`。`scripts/tencent_video_request_clean.js` 会在请求阶段对前两项精确返回 204，将广告上下文类型等长改名，并把更新提示开关改为 `1`；普通首页、账号、历史和播放请求原样放行。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
 
 智联招聘恢复 2026-08-21 HAR 已验证的六组商业化/开屏接口净化，并覆盖同次抓包确认的六种竖横屏大图尺寸。`scripts/zhaopin_splash_clean.js` 对纯广告接口保留状态外壳并清空载荷，对首页灰度和实验配置只中和明确命名的广告容器与开关；登录、职位、消息、账号和普通实验字段保留。响应不是 JSON 时原样放行，避免 404 触发本地缓存开屏。
 
@@ -91,10 +118,10 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 1. 先加载 `dist/managed-ai.list`，确保 AI 登录、上传和接口不会被广告或通用服务规则抢先命中。
 2. 如需农行保护，再加载 `dist/abc-direct.list`，并合并对应 DNS 与 MitM 排除项。
 3. 使用国内抖音商城时加载 `dist/douyin-commerce-direct.list`，必须放在 AWAvenue 和海外 TikTok 列表之前。
-4. 加载 `dist/managed-filter.list`，保护中国电信登录、抖音安全验证和 12306 稳定性。
+4. 加载 `dist/managed-filter.list`，或只加载已安装 App 对应的 `dist/filter/*.list`；不要同时启用聚合版和拆分版。
 5. 分流修正列表按需选择一个，不要无差别叠加。
 6. 主去广分流只选一个：轻量可测试 AWAvenue，中量可用 fmz200；若前两者覆盖不足，可单独测试 217heidai Lite。Cats-Team、217heidai Full 与 blackmatrix7 都属于大型或超大型方案，不要叠加。
-7. 重写层保留 `dist/managed-rewrite.snippet`，再按实际安装的 App 选择专用重写；不要同时启用多个相同大型合集的 Raw/CDN 镜像。
+7. 重写层在 `dist/managed-rewrite.snippet` 与 `dist/rewrite/*.snippet` 中二选一；拆分模式只加载已安装 App，不要再叠加聚合版或相同大型合集的 Raw/CDN 镜像。
 
 217heidai 的 Quantumult X Full/Lite 已作为停用候选登记。Lite 仍包含 `ad.12306.cn,reject`，所以 `dist/managed-filter.list` 必须排在它之前；Full 还会拒绝部分 AI 与 Apple 共享服务，不建议日常启用。两份上游都是原生 Quantumult X 三字段格式，导入时不要设置 `force-policy`，也不要与 AWAvenue、fmz200、Cats-Team 或 blackmatrix7 同时开启。
 
@@ -126,6 +153,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `dist/abc-direct.list`：中国农业银行官方及农行自有业务域名的独立直连列表。
 - `dist/douyin-commerce-direct.list`：抖音国内商城 API、素材、用户和支付接口的精确直连列表，避免与海外 TikTok 的 `snssdk.com` 规则冲突。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
+- `dist/filter/*.list`：按 App 拆分的 8 个 Quantumult X 分流资源，与聚合分流逐条等价。
+- `dist/rewrite/*.snippet`：按 App 拆分的 14 个 Quantumult X 重写资源，与聚合重写及 hostname 并集逐条等价。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 与二进制净化脚本，不处理会员或正片播放接口。
 - `scripts/tencent_video_request_clean.js`：腾讯视频请求阶段广告/推广净化，仅处理 HAR 确认的服务名、广告上下文类型和更新提示开关。
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频 JSON 与二进制广告类型移除，以及观看历史、VIP、账号、普通推荐和播放字段保留测试。
@@ -144,6 +173,7 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `logs/discovery-log.md`：每次研究的来源、判断与变更记录。
 - `automation/PROMPT.md`：每三天任务的执行边界。
 - `tools/validate_rules.py`：本地与 GitHub Actions 共用的语法、顺序和敏感信息检查。
+- `tools/build_modular_rules.py`：从稳定聚合入口生成按 App 拆分资源；`--check` 用于 CI 防漂移。
 
 ## 安全边界
 

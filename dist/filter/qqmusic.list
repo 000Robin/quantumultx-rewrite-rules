@@ -1,0 +1,16 @@
+#!name=Robin | QQ 音乐分流
+#!desc=广告投放主机精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# QQ Music advertising delivery hosts.
+# Do not block u6.y.qq.com or shared music/playback/CDN hosts.
+host, adstats.tencentmusic.com, reject
+host, ad.tencentmusic.com, reject
+host, adcdn.tencentmusic.com, reject
+host, adcdn6.tencentmusic.com, reject
+host, adexpo.tencentmusic.com, reject
+host, adclick.tencentmusic.com, reject
+host, tmeadcomm.y.qq.com, reject
+host, tmead.y.qq.com, reject

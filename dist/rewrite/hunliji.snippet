@@ -1,0 +1,10 @@
+#!name=Robin | 婚礼纪重写
+#!desc=启动广告接口拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Hunliji startup ad
+^https:\/\/api\.hunliji\.com\/hms\/hljLego\/appApi\/startAD\/info(?:\?.*)?$ url reject-dict
+
+hostname = api.hunliji.com

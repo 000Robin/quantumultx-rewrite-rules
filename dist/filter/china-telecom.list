@@ -1,0 +1,16 @@
+#!name=Robin | 中国电信分流
+#!desc=登录直连与广告主机精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# China Telecom login: never intercept or reject certificate-pinned authentication.
+host, appgologinhd.189.cn, direct
+host, appgologin.189.cn, direct
+
+# China Telecom advertising hosts only.
+# Preserve appgologin*.189.cn, wapside.189.cn, e.dlife.cn and open.e.189.cn.
+host, ad.21cn.com, reject
+host, ad.k.21cn.com, reject
+host, admarket.21cn.com, reject
+host, adshows.21cn.com, reject

@@ -1,0 +1,19 @@
+#!name=Robin | 智联招聘重写
+#!desc=商业化接口与开屏素材净化；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-26
+
+# Zhaopin commercial/startup responses observed in the 2026-08-21 HAR. Return valid empty
+# payloads instead of 404 so the app does not fall back to a cached splash creative.
+^https:\/\/capi\.zhaopin\.com\/capi\/commercialize\/getConfig(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/fe-api\.zhaopin\.com\/experiment\/config\/c\/app(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/bdp\/entrance\/appGrayHomeConfig(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/positionbusiness\/exposure\/extExposureUser(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/operation\/ad\/(?:bidMainPage|getAdRecommend|bidAdvertisingInformation|listMyBannerAd)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+^https:\/\/cgate\.zhaopin\.com\/operation\/operationAd\/getJdCardAd(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/zhaopin_splash_clean.js
+
+# Zhaopin splash/large creative fallback; dimensions came from the same verified capture.
+^https:\/\/storage-public\.zhaopin\.cn\/information\/team\/public\/.*(?:2000x1080|1080x2000|1290x2796|2796x1290|1179x2556|2556x1179).* url reject
+
+hostname = storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com

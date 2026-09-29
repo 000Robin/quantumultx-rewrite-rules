@@ -1,5 +1,13 @@
 # Discovery log
 
+## 2026-09-29 — Quantumult X 按 App 模块化
+
+- 目的：将稳定的聚合分流/重写按 App 拆分，允许独立启停、更新和定位误杀，同时保留原有聚合 Raw 地址，避免现有配置失效。
+- 输出：新增 8 个 `dist/filter/*.list` 与 14 个 `dist/rewrite/*.snippet`；腾讯视频、百度网盘、铁路 12306、中国电信提供成对资源，其余 App 只生成实际需要的分流或重写文件。
+- 等价性：没有新增、删除或扩大广告匹配规则；拆分资源的规则并集与 `managed-filter.list`、`managed-rewrite.snippet` 完全一致，重写 hostname 并集也完全一致。
+- 防漂移：新增 `tools/build_modular_rules.py`，并由 `tools/validate_rules.py` 检查全部模块内容、重复规则、Quantumult X 语法、hostname 并集与聚合版一致性。
+- 使用边界：聚合版与拆分版二选一，不得重复启用；未修改 `rules/protected-*.conf`、脚本、节点/策略图标链接、Surge 输出或个人完整配置。
+
 ## 2026-09-15 — 云闪付广告分流修复
 
 - 现象：所有者反馈原有通用广告资源已无法稳定屏蔽云闪付广告；自维护分流此前没有云闪付专属规则。

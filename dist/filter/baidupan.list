@@ -1,0 +1,12 @@
+#!name=Robin | 百度网盘分流
+#!desc=开屏 SDK、素材与竞价响应净化；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-09-29
+
+# Baidu Netdisk splash-ad SDK and creative delivery hosts.
+# Keep pan.baidu.com, diskapi.baidu.com and panpic.baidu.com reachable.
+host, api-v3.mentamob.com, reject
+host, api-nxs-v4.mentamob.com, reject
+host, ad-api.adn-plus.com.cn, reject
+host, fancydsp.oss-cn-beijing.aliyuncs.com, reject
