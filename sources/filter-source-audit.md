@@ -99,6 +99,14 @@ Quantumult X 的去广分流应采用“精确直连修正 + 一个主去广列�
 - 217heidai 更新至版本 `20260926035630`：Full 为 214,134 条，Lite 为 5,300 条；Full/Lite 仍拒绝 `ad.12306.cn`、`log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`，继续保持停用且不得与其他主列表叠加。
 - 新增分流候选 0、确认失效 0、迁移 0；发现 Surge 基础分流未同步 Quantumult X 已审查的懂车帝 2 条和百度网盘 4 条精确主机拒绝，已补齐六条一对一 `DOMAIN` 转换，未扩大域名范围或 MitM。
 
+## 2026-09-29 — 分流候选增量复核
+
+- AWAvenue 仍为 v1.7.8-release，33,946 B、965 条活动规则；语法有效、无重复，`ad.12306.cn` 与 `api.statsig.com` 冲突仍存在，继续保持 `enabled=false`。
+- Cats-Team 更新为 7,789,906 B/195,433 条活动规则，较 2026-09-26 快照减少 6,546 条；blackmatrix7 Advertising 更新为 12,291,170 B/286,873 条活动规则，增加 636 条。两者语法检查通过且无重复，但仍拒绝 `ad.12306.cn` 与 `api.statsig.com`，继续停用且不得叠加。
+- 217heidai 更新至版本 `20260929003820`：Full 为 8,461,941 B/213,212 条，Lite 为 207,722 B/5,381 条；两版语法有效、无重复。Full/Lite 仍拒绝 `ad.12306.cn` 与 `log.cmbchina.com`，Full 仍拒绝 `api.statsig.com`，既有排序与停用要求不变。
+- `TPCTPCTPC/Adblock-gist` 虽有 MIT 许可证且支持 Quantumult X，但由多个域名、关键词和 HTTPS 重写集合组合；宽泛 `DOMAIN-KEYWORD` 会扩大误杀面，重写集合又引入额外 MitM。缺少实机/HAR 证据且与现有候选重叠，本轮不登记。
+- 新增分流候选 0、确认失效 0、迁移 0；未修改运行分流、保护基线、Quantumult X/Surge 输出或脚本/节点图标链接。
+
 ## 2026-08-28 完整配置复核与策略优化
 
 - 主去广选择：采用 AWAvenue Quantumult X v1.7.6（902 条，2026-08-20）。该版本主动删除误杀的 `log.aliyuncs.com`，更符合低开销、低误杀目标；fmz200、Cats-Team、blackmatrix7 超大型广告分流不再叠加启用。

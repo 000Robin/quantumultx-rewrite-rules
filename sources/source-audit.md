@@ -101,3 +101,10 @@
 - AWAvenue 的 Quantumult X 文件已更新至 v1.7.8-release。上游 GPL-3.0 许可证、版本日志、当前正文和 v1.7.6 历史快照均已交叉核对；新增 13 条、删除 0 条，活动规则语法有效且无重复。
 - 公开检索只发现现有上游、`wool_scripts` 派生镜像和此前已审计的自动聚合源；没有比现有候选更可信且具备实机/HAR 证据的新来源。
 - 未修改 `dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 增量复核（2026-09-29）
+
+- 全量复核 54 条重写来源、1 条停用重写候选和 21 条分流候选。新增候选 0、确认失效 0、迁移 0；既有 `Yu9191/wloc` 404、5 条 `ddgksf2013.top` HTML 伪响应与 Limbopro 403 状态不变。
+- 3 条 `yfamilys.com` 来源仍返回 HTTP 200 与纯文本正文；部分 GitHub `/raw/`、jsDelivr 跳转在当前抓取环境超时，但对应官方 Raw 正文可读，未误判为来源失效。
+- 公开检索复核 `TPCTPCTPC/Adblock-gist`：仓库有 MIT 许可证和明确的 Quantumult X 兼容说明，但其方案拆分为域名、宽泛关键词和 HTTPS 重写多个集合，并明确要求使用者自行承担 MitM 风险。当前 `Keywords.list` 包含 `metrics`、`usage`、`intercom`、`safebrowsing` 等高误杀面关键词；在没有实机/HAR 证据且与现有候选高度重叠的情况下不登记。
+- 未修改运行规则、`dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。

@@ -273,3 +273,10 @@
 - 证据：最新 HAR 的三轮冷启动中，`action=query` 均返回 39 字节合法空广告 JSON；三次非空响应全部来自同一路径的 `action=update`，每次包含 10 条广告及 `res.splash`。这证明请求阶段空响应方案已生效，但先前正则只覆盖了 `query`。
 - 调整：Quantumult X 与 Surge 的精确匹配从单一 `action=query` 扩展为 `action=(query|update)`；仍由同一自编脚本立即返回合法空广告结构。
 - 保护：不匹配 `report` 等其他动作，不新增 hostname，不改 `pan.baidu.com`、文件、上传、缩略图、账号或会员接口；原始 HAR 和其中的身份字段均未提交。
+
+## 2026-09-29 — 三日来源与安全复核
+
+- 全量复核 54 条重写来源、1 条停用重写候选和 21 条分流候选；新增候选 0、确认失效 0、迁移 0。既有 1 条 404、5 条 HTML 伪响应与 Limbopro 403 状态不变。
+- AWAvenue 仍为 v1.7.8-release/965 条；Cats-Team、blackmatrix7 与 217heidai Full/Lite 发生常规生成更新，语法与重复检查通过。`ad.12306.cn`、`log.cmbchina.com`、`api.statsig.com` 等共享服务冲突仍存在，候选全部保持 `enabled=false`。
+- 新检索的 `TPCTPCTPC/Adblock-gist` 有 MIT 许可证和 Quantumult X 支持，但同时包含宽泛关键词、多个派生域名集合和需要 MitM 的 HTTPS 重写；与现有来源高度重叠且无实机/HAR 证据，本轮不登记。
+- 未修改运行规则、`dist/`、Surge 输出、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
