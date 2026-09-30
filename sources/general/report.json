@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-30",
+  "counts": {
+    "rewrite": {
+      "input": 751,
+      "nonliteral_or_unsupported": 117,
+      "no_explicit_ad_path": 257,
+      "mixed_alternatives_need_manual_review": 54,
+      "specialist_or_protected": 82,
+      "output": 241
+    },
+    "filter": {
+      "input": 965,
+      "specialist_or_protected": 186,
+      "preserve_general_rewrite": 5,
+      "unsupported_or_invalid": 4,
+      "covered_by_suffix": 22,
+      "output": 748
+    }
+  },
+  "protected_host_patterns": 315,
+  "general_mitm_hosts": 218,
+  "device_tested": false,
+  "scope": "Only literal-host reject rewrites with ad-related paths. All specialist host scopes are excluded conservatively, not only identical rules.",
+  "not_used": {
+    "217heidai": "Large aggregate omitted to limit unrelated blocking.",
+    "ddgksf2013.top/StartUpAds.conf": "HTTP 200 HTML page, not a rewrite resource."
+  }
+}

@@ -295,3 +295,12 @@
 - 定位：懂车帝启动后的同一时段内，旧 `p3-pack.byteimg.com`、`p6-pack.byteimg.com` 没有再次请求，但 `g.cn.miaozhen.com` 连续出现 5 次，成功响应为 35 字节 GIF；秒针官方 Campaigns API 文档把同一路径列为广告曝光 `impression_url`。
 - 采用：在 Quantumult X 与 Surge 分流中新增 `g.cn.miaozhen.com` 精确主机拒绝，保留旧两个广告包主机；不增加 MitM。
 - 保护：继续放行 `api5-normal-sinfonlinec.dcarapi.com` 内容接口、`lf3-config.bytetcc.com` 配置、整个 `byteimg.com`、`dig.bdurl.net`、`vod-license-m.volccdn.com` 与 `vod-settings.volcvod.com`。抓包中的远程配置只包含通用 CDN/存储映射，不据此扩大广告拦截。
+
+## 2026-09-30 — 按 v8.21 生成排除专用的通用补充
+
+- 用户明确要求生成去重后的通用分流和重写，并发布到现有 GitHub 仓库。
+- 分流以 AWAvenue 的 965 条为输入，保留 748 条；重写以 blackmatrix7 的 751 条为输入，保留 241 条、218 个精确 MitM 主机。
+- 根据现有 8 个分流、14 个重写模块、六个外部专用源及配置中的公开服务主机进行排除；保护 AI、12306 空响应、网盘、农行、电信登录与抖音商城等。
+- 删除通配/非固定主机、无明确广告路径和混合路径分支；分流额外避开通用重写所需主机。现有 App 模块和冻结基线未变。
+- 217heidai 大合集不并入；墨鱼旧链接返回 HTML，不作规则来源。上游快照、独立 GPL 许可、排除清单、统计及重建脚本随新资源保留。
+- 四项回归测试及仓库校验通过；未宣称 iPhone 实机效果。未保存或上传完整配置、证书、订阅或登录信息。

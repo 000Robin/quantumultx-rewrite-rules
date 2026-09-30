@@ -1206,6 +1206,11 @@ def check_policy_example() -> None:
 def main() -> int:
     check_sensitive_data()
     check_modular_resources()
+    for command in ([sys.executable, str(ROOT / "tools/build_general_rules.py"), "--check"],
+                    [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_general_rules.py"]):
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+        if result.returncode:
+            fail("general supplement validation failed: " + (result.stderr or result.stdout).strip())
     check_rewrite()
     check_scripts()
     check_filter()

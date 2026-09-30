@@ -1,5 +1,11 @@
 Copyright (c) 2026 000Robin. All rights reserved.
 
+EXCEPTION: dist/general-filter.list, dist/general-rewrite.snippet,
+sources/general/**, tools/build_general_rules.py and tests/test_general_rules.py
+are excluded from the restrictions below. Their respective GPL licenses and
+attribution are specified in sources/general/README.md, with complete license
+texts included in that directory.
+
 PERSONAL-USE-ONLY NOTICE
 
 This repository is not open source. Permission is reserved exclusively to the

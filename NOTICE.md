@@ -1,5 +1,7 @@
 # 使用与权利声明
 
+- 许可例外：`dist/general-filter.list`、`dist/general-rewrite.snippet`、`sources/general/`、`tools/build_general_rules.py` 和 `tests/test_general_rules.py` 按 `sources/general/README.md` 列明的 GPL 许可发布，不受以下个人专用及禁止修改/再分发限制。
+
 - 本仓库只供所有者 `000Robin` 个人、非商业使用。
 - 本仓库不是开源项目；未经书面许可，禁止复制、修改、转载、镜像、再分发、转售或制作衍生版本。
 - 仓库公开后，GitHub 在技术上无法阻止查看、下载、克隆或 Fork；上述功能可用不等于获得版权许可。
