@@ -25,6 +25,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/g
 
 ## 可重复更新
 
+已纳入现有“三日研究与通用去广更新”定时任务（每三天 09:30，Asia/Shanghai）。任务按 `automation/PROMPT.md` 研究来源、更新专用排除、审查并验证增量后，推送到这两个固定订阅地址；未通过审查的候选不启用。无实质变化时不产生空转提交或通知。
+
 `exclusions.json` 只保存公开服务域名和来源摘要，不含配置全文。六个外部专用源检查的是 2026-09-30 正文中的 hostname/分流主机，不复制脚本。外部源更新后须重新核对排除项；现有仓库 App 模块和三个保护分流每次构建都会重新读取。
 
 保存上游纯文本快照并更新其 SHA-256 后运行：

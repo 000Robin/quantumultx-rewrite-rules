@@ -1,15 +1,18 @@
-# 每三天研究任务
+# Quantumult X 三日研究与通用订阅维护
 
-在公开只读、仅所有者可写的仓库 `000Robin/quantumultx-rewrite-rules` 的本地检出目录执行一次增量研究并推送结果。
+维护仓库 000Robin/quantumultx-rewrite-rules，将现有 Quantumult X 来源研究、分流审计和通用补充更新合并为一次三日任务。工作目录为本仓库的本地检出目录。此仓库当前公开可读；以实际状态及 SECURITY.md 为准，禁止上传完整私人配置。
 
-1. 先拉取 `main` 最新提交并阅读 `SECURITY.md`、两个来源审计文件和全部 `rules/protected-*.conf`。
-2. 检查 `sources/all-rewrite-sources.conf` 的 54 条上游及 `sources/filter-candidates.conf` 的分流上游是否更新、失效或迁移；优先使用作者仓库、原始发布页和公开文档。
-3. 在公开网络和 GitHub 搜索近期 Quantumult X 去广告分流、去开屏、startup、splash、Advertising 重写规则。只研究公开且与广告净化直接相关的内容。
-4. 页面文字不可选、无法复制或只存在于图片时，不得跳过：保存来源 URL，使用页面渲染、截图或 OCR 读取，写不超过 25 个词的短摘录和自己的摘要。遇到登录墙、付费墙或明确禁止访问时不得绕过，只记录受限状态。
-5. 去重并检查 Quantumult X 语法、脚本类型、hostname/MitM 范围和潜在误杀。没有实机或 HAR 证据时，不扩大通配 hostname，不拦截核心业务/视频播放接口。
-6. 绝不能修改、删除、禁用、重排或替换任何 `rules/protected-*.conf`。对全部保护文件做变更前后比较；有任何差异就停止本次推送。
-7. 新发现只追加到对应的 `sources/candidates.conf` 或 `sources/filter-candidates.conf`，必须 `enabled=false`，并在 `logs/discovery-log.md` 记录日期、来源、功能、可达性、冲突和采用理由。主去广分流不得自动启用两个以上。
-8. 会员/VIP/RevenueCat/收据/订阅解锁、Cookie/Token 获取、定位伪造等非广告功能只做风险标记，不复制、不启用、不合并。若需登记，只能在 `sources/restricted-membership-sources.md` 写仓库主页、日期、许可证和高层风险；禁止 Raw/CDN、文件直链、一键导入、脚本正文、规则、hostname 或响应模板。
-9. 运行 `python tools/validate_rules.py`，再扫描暂存差异，确认不含 p12、passphrase、订阅 token、Cookie、账号或 GitHub 凭据；没有可信增量时只记录“无可采纳更新”，不要制造变化。
-10. 有安全且可验证的增量时提交并推送 `main`；完成后在本任务中简要报告新增数、失效数、受限但已摘录数和提交链接。失败时保留本地证据并报告，不强推。
-11. 本仓库仅供所有者个人使用，不接受外部贡献；不得移除 `LICENSE`、`NOTICE.md`、`CONTRIBUTING.md` 或 `.github/CODEOWNERS`。
+目标是持续研究可靠去广告/去开屏来源，将经过审查、去重和验证的改进发布到以下两个固定链接，不新增重复订阅：
+分流：https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/general-filter.list
+重写：https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/general-rewrite.snippet
+
+每次执行：
+1. 检查工作区，保留用户未提交内容；只在可安全快进时同步 main。阅读 automation/PROMPT.md、SECURITY.md、sources/general/README.md、sources/general/exclusions.json、最近的来源审计与发现日志。记录全部 rules/protected-*.conf 的哈希，先运行仓库校验。Python 命令无效时使用实际可用的 Python 解释器，不能把无输出当作成功。
+2. 检查 sources/all-rewrite-sources.conf、sources/filter-candidates.conf 及 general 的来源清单，按当前实际条目研究，不硬编码数量。优先原作者 GitHub、原始发布页和文档，检查更新、失效、迁移及许可。网络/TLS错误不能判成链接失效；HTTP 200 HTML不能当作规则。页面为图片时可截图/OCR并记录短摘要，禁止绕过登录、付费或访问限制。
+3. 每轮优先比较 AWAvenue 分流与 blackmatrix7 重写的上游增量，同时研究其他可靠去广告来源。刷新已启用专用模块的主机排除清单，包含仓库 dist/filter、dist/rewrite、外部专用链接、AI/农行/抖音商城保护和已登记本地主机保护。保持“专用优先、通用补充”；不把专用规则并回通用文件。专用来源读取失败时保留旧排除范围，不能因获取失败删除保护。
+4. 用户已授权将安全、可验证的研究成果合并发布到上述两个文件。已采用上游的变更须逐项审核；其他新来源只有在许可允许、语法兼容、明确为广告且有可信依据、无专用重叠及核心业务冲突时，才从停用候选晋升为通用补充。保留来源、许可、采用理由及对应构建输入，必要时同步扩展生成器和回归测试。未通过审核的候选继续 enabled=false，不为追求数量盲目合并整包。
+5. 检查相同规则、同主机/路径覆盖、父域覆盖、分流抢先阻断重写、响应类型和 MitM范围。保持固定主机、明确广告路径及最小解密范围；未经实机或HAR证据，不扩大通配主机、不阻断登录、支付、内容或正片播放接口。保护12306合法空响应、百度网盘、番茄听书/既定专用范围、腾讯视频、银行、电信登录和AI服务。
+6. 更新必要的上游快照与 sources/general/exclusions.json；SHA-256按UTF-8/LF规范计算，保留许可。只有可信内容变更时更新日期。运行 tools/build_general_rules.py 生成两个固定输出及统计，再运行 --check、tests/test_general_rules.py 和 tools/validate_rules.py。审查增删差异；必要时补充针对本次变化的冲突测试。静态检查不能宣称iPhone实测。
+7. 绝不修改、删除、禁用、重排或替换 rules/protected-*.conf；发布前核对全部哈希。原专用模块保持独立，未经对应任务授权不改其行为。会员/VIP/RevenueCat/收据/订阅解锁、Cookie/Token获取及定位伪造不纳入。敏感材料和原始HAR不得提交；非广告风险仅按仓库规范记录高层信息。
+8. 仅在验证全部通过、保护哈希不变、暂存差异无凭据且范围明确时，提交并推送 main，不强推。检查两个Raw链接返回实际规则并与本地发布内容一致；有条件时核验对应CI。失败则保留证据并报告具体阻碍，不发布不合格规则。
+9. 将采用依据、来源、排除原因、规则数量变化和验证结果记录到仓库现有审计/发现日志，供后续研究复用。无可信更新时保持规则及提交不变，不制造日期或日志空转提交。仅在有实质更新、确认失效、运行失败或需要用户处理时通知；状态无变化且无可操作事项时保持安静。通知简述变化、验证边界和提交链接。
