@@ -1,0 +1,12 @@
+#!name=Robin | 京东重写
+#!desc=开屏广告交易主机与配置接口精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-10-01
+
+# JD splash configuration only. The HAR-confirmed normal functionId=startup
+# is intentionally excluded; shared product, image and video services remain reachable.
+^https:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=start(?:&|$).* url reject-array
+^https:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=(?:queryMaterialAdverts|home_launchConfig|getWidgetV1052)(?:&|$).* url reject-dict
+
+hostname = api.m.jd.com

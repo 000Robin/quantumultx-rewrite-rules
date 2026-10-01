@@ -2,7 +2,7 @@
 #!desc=低误杀连接层拦截与关键直连修正；导入时不要设置 force-policy。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-09-29
+#!date=2026-10-01
 
 # China Telecom login: never intercept or reject certificate-pinned authentication.
 host, appgologinhd.189.cn, direct
@@ -24,6 +24,12 @@ host, ad.reward.qq.com, reject
 host, p3-pack.byteimg.com, reject
 host, p6-pack.byteimg.com, reject
 host, g.cn.miaozhen.com, reject
+host, 12ca100002-0.m.ctrmi.cn, reject
+
+# JD splash advertising exchange hosts only.
+# Keep api.m.jd.com and shared 360buyimg/JD video CDNs reachable.
+host, bdsp-x.jd.com, reject
+host, dsp-x.jd.com, reject
 
 # Baidu Netdisk splash-ad SDK and creative delivery hosts.
 # Keep pan.baidu.com, diskapi.baidu.com and panpic.baidu.com reachable.
@@ -39,11 +45,13 @@ host, tysdk.95516.com, reject
 host, ads.cup.com.cn, reject
 
 # China Telecom advertising hosts only.
-# Preserve appgologin*.189.cn, wapside.189.cn, e.dlife.cn and open.e.189.cn.
+# Preserve appgologin*.189.cn, appupdates.189.cn, wapside.189.cn,
+# e.dlife.cn and open.e.189.cn.
 host, ad.21cn.com, reject
 host, ad.k.21cn.com, reject
 host, admarket.21cn.com, reject
 host, adshows.21cn.com, reject
+host, appgoad.189.cn, reject
 
 # QQ Music advertising delivery hosts.
 # Do not block u6.y.qq.com or shared music/playback/CDN hosts.

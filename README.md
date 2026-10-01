@@ -18,7 +18,11 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 该文件同时包含 `direct` 修正和 `reject` 规则，必须放在大型去广列表之前，且**不要设置 `force-policy`**。
 
-懂车帝开屏采用连接层精确拦截：拒绝公开规则持续使用的 `p3-pack.byteimg.com`、`p6-pack.byteimg.com` 两个广告包主机，并将上游的宽泛 `host-keyword` 收紧为精确 `host`。2026-09-29 的冷启动 HAR 在开屏出现时另捕获到 5 次 `g.cn.miaozhen.com` 请求；成功响应是 35 字节 GIF，秒针官方文档把同一路径定义为广告曝光 `impression_url`，因此增加该精确主机拒绝。`dig.bdurl.net`、懂车帝内容 API、字节图片 CDN及火山视频许可证/设置域名继续放行，避免误伤内容、图片和视频播放。该方案无需 MitM。
+懂车帝开屏采用连接层精确拦截：拒绝公开规则持续使用的 `p3-pack.byteimg.com`、`p6-pack.byteimg.com` 两个广告包主机，并将上游的宽泛 `host-keyword` 收紧为精确 `host`。2026-09-29 的冷启动 HAR 在开屏出现时另捕获到 5 次 `g.cn.miaozhen.com` 请求；成功响应是 35 字节 GIF，秒针官方文档把同一路径定义为广告曝光 `impression_url`。2026-10-01 的新 HAR 又只在懂车帝启动段捕获到 `12ca100002-0.m.ctrmi.cn/t/ad2`，因此只增加该次实际命中的完整主机，不扩大为整个 `ctrmi.cn`。`dig.bdurl.net`、懂车帝内容 API、字节图片 CDN及火山视频许可证/设置域名继续放行，避免误伤内容、图片和视频播放。该方案无需 MitM。
+
+京东采用“广告交易主机 + 开屏配置接口”双层精确处理：分流只拒绝 `bdsp-x.jd.com` 与 `dsp-x.jd.com`；重写只匹配 `api.m.jd.com/client.action` 查询参数中的 `functionId=start`、`queryMaterialAdverts`、`home_launchConfig` 和 `getWidgetV1052`。2026-10-01 HAR 中两次 `functionId=startup` 只返回设备等级，属于正常启动配置，规则通过参数边界明确排除它。HAR 中的 `360buyimg.com` 图片、`storage.jd.com` 组件包和 `vod.300hu.com` 视频均来自共享内容/CDN，不作整域拦截。若旧广告仍从本地缓存显示，更新规则后需强制关闭京东并清理 App 缓存再测试。
+
+中国电信继续保留登录主机直连，并新增广告专用 `appgoad.189.cn` 精确拒绝；`ad.21cn.com` 等四个既有广告主机不变。2026-10-01 HAR 中 `appupdates.189.cn` 同时提供地区码、客户端监控和活动配置，`w.189.cn/bigdata/` 下载的只是 84/152 像素小程序图标，因此两者均不作整域拦截。`appgologin*.189.cn`、`wapside.189.cn`、`e.dlife.cn` 与 `open.e.189.cn` 继续保持可达。
 
 百度网盘开屏采用“连接层旧链路拦截 + 精确空广告响应”：2026-09-24 HAR 的两次冷启动均下载同一张 `fancydsp.oss-cn-beijing.aliyuncs.com/upload/ftx/advertiser/` 广告图片，因此管理分流继续拒绝 Menta、ADN Plus 与该精确素材主机。2026-09-26 至 27 日的 HAR 证明旧链路被拦后，App 改用 `afd.baidu.com/afd/entry`：`action=query` 返回服务端自己的合法空广告结构，而真正提供 10 条开屏竞价广告的是同一路径的 `action=update`。管理脚本在请求阶段对这两个精确动作直接返回服务端已经实际使用的 `{"errno":0,"errmsg":"","res":{"ad":[]}}`，使竞价响应不再进入 App。不匹配该端点的其他动作，也不拦截 `pan.baidu.com`、`diskapi.baidu.com`、`panpic.baidu.com`、百度缩略图或整个图片/OSS 域名，不影响文件上传、下载、账号和会员查询。
 
@@ -79,6 +83,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 | 铁路 12306 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/railway-12306.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/railway-12306.snippet) |
 | 中国电信 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/china-telecom.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/china-telecom.snippet) |
 | 懂车帝 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/dongchedi.list) | — |
+| 京东 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/jd.list) | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/jd.snippet) |
 | 云闪付 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/unionpay.list) | — |
 | QQ 音乐 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/qqmusic.list) | — |
 | 抖音安全验证 | [分流](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/filter/douyin-security.list) | — |
@@ -93,7 +98,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 | iScreen | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/iscreen.snippet) |
 | 携程 | — | [重写](https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/rewrite/ctrip.snippet) |
 
-分流链接放入 `[filter_remote]`，不要设置 `force-policy`；重写链接放入 `[rewrite_remote]`。模块不增加新广告规则，只隔离现有已审计规则，因此不会因为拆分而扩大 MitM 或广告匹配范围。`tools/build_modular_rules.py` 从聚合文件生成模块，`tools/validate_rules.py` 会校验 22 个模块与聚合版逐条一致，防止后续只更新一边。
+分流链接放入 `[filter_remote]`，不要设置 `force-policy`；重写链接放入 `[rewrite_remote]`。模块不增加新广告规则，只隔离现有已审计规则，因此不会因为拆分而扩大 MitM 或广告匹配范围。`tools/build_modular_rules.py` 从聚合文件生成模块，`tools/validate_rules.py` 会校验 24 个模块与聚合版逐条一致，防止后续只更新一边。
 
 上述公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，并在同一 `i.video.qq.com` 请求通道出现 `reward_ad_ssp...adService`、`memberExperience...getHomeGrowPopupUrl` 及 `AdRequestContextInfo`。`scripts/tencent_video_request_clean.js` 会在请求阶段对前两项精确返回 204，将广告上下文类型等长改名，并把更新提示开关改为 `1`；普通首页、账号、历史和播放请求原样放行。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
 
@@ -155,8 +160,8 @@ YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapi
 - `dist/abc-direct.list`：中国农业银行官方及农行自有业务域名的独立直连列表。
 - `dist/douyin-commerce-direct.list`：抖音国内商城 API、素材、用户和支付接口的精确直连列表，避免与海外 TikTok 的 `snssdk.com` 规则冲突。
 - `dist/managed-rewrite.snippet`：供 Quantumult X 引用的公开、脱敏重写片段。
-- `dist/filter/*.list`：按 App 拆分的 8 个 Quantumult X 分流资源，与聚合分流逐条等价。
-- `dist/rewrite/*.snippet`：按 App 拆分的 14 个 Quantumult X 重写资源，与聚合重写及 hostname 并集逐条等价。
+- `dist/filter/*.list`：按 App 拆分的 9 个 Quantumult X 分流资源，与聚合分流逐条等价。
+- `dist/rewrite/*.snippet`：按 App 拆分的 15 个 Quantumult X 重写资源，与聚合重写及 hostname 并集逐条等价。
 - `scripts/tencent_video_popup_clean.js`：腾讯视频应用内弹窗/广告卡片的保守 JSON 与二进制净化脚本，不处理会员或正片播放接口。
 - `scripts/tencent_video_request_clean.js`：腾讯视频请求阶段广告/推广净化，仅处理 HAR 确认的服务名、广告上下文类型和更新提示开关。
 - `tests/tencent_video_popup_clean.test.js`：腾讯视频 JSON 与二进制广告类型移除，以及观看历史、VIP、账号、普通推荐和播放字段保留测试。

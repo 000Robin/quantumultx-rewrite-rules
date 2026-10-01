@@ -2,7 +2,7 @@
 #!desc=由仓库 Quantumult X 精确直连与拒绝规则独立转换；不包含 AI 自定义策略。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-09-29
+#!date=2026-10-01
 
 [Rule]
 # China Telecom login and app stability.
@@ -33,6 +33,11 @@ DOMAIN,ad.reward.qq.com,REJECT
 DOMAIN,p3-pack.byteimg.com,REJECT
 DOMAIN,p6-pack.byteimg.com,REJECT
 DOMAIN,g.cn.miaozhen.com,REJECT
+DOMAIN,12ca100002-0.m.ctrmi.cn,REJECT
+
+# JD splash advertising exchange hosts.
+DOMAIN,bdsp-x.jd.com,REJECT
+DOMAIN,dsp-x.jd.com,REJECT
 
 # Baidu Netdisk splash-ad SDK and creative delivery hosts.
 DOMAIN,api-v3.mentamob.com,REJECT
@@ -50,6 +55,7 @@ DOMAIN,ad.21cn.com,REJECT
 DOMAIN,ad.k.21cn.com,REJECT
 DOMAIN,admarket.21cn.com,REJECT
 DOMAIN,adshows.21cn.com,REJECT
+DOMAIN,appgoad.189.cn,REJECT
 
 # QQ Music advertising.
 DOMAIN,adstats.tencentmusic.com,REJECT

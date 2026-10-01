@@ -1,0 +1,10 @@
+#!name=Robin | 京东分流
+#!desc=开屏广告交易主机与配置接口精确拦截；从聚合版精确拆分，勿与聚合版重复启用。
+#!author=000Robin
+#!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
+#!date=2026-10-01
+
+# JD splash advertising exchange hosts only.
+# Keep api.m.jd.com and shared 360buyimg/JD video CDNs reachable.
+host, bdsp-x.jd.com, reject
+host, dsp-x.jd.com, reject

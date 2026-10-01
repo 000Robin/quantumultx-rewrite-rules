@@ -2,7 +2,7 @@
 #!desc=由仓库 Quantumult X 重写独立转换；使用 Surge 原生请求/响应脚本与精确 MitM。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-09-26
+#!date=2026-10-01
 
 [Rule]
 # Static advertising transports and media.
@@ -17,6 +17,8 @@ URL-REGEX,^https:\/\/v(?:3|5|9)-reading-video\.fqnovelvod\.com\/.*$,REJECT
 URL-REGEX,^https:\/\/storage-public\.zhaopin\.cn\/information\/team\/public\/.*(?:2000x1080|1080x2000|1290x2796|2796x1290|1179x2556|2556x1179).*,REJECT
 URL-REGEX,^https?:\/\/autoload\.bank\.ecitic\.com\/imcslego\/cloud\/[^?]+\.(?:png|jpg|jpeg|gif|webp)\?[^#]*(?:width=750&height=1624|height=1624&width=750)(?:&.*)?$,REJECT-TINYGIF
 URL-REGEX,^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds,REJECT
+URL-REGEX,^https:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=start(?:&|$).*,REJECT
+URL-REGEX,^https:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=(?:queryMaterialAdverts|home_launchConfig|getWidgetV1052)(?:&|$).*,REJECT
 
 [Script]
 tencent-video-request = type=http-request,pattern=^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,engine=webview,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/tencent_video_request_clean.js
@@ -34,4 +36,4 @@ mengdian-splash = type=http-response,pattern=^https:\/\/mdej\.impc\.com\.cn\/hlw
 iscreen-splash = type=http-response,pattern=^https:\/\/cs\.kuso\.xyz\/(?:configs|configs2\/default)(?:\?.*)?$,requires-body=true,max-size=2097152,script-path=https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/surge/scripts/iscreen_splash_clean.js
 
 [MITM]
-hostname = %INSERT% -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, afd.baidu.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com
+hostname = %INSERT% -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, afd.baidu.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, api.m.jd.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com

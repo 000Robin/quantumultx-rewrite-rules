@@ -306,7 +306,6 @@ host, domain.aishengji.com, reject
 host, doubleclick-cn.net, reject
 host, download.changhong.upgrade2.huan.tv, reject
 host, downloadxml.changhong.upgrade2.huan.tv, reject
-host, dsp-x.jd.com, reject
 host, dsplog-adnet.vivo.com.cn, reject
 host, dyp2p-ali.douyucdn.cn, reject
 host, dyp2p-hw.douyucdn.cn, reject

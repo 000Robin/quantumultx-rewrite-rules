@@ -597,6 +597,35 @@ def check_rewrite() -> None:
                 if telecom_pattern.search(url):
                     fail(f"China Telecom rewrite unexpectedly matches login: {url}")
 
+    jd_rules = [line for line in lines if r"api\.m\.jd\.com\/client\.action" in line]
+    if len(jd_rules) != 2:
+        fail("managed rewrite must contain exactly two JD splash rules")
+    else:
+        try:
+            jd_patterns = [re.compile(line.split(" url ", 1)[0]) for line in jd_rules]
+        except re.error as exc:
+            fail(f"invalid JD splash regex: {exc}")
+        else:
+            should_match = (
+                "https://api.m.jd.com/client.action?functionId=start",
+                "https://api.m.jd.com/client.action?client=apple&functionId=queryMaterialAdverts&v=1",
+                "https://api.m.jd.com/client.action?functionId=home_launchConfig&client=apple",
+                "https://api.m.jd.com/client.action?x=1&functionId=getWidgetV1052",
+            )
+            should_not_match = (
+                "https://api.m.jd.com/client.action?functionId=startup",
+                "https://api.m.jd.com/client.action?functionId=welcomeHome",
+                "https://api.m.jd.com/client.action?functionId=wareBusiness",
+            )
+            for url in should_match:
+                if not any(pattern.search(url) for pattern in jd_patterns):
+                    fail(f"JD splash rewrite unexpectedly misses: {url}")
+            for url in should_not_match:
+                if any(pattern.search(url) for pattern in jd_patterns):
+                    fail(f"JD splash rewrite unexpectedly matches protected scope: {url}")
+    if "api.m.jd.com" not in hostname_tokens:
+        fail("missing exact JD MitM hostname")
+
 
 def check_scripts() -> None:
     node = shutil.which("node")
@@ -801,15 +830,43 @@ def check_filter() -> None:
     dongchedi_rules = {
         tuple(part.strip() for part in line.split(","))
         for line in managed
-        if "-pack.byteimg.com" in line or "g.cn.miaozhen.com" in line
+        if "-pack.byteimg.com" in line or "g.cn.miaozhen.com" in line or "m.ctrmi.cn" in line
     }
     expected_dongchedi = {
         ("host", "p3-pack.byteimg.com", "reject"),
         ("host", "p6-pack.byteimg.com", "reject"),
         ("host", "g.cn.miaozhen.com", "reject"),
+        ("host", "12ca100002-0.m.ctrmi.cn", "reject"),
     }
     if dongchedi_rules != expected_dongchedi:
-        fail("Dongchedi filtering must contain only the three HAR-reviewed advertising hosts")
+        fail("Dongchedi filtering must contain only the four reviewed advertising hosts")
+
+    jd_rules = {
+        tuple(part.strip() for part in line.split(","))
+        for line in managed
+        if "dsp-x.jd.com" in line
+    }
+    expected_jd = {
+        ("host", "bdsp-x.jd.com", "reject"),
+        ("host", "dsp-x.jd.com", "reject"),
+    }
+    if jd_rules != expected_jd:
+        fail("JD filtering must contain only the two advertising exchange hosts")
+
+    telecom_ad_rules = {
+        tuple(part.strip() for part in line.split(","))
+        for line in managed
+        if any(domain in line for domain in ("21cn.com", "appgoad.189.cn"))
+    }
+    expected_telecom_ads = {
+        ("host", "ad.21cn.com", "reject"),
+        ("host", "ad.k.21cn.com", "reject"),
+        ("host", "admarket.21cn.com", "reject"),
+        ("host", "adshows.21cn.com", "reject"),
+        ("host", "appgoad.189.cn", "reject"),
+    }
+    if telecom_ad_rules != expected_telecom_ads:
+        fail("China Telecom filtering must contain only the five reviewed advertising hosts")
 
     baidupan_rules = {
         tuple(part.strip() for part in line.split(","))
@@ -854,9 +911,30 @@ def check_filter() -> None:
         "host-suffix, bytedance.com",
         "host-suffix, volccdn.com",
         "host-suffix, volcvod.com",
+        "host-suffix, ctrmi.cn",
+        "host-keyword, ctrmi",
     ):
         if forbidden in managed_text:
             fail(f"broad or shared Dongchedi filtering is forbidden: {forbidden}")
+
+    for forbidden in (
+        "host-suffix, jd.com",
+        "host-suffix, 360buyimg.com",
+        "host, api.m.jd.com, reject",
+        "host, vod.300hu.com, reject",
+        "host, m.360buyimg.com, reject",
+        "host, storage.360buyimg.com, reject",
+    ):
+        if forbidden in managed_text:
+            fail(f"broad or core JD filtering is forbidden: {forbidden}")
+
+    for forbidden in (
+        "host, appupdates.189.cn, reject",
+        "host-suffix, 189.cn",
+        "host-keyword, 189",
+    ):
+        if forbidden in managed_text:
+            fail(f"broad or core China Telecom filtering is forbidden: {forbidden}")
 
     for forbidden in (
         "host-suffix, baidu.com",

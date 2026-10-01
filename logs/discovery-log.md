@@ -1,5 +1,13 @@
 # Discovery log
 
+## 2026-10-01 — 懂车帝、京东与中国电信开屏广告 HAR 增量
+
+- 证据：用户提供 212 条记录的 Quantumult X HAR，覆盖中国电信、懂车帝与京东连续冷启动；原始 HAR 仅在本地分析，未加入仓库，也未保存 Cookie、Token、账号、设备标识、位置、完整查询参数或广告素材。
+- 懂车帝：启动段新增命中 `12ca100002-0.m.ctrmi.cn/t/ad2`，与既有公开规则使用的同类 `ctrmi` 广告主机模式一致；只拒绝本次完整主机，不扩大为 `ctrmi.cn` 后缀，也不拦截懂车帝内容 API 或共享字节 CDN。
+- 京东：HAR 中 `functionId=startup` 只返回设备等级，明确不是开屏广告；`360buyimg.com`、`storage.jd.com` 与 `vod.300hu.com` 同时承载商品、组件及正常视频，未作整域拦截。新增两个广告交易主机，并仅对公开规则交叉确认的四个开屏 `functionId` 做带参数边界的精确拒绝，防止误匹配 `startup`、`welcomeHome` 与商品接口。
+- 中国电信：新增广告专用 `appgoad.189.cn`；保留已有四个 `21cn.com` 广告主机。HAR 中 `appupdates.189.cn` 同时承载地区码、监控和活动配置，`w.189.cn/bigdata/` 返回的五张图片均为 84/152 像素小程序图标，因此不拒绝这些共享主机。
+- 同步：更新 Quantumult X 聚合/拆分资源、Surge 转换、README 与防误杀校验；新增校验禁止扩大到整个 `ctrmi.cn`、`jd.com`、`360buyimg.com`、`189.cn` 或 `appupdates.189.cn`。
+
 ## 2026-09-29 — Quantumult X 按 App 模块化
 
 - 目的：将稳定的聚合分流/重写按 App 拆分，允许独立启停、更新和定位误杀，同时保留原有聚合 Raw 地址，避免现有配置失效。
