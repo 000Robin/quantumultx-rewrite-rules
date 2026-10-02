@@ -69,7 +69,7 @@ def build():
         guards.update(host_guards(path.read_text(encoding='utf-8')))
     counts = {'rewrite': Counter(), 'filter': Counter()}
     rewrites, rewrite_hosts, seen = [], set(), set()
-    for line in (SOURCE / 'blackmatrix.conf').read_text(encoding='utf-8-sig').splitlines():
+    for line in ((SOURCE / 'blackmatrix.conf').read_text(encoding='utf-8-sig') + '\n' + (SOURCE / 'limbopro-rewrite.conf').read_text(encoding='utf-8-sig')).splitlines():
         line = line.strip()
         if not line or line.startswith('#') or line.startswith('hostname'):
             continue
@@ -103,7 +103,7 @@ def build():
             rewrite_hosts.add(host)
     all_rewrite_hosts = {literal_host(line.split()[0])[0] for line in rewrites}
     candidates = set()
-    for line in (SOURCE / 'awa.list').read_text(encoding='utf-8-sig').splitlines():
+    for line in ((SOURCE / 'awa.list').read_text(encoding='utf-8-sig') + '\n' + (SOURCE / 'limbopro-filter.list').read_text(encoding='utf-8-sig')).splitlines():
         line = line.strip()
         if not line or line.startswith('#'):
             continue
@@ -139,6 +139,7 @@ def build():
             '#!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。',
             '#!date=' + manifest['date'],
             '# Upstream: ' + author,
+            '# Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.',
             '# Modified by 000Robin: specialist exclusions, conservative scope and deduplication.',
             '# License: ' + license_name + '; repository personal-use restrictions do not apply.',
             '# Sources, corresponding build inputs and licenses: sources/general/',

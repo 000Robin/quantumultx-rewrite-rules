@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-30",
+  "date": "2026-10-02",
   "profile": "QuantumultX_v8.21_DNS_按App模块化.conf (host-only exclusions)",
   "family_exclusions": [
     "10086.cn",
@@ -301,6 +301,18 @@
       "license": "GPL-2.0",
       "sha256": "ff534003519b8cc3365f0890634ee1cf7a388986d47f6ee1382847d778245430",
       "hash_format": "UTF-8 text with LF newlines"
+    },
+    {
+      "file": "limbopro-filter.list",
+      "url": "https://raw.githubusercontent.com/limbopro/Adblock4limbo/71ef66a26ca777eec3818e62057c41c0afc50092/Adblock4limbo.list",
+      "sha256": "8728be172f168bf9be48c218c6ae68fc72c4d0c585b0ce6685f668b7145847cc",
+      "scope": "Manually reviewed subset; exact hosts only; MIT license retained."
+    },
+    {
+      "file": "limbopro-rewrite.conf",
+      "url": "https://raw.githubusercontent.com/limbopro/Adblock4limbo/71ef66a26ca777eec3818e62057c41c0afc50092/Adblock4limbo.conf",
+      "sha256": "905d68d36d4a7b260cce2ee2ee4956e875217ac6864c36c9ec1fecff92c29f66",
+      "scope": "Manually reviewed subset; exact hosts only; MIT license retained."
     }
   ],
   "external_sources": {

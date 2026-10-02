@@ -1,7 +1,8 @@
 #!name=Robin | 通用去广补充（排除专用）分流
 #!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。
-#!date=2026-09-30
+#!date=2026-10-02
 # Upstream: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-QuantumultX.list
+# Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.
 # Modified by 000Robin: specialist exclusions, conservative scope and deduplication.
 # License: GPL-3.0; repository personal-use restrictions do not apply.
 # Sources, corresponding build inputs and licenses: sources/general/
@@ -13,6 +14,7 @@ host-suffix, 1rtb.com, reject
 host, 8le8le.com, reject
 host, 8rn1y79f02-1.algolianet.com, reject
 host-suffix, a.market.xiaomi.com, reject
+host, a.realsrv.com, reject
 host, a0.app.xiaomi.com, reject
 host, aaid.umeng.com, reject
 host, ad-api.4pyun.com, reject
@@ -44,6 +46,7 @@ host, ad.shenshiads.com, reject
 host, ad.shunchangzhixing.com, reject
 host, ad.toutiao.com, reject
 host, ad.v3mh.com, reject
+host, ad.vidverto.io, reject
 host, ad.winrar.com.cn, reject
 host, ad.ximalaya.com, reject
 host, ad.xunkids.com, reject
@@ -384,6 +387,7 @@ host, images.outbrainimg.com, reject
 host, imdns.hpplay.cn, reject
 host, img-c.heytapimage.com, reject
 host, img-x.jd.com, reject
+host, img.ad-nex.com, reject
 host, img.adnyg.com.w.kunlungr.com, reject
 host, img2.360buyimg.com, reject
 host, impression-asia.chinaliftoff.io, reject

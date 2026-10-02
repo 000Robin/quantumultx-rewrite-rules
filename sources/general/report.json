@@ -1,25 +1,25 @@
 {
-  "date": "2026-09-30",
+  "date": "2026-10-02",
   "counts": {
     "rewrite": {
-      "input": 751,
+      "input": 753,
       "nonliteral_or_unsupported": 117,
       "no_explicit_ad_path": 256,
       "mixed_alternatives_need_manual_review": 54,
       "specialist_or_protected": 84,
-      "output": 240
+      "output": 242
     },
     "filter": {
-      "input": 965,
+      "input": 968,
       "specialist_or_protected": 187,
       "preserve_general_rewrite": 5,
       "unsupported_or_invalid": 4,
       "covered_by_suffix": 22,
-      "output": 747
+      "output": 750
     }
   },
   "protected_host_patterns": 320,
-  "general_mitm_hosts": 217,
+  "general_mitm_hosts": 219,
   "device_tested": false,
   "scope": "Only literal-host reject rewrites with ad-related paths. All specialist host scopes are excluded conservatively, not only identical rules.",
   "not_used": {

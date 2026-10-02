@@ -1,0 +1,4 @@
+# Reviewed subset of limbopro/Adblock4limbo (MIT). Suffix rules narrowed to exact hosts.
+host, a.realsrv.com, reject
+host, ad.vidverto.io, reject
+host, img.ad-nex.com, reject

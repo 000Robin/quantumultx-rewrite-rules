@@ -11,6 +11,21 @@ spec.loader.exec_module(general)
 
 
 class GeneralRulesTests(unittest.TestCase):
+    def test_reviewed_web_ads_keep_normal_pages_and_subdomains(self):
+        outputs = general.build()
+        filters = outputs[ROOT / 'dist/general-filter.list']
+        for host in ('a.realsrv.com', 'ad.vidverto.io', 'img.ad-nex.com'):
+            self.assertIn('host, ' + host + ', reject', filters)
+            self.assertNotIn('host-suffix, ' + host + ', reject', filters)
+        rewrite = outputs[ROOT / 'dist/general-rewrite.snippet']
+        for url, normal in (
+            ('https://www.novel543.com/log/ad.html', 'https://www.novel543.com/chapter/123.html'),
+            ('https://assert.avple.tv/file/avple-images/ad.js', 'https://assert.avple.tv/file/avple-images/player.js'),
+        ):
+            matches = [l.split()[0] for l in rewrite.splitlines() if l.startswith('^') and re.search(l.split()[0], url)]
+            self.assertEqual(len(matches), 1)
+            self.assertIsNone(re.search(matches[0], normal))
+
     def test_domain_boundaries_and_ancestor_conflicts(self):
         self.assertTrue(general.overlaps('12306.cn', 'ad.12306.cn'))
         self.assertTrue(general.overlaps('ad.12306.cn', '12306.cn'))

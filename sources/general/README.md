@@ -46,3 +46,11 @@ python tools/validate_rules.py
 - `blackmatrix.conf`、`../../dist/general-rewrite.snippet`：源于 [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)，保留 GPL-2.0，许可全文见 `LICENSE-BM-GPL-2.0.txt`。
 - 本目录其他文件、`../../tools/build_general_rules.py`、`../../tests/test_general_rules.py`：Copyright (c) 2026 000Robin，GPL-3.0；许可全文同上。
 - 以上文件不适用根目录的个人专用、禁止修改与再分发限制。两份规则是不同上游的独立衍生文件；其他既有文件的许可不变。上游快照、生成器和排除清单公开保留，便于重建。
+
+## 2026-10-02 毒奶规则增量审查
+
+审查作者仓库 `limbopro/Adblock4limbo` 的 `Adblock4limbo.list` 与 `Adblock4limbo.conf`。
+仅选择 3 个广告投放主机，原后缀规则收紧为精确主机；以及小说网页、网页素材的 2 条固定主机广告路径拒绝规则。
+审查摘录保存在 `limbopro-filter.list`、`limbopro-rewrite.conf`，保留作者 MIT 许可；生成时继续执行专用主机排除、重写主机保护和去重。
+没有引入无主机锚点的 `ad.*` 匹配、整个 CloudFront 解密、OpenAI/Google 等受保护主机解密，也没有引入页面导航、远程脚本注入或非广告功能。
+这次增量针对网页广告，不声称修复懂车帝开屏。仅静态审查，手机效果待验证。
