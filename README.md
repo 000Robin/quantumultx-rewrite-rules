@@ -102,6 +102,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 上述公开 Raw 文件只包含精确直连修正、已验证的广告拒绝规则和最小 hostname，不包含 MitM 私钥、订阅、Cookie、Token 或会员解锁脚本。2026-09-15 HAR 确认腾讯视频主页请求把二进制参数 `no_show_update_tip` 设为 `0`，并在同一 `i.video.qq.com` 请求通道出现 `reward_ad_ssp...adService`、`memberExperience...getHomeGrowPopupUrl` 及 `AdRequestContextInfo`。`scripts/tencent_video_request_clean.js` 会在请求阶段对前两项精确返回 204，将广告上下文类型等长改名，并把更新提示开关改为 `1`；普通首页、账号、历史和播放请求原样放行。应用内广告卡片由 `scripts/tencent_video_popup_clean.js` 处理：净化 `i.video.qq.com` 根接口 JSON 中明确标记的广告容器与节点，并识别“广告”角标和“了解更多”按钮同时出现的个人页原生广告卡片；同一 HAR 进一步确认二进制 MVL 响应携带 `AdFeedInfo`、`AdFocusPoster`、`AdJumpAction` 与 `ad_block_*`，脚本会以等长字节替换仅中和这些显式广告类型和模块名。“观看历史”、普通推荐、VIP、账号和播放字段受到显式保护，未知二进制原样放行。2026-08-31 暂停广告 HAR 另确认静态创意来自 `wa.gtimg.com/adxcdn/`，管理片段只对该广告交换路径内的常见图片格式返回透明图片，不拦截整个 `gtimg.com`，也不处理 `getvinfo`、`batchvinfo` 或 `playproxy`。
 
+2026-10-10 抓包中，`svv.video.qq.com/getvinfo` 的表单 `vid=z46344hz3sb` 返回 iPhone 广告视频；实际下载的 TS 画面包含“广告创意画面”声明和苹果产品。新增 `scripts/tencent_video_creative_block.js` 仅拒绝这一已确认素材 ID，其他视频请求原样放行。这是素材级补充，不代表个人中心广告位已经移除：本次未取得截图中 Apple Watch 广告的配置/素材 ID，也未取得个人中心广告卡片响应。更新后若该位置仍有广告，需要在清理缓存后从进入个人中心前开始抓包。新增 MitM 仅为精确 `svv.video.qq.com`，不扩大到共享视频 CDN 或 `vv/vv6/playproxy`。
+
 智联招聘恢复 2026-08-21 HAR 已验证的六组商业化/开屏接口净化，并覆盖同次抓包确认的六种竖横屏大图尺寸。`scripts/zhaopin_splash_clean.js` 对纯广告接口保留状态外壳并清空载荷，对首页灰度和实验配置只中和明确命名的广告容器与开关；登录、职位、消息、账号和普通实验字段保留。响应不是 JSON 时原样放行，避免 404 触发本地缓存开屏。
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。

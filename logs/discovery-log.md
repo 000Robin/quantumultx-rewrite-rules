@@ -312,3 +312,12 @@
 - 删除通配/非固定主机、无明确广告路径和混合路径分支；分流额外避开通用重写所需主机。现有 App 模块和冻结基线未变。
 - 217heidai 大合集不并入；墨鱼旧链接返回 HTML，不作规则来源。上游快照、独立 GPL 许可、排除清单、统计及重建脚本随新资源保留。
 - 四项回归测试及仓库校验通过；未宣称 iPhone 实机效果。未保存或上传完整配置、证书、订阅或登录信息。
+
+
+## 2026-10-10 — Tencent Video verified creative fallback
+
+- Input: uploaded HAR named 2026-10-09-182821; actual entry timestamps 2026-10-10 11:04–11:05 UTC, 858 entries. HAR stays private and is not committed.
+- Evidence: entry 12 POST svv.video.qq.com/getvinfo with form vid=z46344hz3sb; entries 17/20 downloaded TS advertising footage. Decoded frames show Apple iPhone creative and an advertising disclaimer. The screenshot shows a different Watch creative, whose ID/configuration is absent.
+- Change: reject only that exact VID on the exact POST endpoint; pass ordinary IDs, duplicate IDs, malformed forms and other endpoints unchanged. No shared CDN/IP block. Both QX aggregate/modular and Surge implementations synchronized.
+- Limit: does not remove the native profile ad container or identify the Watch creative; cached media can still display. Need a fresh uncached profile capture for the placement fix.
+- Checks: QX/Surge script regression tests, modular equivalence and both rule validators.

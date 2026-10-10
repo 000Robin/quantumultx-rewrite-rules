@@ -9,6 +9,9 @@
 ^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.* url reject
 ^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.* url reject
 
+# Tencent Video HAR-confirmed iPhone advertising creative only; normal video IDs pass through.
+^https:\/\/svv\.video\.qq\.com\/getvinfo(?:\?.*)?$ url script-request-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_creative_block.js
+
 # Tencent Video content-update popup preference; exact binary flag and equal-length value only.
 ^https:\/\/i\.video\.qq\.com\/(?:\?.*)?$ url script-request-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_request_clean.js
 
@@ -80,4 +83,4 @@
 # Ctrip trip ad endpoint
 ^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds url reject
 
-hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, afd.baidu.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, api.m.jd.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com
+hostname = -appgologinhd.189.cn, -appgologin.189.cn, i.video.qq.com, svv.video.qq.com, iacc.qq.com, iacc.rec.qq.com, vfiles.gtimg.cn, vip.image.video.qpic.cn, wa.gtimg.com, afd.baidu.com, youtubei.googleapis.com, api-access.pangolin-sdk-toutiao.com, api-access.pangolin-sdk-toutiao1.com, api-access.pangolin-sdk-toutiao2.com, api-access.pangolin-sdk-toutiao3.com, api-access.pangolin-sdk-toutiao4.com, api-access.pangolin-sdk-toutiao5.com, api-access.pangolin-sdk-toutiao-b.com, sf3-fe-tos.pglstatp-toutiao.com, sf3-be-pack.pglstatp-toutiao.com, v3-novelapp.fqnovelvod.com, v5-novelapp.fqnovelvod.com, v6-novelapp.fqnovelvod.com, v9-novelapp.fqnovelvod.com, v3-reading-video.fqnovelvod.com, v5-reading-video.fqnovelvod.com, v9-reading-video.fqnovelvod.com, api.m.jd.com, mbasecc.bcs.cmbchina.com, gap.cibfintech.com, storage-public.zhaopin.cn, capi.zhaopin.com, fe-api.zhaopin.com, cgate.zhaopin.com, api.hunliji.com, autoload.bank.ecitic.com, wapside.189.cn, ad.12306.cn, mdej.impc.com.cn, cs.kuso.xyz, m.ctrip.com

@@ -73,7 +73,7 @@ REWRITE_MARKERS = [
 
 REWRITE_HOSTS = {
     "tencent-video": [
-        "i.video.qq.com", "iacc.qq.com", "iacc.rec.qq.com", "vfiles.gtimg.cn",
+        "i.video.qq.com", "svv.video.qq.com", "iacc.qq.com", "iacc.rec.qq.com", "vfiles.gtimg.cn",
         "vip.image.video.qpic.cn", "wa.gtimg.com",
     ],
     "baidupan": ["afd.baidu.com"],

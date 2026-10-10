@@ -160,6 +160,13 @@ def check_rewrite() -> None:
     )
     if request_rule not in lines:
         fail("missing exact Tencent Video content-update popup preference rule")
+    creative_rule = (
+        r"^https:\/\/svv\.video\.qq\.com\/getvinfo(?:\?.*)?$ url script-request-body "
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/tencent_video_creative_block.js"
+    )
+    if creative_rule not in lines or "svv.video.qq.com" not in hostname_tokens:
+        fail("missing exact verified Tencent Video creative rule or hostname")
     if not host_lines or "i.video.qq.com" not in hostname_tokens:
         fail("missing Tencent Video popup MitM hostname")
     pause_ad_rule = (
@@ -192,7 +199,10 @@ def check_rewrite() -> None:
     if "wa.gtimg.com" not in hostname_tokens:
         fail("missing exact Tencent Video pause-ad MitM hostname")
     for playback_host in ("vv.video.qq.com", "vv6.video.qq.com", "playproxy.video.qq.com"):
-        if any(playback_host in line for line in lines):
+        escaped_host = re.escape(playback_host.replace(".", r"\."))
+        if playback_host in hostname_tokens or any(
+            re.search(r"(?<![a-z])" + escaped_host, line) for line in lines
+        ):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
 
     baidupan_rule = (
@@ -630,6 +640,7 @@ def check_rewrite() -> None:
 def check_scripts() -> None:
     node = shutil.which("node")
     scripts = {
+        "scripts/tencent_video_creative_block.js": ("$persistentstore", "$prefs", "cookie", "receipt"),
         "scripts/tencent_video_popup_clean.js": (
             "annualvip",
             "endtime",
@@ -749,6 +760,7 @@ def check_scripts() -> None:
                 fail(f"invalid JavaScript syntax in {relative}: {result.stderr.strip()}")
 
     tests = (
+        "tests/tencent_video_creative_block.test.js",
         "tests/tencent_video_popup_clean.test.js",
         "tests/tencent_video_request_clean.test.js",
         "tests/youtube_ad_clean.test.js",

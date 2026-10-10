@@ -18,7 +18,7 @@
       "output": 750
     }
   },
-  "protected_host_patterns": 320,
+  "protected_host_patterns": 321,
   "general_mitm_hosts": 219,
   "device_tested": false,
   "scope": "Only literal-host reject rewrites with ad-related paths. All specialist host scopes are excluded conservatively, not only identical rules.",
