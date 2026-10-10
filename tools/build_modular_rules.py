@@ -74,7 +74,7 @@ REWRITE_MARKERS = [
 REWRITE_HOSTS = {
     "tencent-video": [
         "i.video.qq.com", "svv.video.qq.com", "iacc.qq.com", "iacc.rec.qq.com", "vfiles.gtimg.cn",
-        "vip.image.video.qpic.cn", "wa.gtimg.com",
+        "vip.image.video.qpic.cn", "wa.gtimg.com", "wallpaper-1258344696.file.myqcloud.com",
     ],
     "baidupan": ["afd.baidu.com"],
     "youtube": ["youtubei.googleapis.com"],

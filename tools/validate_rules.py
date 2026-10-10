@@ -167,6 +167,38 @@ def check_rewrite() -> None:
     )
     if creative_rule not in lines or "svv.video.qq.com" not in hostname_tokens:
         fail("missing exact verified Tencent Video creative rule or hostname")
+    hikari_module_rule = (
+        r"^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/module\/"
+        r"[^/?]*reward-ad[^/?]*\.zip(?:\?.*)?$ url reject"
+    )
+    hikari_template_rule = (
+        r"^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/"
+        r"\d+_\d{14}\.json(?:\?.*)?$ url script-response-body "
+        "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
+        "main/scripts/tencent_video_hikari_ad_clean.js"
+    )
+    if hikari_module_rule not in lines or hikari_template_rule not in lines:
+        fail("missing exact Tencent Video Hikari ad renderer/template rules")
+    if "wallpaper-1258344696.file.myqcloud.com" not in hostname_tokens:
+        fail("missing exact Tencent Video Hikari MitM hostname")
+    else:
+        module_pattern = re.compile(hikari_module_rule.split(" url ", 1)[0])
+        template_pattern = re.compile(hikari_template_rule.split(" url ", 1)[0])
+        for url in (
+            "https://wallpaper-1258344696.file.myqcloud.com/hikari/module/fixture_reward-ad_index.zip",
+            "https://wallpaper-1258344696.file.myqcloud.com/hikari/template/12287_20261008160641.json",
+        ):
+            pattern = module_pattern if "/module/" in url else template_pattern
+            if not pattern.search(url):
+                fail(f"Tencent Video Hikari rule unexpectedly misses: {url}")
+        for url in (
+            "https://wallpaper-1258344696.file.myqcloud.com/hikari/module/vendor.zip",
+            "https://wallpaper-1258344696.file.myqcloud.com/hikari/template/not-a-template.json",
+            "https://wallpaper-test-1258344696.file.myqcloud.com/hikari/template/12287_20261008160641.json",
+            "https://wallpaper-1258344696.file.myqcloud.com/car/m/model.tflite",
+        ):
+            if module_pattern.search(url) or template_pattern.search(url):
+                fail(f"Tencent Video Hikari rule unexpectedly matches protected scope: {url}")
     if not host_lines or "i.video.qq.com" not in hostname_tokens:
         fail("missing Tencent Video popup MitM hostname")
     pause_ad_rule = (
@@ -641,6 +673,16 @@ def check_scripts() -> None:
     node = shutil.which("node")
     scripts = {
         "scripts/tencent_video_creative_block.js": ("$persistentstore", "$prefs", "cookie", "receipt"),
+        "scripts/tencent_video_hikari_ad_clean.js": (
+            "account",
+            "annualvip",
+            "cookie",
+            "entitlement",
+            "receipt",
+            "subscription",
+            "$persistentstore",
+            "$prefs",
+        ),
         "scripts/tencent_video_popup_clean.js": (
             "annualvip",
             "endtime",
@@ -761,6 +803,7 @@ def check_scripts() -> None:
 
     tests = (
         "tests/tencent_video_creative_block.test.js",
+        "tests/tencent_video_hikari_ad_clean.test.js",
         "tests/tencent_video_popup_clean.test.js",
         "tests/tencent_video_request_clean.test.js",
         "tests/youtube_ad_clean.test.js",

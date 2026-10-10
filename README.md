@@ -104,6 +104,8 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/m
 
 2026-10-10 抓包中，`svv.video.qq.com/getvinfo` 的表单 `vid=z46344hz3sb` 返回 iPhone 广告视频；实际下载的 TS 画面包含“广告创意画面”声明和苹果产品。新增 `scripts/tencent_video_creative_block.js` 仅拒绝这一已确认素材 ID，其他视频请求原样放行。这是素材级补充，不代表个人中心广告位已经移除：本次未取得截图中 Apple Watch 广告的配置/素材 ID，也未取得个人中心广告卡片响应。更新后若该位置仍有广告，需要在清理缓存后从进入个人中心前开始抓包。新增 MitM 仅为精确 `svv.video.qq.com`，不扩大到共享视频 CDN 或 `vv/vv6/playproxy`。
 
+2026-10-10 后续抓包新增 233 条请求，确认互动开屏改由 `wallpaper-1258344696.file.myqcloud.com/hikari/` 下发：资源中包含明确命名的 `reward-ad_index.zip`，41 个模板正文带有 `adData.rewardAd`、`state.rewardAd`、`RewardVideo` 或 `RewardAdTopClose`。管理片段现在拒绝仅带 `reward-ad` 文件名的 Hikari 模块，并由 `scripts/tencent_video_hikari_ad_clean.js` 把正文明确命中奖励/互动广告标记的模板替换为不可见空根节点；其他模板、模型文件、普通模块和共享素材原样放行。该方案会让“看广告领奖励”类界面不可用；更新后需要清除腾讯视频缓存，避免继续使用已下载的旧组件。
+
 智联招聘恢复 2026-08-21 HAR 已验证的六组商业化/开屏接口净化，并覆盖同次抓包确认的六种竖横屏大图尺寸。`scripts/zhaopin_splash_clean.js` 对纯广告接口保留状态外壳并清空载荷，对首页灰度和实验配置只中和明确命名的广告容器与开关；登录、职位、消息、账号和普通实验字段保留。响应不是 JSON 时原样放行，避免 404 触发本地缓存开屏。
 
 YouTube 由 `scripts/youtube_ad_clean.js` 处理：只解密 `youtubei.googleapis.com` 的内容接口。JSON 响应删除明确命名的广告容器/渲染器；二进制 `player` 响应只移除顶层广告位字段 7 和 68，其余字段逐字节保留。规则不 MitM `*.googlevideo.com`，不修改播放权限、账户、字幕、后台播放、画中画或界面设置。

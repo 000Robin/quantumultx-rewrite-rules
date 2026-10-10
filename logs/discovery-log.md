@@ -321,3 +321,11 @@
 - Change: reject only that exact VID on the exact POST endpoint; pass ordinary IDs, duplicate IDs, malformed forms and other endpoints unchanged. No shared CDN/IP block. Both QX aggregate/modular and Surge implementations synchronized.
 - Limit: does not remove the native profile ad container or identify the Watch creative; cached media can still display. Need a fresh uncached profile capture for the placement fix.
 - Checks: QX/Surge script regression tests, modular equivalence and both rule validators.
+
+## 2026-10-10 — Tencent Video Hikari interactive splash
+
+- Input: cumulative follow-up HAR with 1,091 entries; the final 233 requests were captured from 14:23:29–14:24:17 UTC. The HAR remains private and is not committed.
+- Evidence: the new segment downloads `hikari/module/7f43..._reward-ad_index.zip` plus 41 JSON templates whose bodies explicitly contain `adData.rewardAd`, `state.rewardAd`, `RewardVideo` or `RewardAdTopClose`. The existing `iacc` requests were already answered with empty 200 responses, proving this was a separate renderer path.
+- Change: reject only Hikari modules whose filename contains `reward-ad`; inspect only production Hikari template JSON and replace a template with invisible empty roots only when its body contains an explicit reward-ad marker. Ordinary templates, vendor/stream modules, TFLite models and unrelated CDN paths pass through.
+- Tradeoff: reward-ad/interactive-ad UI is disabled, including voluntary “watch an ad for rewards” flows. Existing cached modules/templates require app cache removal before retesting.
+- Checks: synthetic QX/Surge script tests, replay against all captured template bodies, modular equivalence and both validators.
