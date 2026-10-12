@@ -2,7 +2,7 @@
 #!desc=腾讯视频、百度网盘、京东、YouTube、番茄小说、12306、蒙电 e 家、兴业生活与 iScreen 等已验证广告接口净化；仅供 000Robin 个人使用。
 #!author=000Robin
 #!homepage=https://github.com/000Robin/quantumultx-rewrite-rules
-#!date=2026-10-01
+#!date=2026-10-12
 
 # Tencent Video startup/interactive ad transport and media
 ^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.* url reject-200
@@ -10,8 +10,10 @@
 ^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.* url reject
 
 # Tencent Video Hikari reward/interactive-ad renderer and explicit ad templates.
+# HAR-confirmed immutable ad templates: return a hidden layout before contacting the CDN.
+^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/(?:11975_20260824194400|11976_20260824194400|11989_20260825185822|11991_20260825192246|11992_20260825192827|11993_20260825192901|12007_20260828161910|12028_20260901164525|12029_20260901164548|12136_20260915201741|12137_20260915201742|12233_20260922200748|12240_20260923113817|12241_20260923113818|12242_20260923113819|12247_20260923113923|12248_20260923113924|12249_20260923113925|12250_20260923113927|12252_20260923113929|12253_20260923113930|12254_20260923113932|12255_20260923113933|12256_20260923113934|12257_20260923113936|12258_20260923113937|12259_20260923113938|12260_20260923113939|12261_20260923113941|12262_20260923113942|12264_20260923120932|12265_20260923121313|12266_20260923121600|12267_20260923121600|12268_20260923121600|12274_20260924110641|12277_20260924145956|12279_20260924164611|12280_20260924164612|12286_20261008160641|12287_20261008160641)\.json(?:\?.*)?$ url script-echo-response https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_hikari_ad_clean.js?v=20261012
 ^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/module\/[^/?]*reward-ad[^/?]*\.zip(?:\?.*)?$ url reject
-^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/\d+_\d{14}\.json(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_hikari_ad_clean.js
+^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/\d+_\d{14}\.json(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_hikari_ad_clean.js?v=20261012
 
 # Tencent Video HAR-confirmed iPhone advertising creative only; normal video IDs pass through.
 ^https:\/\/svv\.video\.qq\.com\/getvinfo(?:\?.*)?$ url script-request-body https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/scripts/tencent_video_creative_block.js

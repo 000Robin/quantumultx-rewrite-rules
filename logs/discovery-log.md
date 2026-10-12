@@ -329,3 +329,13 @@
 - Change: reject only Hikari modules whose filename contains `reward-ad`; inspect only production Hikari template JSON and replace a template with invisible empty roots only when its body contains an explicit reward-ad marker. Ordinary templates, vendor/stream modules, TFLite models and unrelated CDN paths pass through.
 - Tradeoff: reward-ad/interactive-ad UI is disabled, including voluntary “watch an ad for rewards” flows. Existing cached modules/templates require app cache removal before retesting.
 - Checks: synthetic QX/Surge script tests, replay against all captured template bodies, modular equivalence and both validators.
+
+
+## 2026-10-12 — Tencent Video Hikari request-stage reinforcement
+
+- Reuse the user-supplied follow-up HAR received on 2026-10-10; no new capture or device test is claimed.
+- Add an exact `script-echo-response` rule for the 41 confirmed advertising template filenames (ID and timestamp). Return the existing hidden layout with HTTP 200 before contacting the CDN. Preserve the four normal templates and all unlisted versions.
+- Keep marker-based response cleaning for newly published advertising templates and the existing explicit reward-ad module rejection. Strip stale cache validators and entity metadata only from rewritten advertising responses; send no-store/no-cache headers.
+- Synchronize aggregate, generated per-app Quantumult X resources and Surge request/response adapters. Version the Hikari script URL to avoid reusing the previous response-only script cache.
+- Tests cover all 41 captured filenames, four protected templates, future versions, unrelated hosts, vendor modules, malformed responses, cache metadata and both adapter response shapes. Actual iPhone cold/hot launches remain to be checked after applying the configuration and clearing old ad caches.
+- Deliberately includes voluntary watch-ad-for-rewards templates. Does not reject shared video APIs, cover CDNs, ordinary Hikari templates or model downloads.

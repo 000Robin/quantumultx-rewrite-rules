@@ -90,7 +90,7 @@ def check_modular_resources() -> None:
     modular_rewrite: set[str] = set()
     modular_hosts: set[str] = set()
     allowed = re.compile(
-        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-analyze-echo-response)(?:\s|$)"
+        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-(?:analyze-)?echo-response)(?:\s|$)"
     )
     for path in sorted((ROOT / "dist/rewrite").glob("*.snippet")):
         relative = str(path.relative_to(ROOT))
@@ -125,7 +125,7 @@ def check_rewrite() -> None:
         fail(f"{relative} must contain exactly one hostname line")
 
     allowed = re.compile(
-        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-analyze-echo-response)(?:\s|$)"
+        r"\surl\s(?:reject(?:-200|-img|-dict|-array)?|script-(?:request|response)-(?:header|body)|script-(?:analyze-)?echo-response)(?:\s|$)"
     )
     for line in lines:
         if line.lower().startswith("hostname"):
@@ -175,7 +175,7 @@ def check_rewrite() -> None:
         r"^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/"
         r"\d+_\d{14}\.json(?:\?.*)?$ url script-response-body "
         "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
-        "main/scripts/tencent_video_hikari_ad_clean.js"
+        "main/scripts/tencent_video_hikari_ad_clean.js?v=20261012"
     )
     if hikari_module_rule not in lines or hikari_template_rule not in lines:
         fail("missing exact Tencent Video Hikari ad renderer/template rules")

@@ -1,43 +1,37 @@
 /*
- * Tencent Video Hikari reward/interactive-ad template cleaner.
- * Scope is limited by the managed snippet to production Hikari template JSON.
- * Non-ad templates and malformed responses pass through unchanged.
+ * Hikari ad templates: request-stage echo is bound to 41 HAR-confirmed filenames.
+ * Response-stage cleaning covers new explicitly typed ad templates.
+ * Normal or malformed response bodies pass through unchanged.
  */
-
-const rawBody = typeof $response.body === "string" ? $response.body : "";
-
-const explicitAdMarkers = [
-  "adData.rewardAd",
-  "state.rewardAd",
-  "RewardVideo",
-  "RewardAdTopClose",
-];
-
-const hiddenRoot = (id) => ({
-  id,
-  type: "FrameContainer",
-  width: "100%",
-  height: "100%",
-  visible: false,
-  children: [],
+const requestStage = typeof $response === "undefined";
+const rawBody = !requestStage && typeof $response.body === "string" ? $response.body : "";
+const explicitAdMarkers = ["adData.rewardAd", "state.rewardAd", "RewardVideo", "RewardAdTopClose"];
+const hiddenRoot = (id) => ({ id, type: "FrameContainer", width: "100%", height: "100%", visible: false, children: [] });
+const hiddenBody = () => JSON.stringify({
+  vertical: hiddenRoot("root"),
+  horizontal: hiddenRoot("root-horizontal"),
+  config: { id: "ConfigRoot", type: "ConfigContainer", children: [] },
 });
-
-if (!rawBody || !explicitAdMarkers.some((marker) => rawBody.includes(marker))) {
+const cleanHeaders = (original) => {
+  const headers = {};
+  const stale = new Set(["cache-control", "pragma", "expires", "etag", "last-modified", "content-length", "content-encoding", "content-type"]);
+  for (const [key, value] of Object.entries(original || {})) {
+    if (!stale.has(key.toLowerCase())) headers[key] = value;
+  }
+  headers["Content-Type"] = "application/json; charset=utf-8";
+  headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+  headers.Pragma = "no-cache";
+  headers.Expires = "0";
+  return headers;
+};
+if (requestStage) {
+  $done({ status: "HTTP/1.1 200 OK", headers: cleanHeaders({}), body: hiddenBody() });
+} else if (!rawBody || !explicitAdMarkers.some((marker) => rawBody.includes(marker))) {
   $done({});
 } else {
   try {
     JSON.parse(rawBody);
-    $done({
-      body: JSON.stringify({
-        vertical: hiddenRoot("root"),
-        horizontal: hiddenRoot("root-horizontal"),
-        config: {
-          id: "ConfigRoot",
-          type: "ConfigContainer",
-          children: [],
-        },
-      }),
-    });
+    $done({ headers: cleanHeaders($response.headers), body: hiddenBody() });
   } catch (_) {
     $done({});
   }

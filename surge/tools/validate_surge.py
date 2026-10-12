@@ -134,7 +134,7 @@ def check_rewrite() -> None:
         match = re.search(r"script-path=https://raw\.githubusercontent\.com/000Robin/quantumultx-rewrite-rules/main/(surge/scripts/[^,]+)", params)
         if not match:
             fail(f"script does not use the independent Surge path: {name}")
-        elif not (ROOT / match.group(1)).is_file():
+        elif not (ROOT / match.group(1).split("?", 1)[0]).is_file():
             fail(f"missing referenced Surge script: {match.group(1)}")
 
     for line in section(module, "Rule"):
