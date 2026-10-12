@@ -175,7 +175,7 @@ def check_rewrite() -> None:
         r"^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/template\/"
         r"\d+_\d{14}\.json(?:\?.*)?$ url script-response-body "
         "https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/"
-        "main/scripts/tencent_video_hikari_ad_clean.js?v=20261012"
+        "main/scripts/tencent_video_hikari_ad_clean.js?v=20261012b"
     )
     if hikari_module_rule not in lines or hikari_template_rule not in lines:
         fail("missing exact Tencent Video Hikari ad renderer/template rules")

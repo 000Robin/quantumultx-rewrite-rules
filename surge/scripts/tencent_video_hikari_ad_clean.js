@@ -1,5 +1,5 @@
 /*
- * Hikari ad templates: request-stage echo is bound to 41 HAR-confirmed filenames.
+ * Hikari ad templates: request-stage echo is bound to 86 HAR-confirmed filenames across two captures.
  * Response-stage cleaning covers new explicitly typed ad templates.
  * Normal or malformed response bodies pass through unchanged.
  */

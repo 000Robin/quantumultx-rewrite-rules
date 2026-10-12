@@ -63,12 +63,19 @@ const exact = new RegExp(exactPattern);
 const base = "https://wallpaper-1258344696.file.myqcloud.com/hikari/template/";
 assert.equal(fixtures.ad_templates.length, 41);
 assert.equal(fixtures.normal_templates.length, 4);
-for (const filename of fixtures.ad_templates) {
+const newFixtures = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures/tencent-video-hikari-20261012.json"), "utf8"));
+assert.equal(newFixtures.ad_templates.length, 45);
+assert.equal(newFixtures.normal_templates.length, 1);
+const allAds = [...new Set([...fixtures.ad_templates, ...newFixtures.ad_templates])];
+const allNormal = [...new Set([...fixtures.normal_templates, ...newFixtures.normal_templates])];
+assert.equal(allAds.length, 86);
+assert.equal(allNormal.length, 5);
+for (const filename of allAds) {
   assert.ok(exact.test(base + filename));
   assert.ok(exact.test(base + filename + "?cache=1"));
   assert.equal(exact.test(base + filename.replace(/_\d{14}/, "_20990101000000")), false);
 }
-for (const filename of fixtures.normal_templates) assert.equal(exact.test(base + filename), false);
+for (const filename of allNormal) assert.equal(exact.test(base + filename), false);
 for (const url of [
   base + "99999_20990101000000.json",
   base + fixtures.ad_templates[0] + "/extra",
@@ -103,6 +110,6 @@ for (const variant of ["scripts", "surge/scripts"]) {
   assert.equal(originalHeaders.ETag, "fixture");
   assert.deepEqual(invoke({ body: "{bad RewardVideo", headers: originalHeaders }), {});
 }
-console.log("Hikari request echo scope and cache tests passed (41 ads, 4 protected templates).");
+console.log("Hikari request echo scope and cache tests passed (86 ads, 5 protected templates).");
 
-assert.ok(qxLine.endsWith("?v=20261012"), "new echo script must not reuse the old response-only cache entry");
+assert.ok(qxLine.endsWith("?v=20261012b"), "new echo script must not reuse the old response-only cache entry");

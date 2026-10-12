@@ -339,3 +339,12 @@
 - Synchronize aggregate, generated per-app Quantumult X resources and Surge request/response adapters. Version the Hikari script URL to avoid reusing the previous response-only script cache.
 - Tests cover all 41 captured filenames, four protected templates, future versions, unrelated hosts, vendor modules, malformed responses, cache metadata and both adapter response shapes. Actual iPhone cold/hot launches remain to be checked after applying the configuration and clearing old ad caches.
 - Deliberately includes voluntary watch-ad-for-rewards templates. Does not reject shared video APIs, cover CDNs, ordinary Hikari templates or model downloads.
+
+
+## 2026-10-12 — Follow-up HAR: historical Hikari template set
+
+- The capture contains 267 entries between 21:50:29 and 21:51:24 China time. Its 47 Hikari template responses include 46 advertising responses (45 unique filenames) and one normal `LandscapeFeedCard` / `WECHAT_STORE` template. The 45 advertising filenames are disjoint from the preceding 41-template exact list.
+- All advertising templates contain explicit reward-ad renderer markers. Extend request echo to the union of 86 immutable filenames, while preserving all five normal templates across both captures and unknown versions. Version the script/resource cache keys for this revision.
+- In the supplied HAR, 16 iacc responses have empty bodies and two popup RPCs have HTTP 204; Hikari responses still contain the full advertising layout. This establishes incomplete effective coverage in the capture, but does not establish whether the new profile was installed, whether the rule/script was loaded, or which stage of response rewriting the HAR records. Require device-side resource/rule checks after installing the revision.
+- Do not broadly block `/batchvinfo`, playback hosts or the shared CDN. The captured `app_cold_launch_home_splash_ios.fb` contains home/profile launch measurement and splash event logic; its name alone is insufficient evidence to reject that resource.
+- Validation: exact-scope regressions for 86 advertising templates and five normal templates, plus replay of both captures using Quantumult X and Surge adapters. Device cold/hot launch results remain pending.
