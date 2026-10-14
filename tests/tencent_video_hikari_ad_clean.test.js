@@ -112,4 +112,4 @@ for (const variant of ["scripts", "surge/scripts"]) {
 }
 console.log("Hikari request echo scope and cache tests passed (86 ads, 5 protected templates).");
 
-assert.ok(qxLine.endsWith("?v=20261012b"), "new echo script must not reuse the old response-only cache entry");
+assert.ok(qxLine.trimEnd().endsWith("?v=20261012b"), "new echo script must not reuse the old response-only cache entry");
