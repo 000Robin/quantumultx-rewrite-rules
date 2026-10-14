@@ -1,5 +1,14 @@
 # Discovery log
 
+## 2026-10-14 — HAR audit: distinguish blocked traffic from normal UI assets
+
+- 431 entries between 08:43:42 and 08:45:22 China time. All 16 iacc responses are HTTP 200 with an empty body; the broad existing starter PNG rule yields 36 empty HTTP 404 responses; three promotionTest requests are also empty HTTP 404. No Hikari requests are present, so this capture cannot validate Hikari suppression or rule loading, nor exclude cached advertising.
+- A manual origin fetch and visual inspection establishes that the five blocked PNGs are ordinary UI assets: two children icons (132x96 and 99x72), a premiere badge (76x48), a list icon (72x72), and a calendar icon (72x72). Correct the inherited overbroad starter rule using five exact filename exceptions with query support. Preserve the rest of the existing rejection scope and the Hikari rules. Update the protected reference fragment because this is a manual false-positive repair supported by inspected content.
+- The ten `wuji_starter_material` ZIPs contain 132x132 Lottie navigation icons named home, short, vip, me and doki, including dark variants. Do not extend blocking to that directory. Shared VIP animation ZIPs also do not provide confirmed new advertising evidence.
+- Add sanitized path-only fixtures and regressions covering normal assets, query strings, adjacent paths, the retained rejection, aggregate/modular Quantumult X and Surge outputs. Do not publish the HAR, images, animation archives, account/device identifiers or query parameters.
+- No new advertising template is confirmed by this capture. Device-visible cold/hot launch behavior remains to be reported by the user.
+
+
 ## 2026-10-14 — Windows 校验兼容修复
 
 - 同步最新 `main` 后，规则校验在 Windows 工作区失败：Hikari 缓存版本断言直接对含 CRLF 行尾的整行使用 `endsWith`，把行尾 `\r` 误判成脚本版本错误；实际生成规则已经正确使用 `v=20261012b`。

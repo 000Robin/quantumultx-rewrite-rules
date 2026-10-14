@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import json
 import shutil
 import subprocess
 import sys
@@ -236,6 +237,26 @@ def check_rewrite() -> None:
             re.search(r"(?<![a-z])" + escaped_host, line) for line in lines
         ):
             fail(f"Tencent Video playback host must not be intercepted: {playback_host}")
+
+    # HAR-confirmed UI images and Lottie navigation packages must survive all reject rules.
+    ui_assets = json.loads((ROOT / "tests/fixtures/tencent-video-ui-assets-20261014.json").read_text(encoding="utf-8"))
+    protected_paths = [item["path"] for item in ui_assets["normal_icons"]] + ui_assets["normal_material_paths"]
+    protected_paths += ["/wuji_dashboard/xy/starter/Game%403x.png", "/wuji_dashboard/xy/starter/cart.png"]
+    for relative in ("dist/managed-rewrite.snippet", "dist/rewrite/tencent-video.snippet", "rules/protected-local-splash.conf"):
+        rejecting = [re.compile(line.split(" url ", 1)[0]) for line in active_lines(relative) if " url reject" in line]
+        for path in protected_paths:
+            for query in ("", "?v=fixture"):
+                url = "https://vfiles.gtimg.cn" + path + query
+                if any(pattern.search(url) for pattern in rejecting):
+                    fail(f"{relative} rejects a verified normal Tencent Video UI asset: {url}")
+        for path in ("/wupload/xy/starter/fixture.png", "/wupload/xy/starter/FNLQm0lJ.png/extra", "/wupload/xy/starter/other/FNLQm0lJ.png"):
+            if not any(pattern.search("https://vfiles.gtimg.cn" + path) for pattern in rejecting):
+                fail(f"{relative} lost the existing starter rejection outside exact UI exceptions: {path}")
+    surge_rejects = [re.compile(line[len("URL-REGEX,"):].rsplit(",", 1)[0]) for line in active_lines("surge/modules/managed-rewrite.sgmodule") if line.startswith("URL-REGEX,")]
+    for path in protected_paths:
+        for query in ("", "?v=fixture"):
+            if any(pattern.search("https://vfiles.gtimg.cn" + path + query) for pattern in surge_rejects):
+                fail(f"Surge rejects a verified normal Tencent Video UI asset: {path}")
 
     baidupan_rule = (
         r"^https:\/\/afd\.baidu\.com\/afd\/entry\?action=(?:query|update)(?:&.*)?$ "

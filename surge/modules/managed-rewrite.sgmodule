@@ -7,7 +7,7 @@
 [Rule]
 # Static advertising transports and media.
 URL-REGEX,^https?:\/\/iacc(?:\.rec)?\.qq\.com\/.*,REJECT
-URL-REGEX,^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/.*,REJECT-TINYGIF
+URL-REGEX,^https:\/\/vfiles\.gtimg\.cn\/wupload\/xy\/starter\/(?!(?:FNLQm0lJ|PxESsWQr|NdBbLdGV|U0wi0Z26|g1qIyxoO)\.png(?:\?|$)).*,REJECT-TINYGIF
 URL-REGEX,^https:\/\/(?:vfiles\.gtimg\.cn|vip\.image\.video\.qpic\.cn)\/wupload\/xy\/promotionTest\/.*,REJECT
 URL-REGEX,^https:\/\/wa\.gtimg\.com\/adxcdn\/.*\.(?:jpe?g|png|gif|webp)(?:\?.*)?$,REJECT-TINYGIF
 URL-REGEX,^https:\/\/wallpaper-1258344696\.file\.myqcloud\.com\/hikari\/module\/[^/?]*reward-ad[^/?]*\.zip(?:\?.*)?$,REJECT

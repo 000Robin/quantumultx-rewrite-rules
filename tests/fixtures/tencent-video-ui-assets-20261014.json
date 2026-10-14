@@ -1,0 +1,42 @@
+{
+  "source": "2026-10-14 user HAR; public origin PNGs visually inspected; URL paths only",
+  "normal_icons": [
+    {
+      "path": "/wupload/xy/starter/FNLQm0lJ.png",
+      "description": "children icon",
+      "sha256": "bf945af1cc48d5b3e41a9f4a171434d7829dd4241404e6600a798bba4b515e07"
+    },
+    {
+      "path": "/wupload/xy/starter/PxESsWQr.png",
+      "description": "children icon small",
+      "sha256": "a6cdb6084ab49a110d0247fe9efddf8fe4684a4dbb34ad4a5ed48a982b00a980"
+    },
+    {
+      "path": "/wupload/xy/starter/NdBbLdGV.png",
+      "description": "premiere badge",
+      "sha256": "199dfaf158c4fabd433c4a817ee76f51d56e672354d92e0ee75f5d8d0a7672be"
+    },
+    {
+      "path": "/wupload/xy/starter/U0wi0Z26.png",
+      "description": "list icon",
+      "sha256": "045ab2828f2c159c42f8a41ada3584ca292c86021d4fda6d1c9874f2938ca4cd"
+    },
+    {
+      "path": "/wupload/xy/starter/g1qIyxoO.png",
+      "description": "calendar icon",
+      "sha256": "cdd51cd6696891fd9b56f6e692ff2156678b283ff1c5ea8c0b3ce8e5f54960a9"
+    }
+  ],
+  "normal_material_paths": [
+    "/wuji_dashboard/xy/starter/wuji_starter_material/68WaO3pO.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/QYNF665L.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/ISXRNoRV.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/wxFoSlo7.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/UYBu5Pc4.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/Pzuro2gP.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/UTnTwOIp.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/XTr4tg3k.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/CaPnhtqH.zip",
+    "/wuji_dashboard/xy/starter/wuji_starter_material/cXfZgd76.zip"
+  ]
+}
