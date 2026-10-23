@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-02",
+  "date": "2026-10-23",
   "profile": "QuantumultX_v8.21_DNS_按App模块化.conf (host-only exclusions)",
   "family_exclusions": [
     "10086.cn",
@@ -292,7 +292,7 @@
       "file": "awa.list",
       "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-QuantumultX.list",
       "license": "GPL-3.0",
-      "sha256": "59378edf73adfa0594af99b1c73a454947b1c5ef1aa5762642edbf90496f94bd",
+      "sha256": "c9b6531faa8a0839f9274135d7331586a78fa1796ec6d7835942293d28edd12b",
       "hash_format": "UTF-8 text with LF newlines"
     },
     {

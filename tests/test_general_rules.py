@@ -65,6 +65,40 @@ class GeneralRulesTests(unittest.TestCase):
                 host, _ = general.literal_host(line.split()[0])
                 self.assertFalse(any(host == domain or (kind == 'host-suffix' and host.endswith('.' + domain)) for kind, domain in rules), host)
 
+    def test_awa_hisense_and_hpplay_increment_stays_exact(self):
+        outputs = general.build()
+        filters = outputs[ROOT / 'dist/general-filter.list']
+        adopted = (
+            'ad-cmp.hismarttv.com',
+            'ad-download.hismarttv.com',
+            'boost-cmp.hismarttv.com',
+            'imp-cmp.hismarttv.com',
+            'loading-cmp.hismarttv.com',
+            'msg-cmp.hismarttv.com',
+            'paster-cmp.hismarttv.com',
+            'recmd-cmp.hismarttv.com',
+            'resource-cmp.hismarttv.com',
+            'v2.reachmax.cn',
+        )
+        for host in adopted:
+            self.assertIn('host, ' + host + ', reject', filters)
+            self.assertNotIn('host-suffix, ' + host + ', reject', filters)
+
+        # Present upstream but excluded from the general layer by specialist scope.
+        self.assertNotIn('host, g.cn.miaozhen.com, reject', filters)
+
+        for host in (
+            'api.hismarttv.com',
+            'account.hismarttv.com',
+            'www.miaozhen.com',
+            'api.reachmax.cn',
+        ):
+            self.assertNotIn('host, ' + host + ', reject', filters)
+            self.assertNotIn('host-suffix, ' + host + ', reject', filters)
+
+        for parent in ('hismarttv.com', 'miaozhen.com', 'reachmax.cn'):
+            self.assertNotIn('host-suffix, ' + parent + ', reject', filters)
+
 
 if __name__ == '__main__':
     unittest.main()

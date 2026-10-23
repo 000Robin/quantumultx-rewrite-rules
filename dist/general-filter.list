@@ -1,6 +1,6 @@
 #!name=Robin | 通用去广补充（排除专用）分流
 #!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。
-#!date=2026-10-02
+#!date=2026-10-23
 # Upstream: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-QuantumultX.list
 # Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.
 # Modified by 000Robin: specialist exclusions, conservative scope and deduplication.
@@ -19,6 +19,8 @@ host, a0.app.xiaomi.com, reject
 host, aaid.umeng.com, reject
 host, ad-api.4pyun.com, reject
 host, ad-cdn.qingting.fm, reject
+host, ad-cmp.hismarttv.com, reject
+host, ad-download.hismarttv.com, reject
 host, ad-files.4pyun.com, reject
 host, ad-scope.com, reject
 host, ad-scope.com.cn, reject
@@ -246,6 +248,7 @@ host, bingads.microsoft.com, reject
 host, bj-td-menta-01-callback.advlion.com, reject
 host, bj.ad.track.66mobi.com, reject
 host, books-analytics-events.apple.com, reject
+host, boost-cmp.hismarttv.com, reject
 host, brandadsstatic.vivo.com.cn, reject
 host, browser.events.data.msn.cn, reject
 host, browser.events.data.msn.com, reject
@@ -390,6 +393,7 @@ host, img-x.jd.com, reject
 host, img.ad-nex.com, reject
 host, img.adnyg.com.w.kunlungr.com, reject
 host, img2.360buyimg.com, reject
+host, imp-cmp.hismarttv.com, reject
 host, impression-asia.chinaliftoff.io, reject
 host, impression-asia.liftoff.io, reject
 host, impression.appsflyer.com, reject
@@ -429,6 +433,7 @@ host, livep.l.aiseet.atianqi.com, reject
 host, lives.l.aiseet.atianqi.com, reject
 host, livewebbs2pcdn.msstatic.com, reject
 host, lm10111.jtrincc.cn, reject
+host, loading-cmp.hismarttv.com, reject
 host, log-api-mn.huxiu.com, reject
 host, log-api.huxiu.com, reject
 host, log-api.pangolin-sdk-toutiao-b.com, reject
@@ -499,6 +504,7 @@ host, ms.applvn.com, reject
 host, ms4.applovin.com, reject
 host, ms4.applvn.com, reject
 host, msdk.voiceads.cn, reject
+host, msg-cmp.hismarttv.com, reject
 host, mssdk.volces.com, reject
 host, newvoice.chiq5.smart-tv.cn, reject
 host, nex.163.com, reject
@@ -529,6 +535,7 @@ host, p3-lm.adkwai.com, reject
 host, p66-ad.adkwai.com, reject
 host, pagead2.googleadservices.com, reject
 host, pagead2.googlesyndication.com, reject
+host, paster-cmp.hismarttv.com, reject
 host, pay.sboot.cn, reject
 host, pcdn.xmcdn.com, reject
 host, pcdn.yximgs.com, reject
@@ -551,6 +558,7 @@ host, qcwx.medproad.com, reject
 host, qmlog.baertt.com, reject
 host, qn-cdnfile1pcdn.msstatic.com, reject
 host, qzs.gdtimg.com, reject
+host, recmd-cmp.hismarttv.com, reject
 host, recommend-drcn.hms.dbankcloud.cn, reject
 host, report.dxunion.cn, reject
 host, res.hubcloud.com.cn, reject
@@ -559,6 +567,7 @@ host, res1.hubcloud.com.cn, reject
 host, res2.hubcloud.com.cn, reject
 host, res3.hubcloud.com.cn, reject
 host, resolve.umeng.com, reject
+host, resource-cmp.hismarttv.com, reject
 host, review.gdtimg.com, reject
 host, rlog.popin.cc, reject
 host, rms-drcn.platform.dbankcloud.cn, reject
@@ -710,6 +719,7 @@ host, v.adx.hubcloud.com.cn, reject
 host, v1-ad.video.yximgs.com, reject
 host, v2-ad.video.yximgs.com, reject
 host, v2-api-channel-launcher.hismarttv.com, reject
+host, v2.reachmax.cn, reject
 host, v3-ad.video.yximgs.com, reject
 host, video-ad.sm.cn, reject
 host, video.market.xiaomi.com, reject

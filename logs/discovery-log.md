@@ -1,5 +1,16 @@
 # Discovery log
 
+## 2026-10-24 — 其他 GitHub 来源交叉审查
+
+- 审查 [`hwind2021/QuantumultX-AdBlock-CN`](https://github.com/hwind2021/QuantumultX-AdBlock-CN) 的当日 `AdBlock-Splash.conf`、`Splash-Killer.list`、`splash_sdk.conf`、更新记录和许可说明。其 112 条开屏重写与 474 条开屏分流主要汇总 blackmatrix7、anti-AD 等上游；抽查的固定主机/路径已在本仓库 blackmatrix7 输入或专用排除范围中，新增的后缀/关键词匹配会扩大误伤范围，因此本轮不重复采用。
+- 审查 [`belcheckyoung/Belcheck-QX-AdBlock`](https://github.com/belcheckyoung/Belcheck-QX-AdBlock) 的 2026-10-18 公开配置、抓包证据边界和自研模块说明。仓库明确限制转载且没有可复用许可证；其中微信、小红书、腾讯视频、抖音等范围也与本仓库专用保护重叠。本轮只学习其精确路径、正常素材放行和证据分级方法，不复制规则。
+- 上述两个来源未产生可安全计入通用输出的新增规则；本次待发布增量仍为 AWAvenue 2026-10-22 的 10 条精确广告主机，已达到单次至少 2 条的发布门槛。GitHub 本地推送网络若不可用，保留已验证提交并在后续任务重试，不改用未经许可或宽泛规则凑数。
+
+## 2026-10-23 — AWAvenue 海信电视与乐播广告域名增量
+
+- 上游提交 [`59f1a351`](https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/59f1a351a6474d2debf7b8965c396cf24a2bf287) 将 Quantumult X 输入从 965 条更新为 976 条；逐行比较仅新增 11 个精确主机，没有删除现有 Quantumult X 规则。提交说明为海信电视与乐播广告拦截，并保留 GPL-3.0 许可。
+- 通用层采用其中 10 个精确广告主机：九个 `hismarttv.com` 投放、下载、素材、推荐与展示主机，以及 `v2.reachmax.cn` 广告平台主机。`g.cn.miaozhen.com` 因已落入专用模块范围而排除。没有扩大为 `hismarttv.com`、`miaozhen.com` 或 `reachmax.cn` 后缀，不新增 MitM，也不接触电视登录、会员、播放或固件接口。
+- 生成器继续执行专用模块、保护域名、通用重写所需主机及父域覆盖去重；使用合成主机命中、专用主机排除及相邻业务主机放行测试验证精确范围。此为上游规则证据与静态匹配验证，不是 iPhone 或电视实机测试。
 ## 2026-10-14 — HAR audit: distinguish blocked traffic from normal UI assets
 
 - 431 entries between 08:43:42 and 08:45:22 China time. All 16 iacc responses are HTTP 200 with an empty body; the broad existing starter PNG rule yields 36 empty HTTP 404 responses; three promotionTest requests are also empty HTTP 404. No Hikari requests are present, so this capture cannot validate Hikari suppression or rule loading, nor exclude cached advertising.

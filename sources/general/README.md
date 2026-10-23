@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/g
 
 ## 范围与取舍
 
-- 分流采用 AWAvenue v1.7.8-release 的 965 条输入。转换为 Quantumult X 原生 host/host-suffix；删除专用范围、保护域名、通用重写所需主机、关键词等非精确规则，以及被父域规则覆盖的重复项。
+- 分流采用 AWAvenue v1.7.8-release 的 976 条输入。转换为 Quantumult X 原生 host/host-suffix；删除专用范围、保护域名、通用重写所需主机、关键词等非精确规则，以及被父域规则覆盖的重复项。
 - 重写采用 blackmatrix7 Advertising 的 751 条输入（上游标注 2025-08-26）。只保留明确广告路径、固定主机、可解析的 reject 类动作，保留原响应类型。排除通配/IP 主机、无主机锚点、混合路径分支和专用范围。主机点号显式转义。
 - 覆盖 8 个 Robin 分流、14 个 Robin 重写模块，以及中国移动、微信小程序、黑料净化、拼多多、Pixiv、微博专用主机。专用主机整体让给专用规则，并保守排除关联服务域名；并非只删完全相同的正则。
 - 同时排除本地规则/MitM/DNS 保护范围、AI 服务、农行和抖音商城。静态列表不能证明所有 App、共享广告 SDK 或未来域名绝对无冲突。
