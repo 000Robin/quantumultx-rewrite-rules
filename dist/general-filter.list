@@ -1,8 +1,9 @@
 #!name=Robin | 通用去广补充（排除专用）分流
 #!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。
-#!date=2026-10-23
+#!date=2026-11-07
 # Upstream: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-QuantumultX.list
 # Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.
+# False-positive review: 217heidai/adblockfilters issue reports and whitelist (GPL-3.0).
 # Modified by 000Robin: specialist exclusions, conservative scope and deduplication.
 # License: GPL-3.0; repository personal-use restrictions do not apply.
 # Sources, corresponding build inputs and licenses: sources/general/
@@ -13,9 +14,7 @@ host, 1500026601.vodplayer.wxamedia.com, reject
 host-suffix, 1rtb.com, reject
 host, 8le8le.com, reject
 host, 8rn1y79f02-1.algolianet.com, reject
-host-suffix, a.market.xiaomi.com, reject
 host, a.realsrv.com, reject
-host, a0.app.xiaomi.com, reject
 host, aaid.umeng.com, reject
 host, ad-api.4pyun.com, reject
 host, ad-cdn.qingting.fm, reject
@@ -260,7 +259,6 @@ host, c.evidon.com, reject
 host, c.kuaiduizuoye.com, reject
 host, c.sayhi.360.cn, reject
 host, catalog.fjwhcbsh.com, reject
-host, ccc-x.jd.com, reject
 host, ccs.umeng.com, reject
 host, cdn-ad.wtzw.com, reject
 host, cdn-ads.oss-cn-shanghai.aliyuncs.com, reject
@@ -339,7 +337,6 @@ host, gemini.yahoo.com, reject
 host, geo.yahoo.com, reject
 host, getui.cn, reject
 host, globalapi.ad.xiaomi.com, reject
-host, google-analytics.com, reject
 host, googleads.g.doubleclick-cn.net, reject
 host, googleads.g.doubleclick.net, reject
 host, googleadservices-cn.com, reject
@@ -414,7 +411,6 @@ host, jswebcollects.kugou.com, reject
 host, kepler.jd.com, reject
 host, kl.67it.com, reject
 host, klink.volceapplog.com, reject
-host, knicks.jd.com, reject
 host, ks-p2p-v2.pull.yximgs.com, reject
 host, ks-p2p.pull.yximgs.com, reject
 host, ks.ferlytc.com, reject
@@ -545,7 +541,6 @@ host, pica-ad-api.diwodiwo.xyz, reject
 host, pig.pupuapi.com, reject
 host, pin.hpplay.cn, reject
 host, pixon.ads-pixiv.net, reject
-host, pkoplink.com, reject
 host, pl.cp31.ott.cibntv.net, reject
 host, plbslog.umeng.com, reject
 host, policy.video.ptqy.gitv.tv, reject
@@ -618,7 +613,6 @@ host, sentry.music.163.com, reject
 host, service.changhong.upgrade2.huan.tv, reject
 host, service.vmos.cn, reject
 host, sf16-static.i18n-pglstatp.com, reject
-host, shouji.sogou.com, reject
 host, sigmob.com, reject
 host, skdisplay.jd.com, reject
 host, sl.hpplay.cn, reject
@@ -676,7 +670,6 @@ host, tracelog-debug.yunxish.com, reject
 host, track.lc.quark.cn, reject
 host, track.uc.cn, reject
 host, tracker-prd.aldi.com.cn, reject
-host, tracker.ai.xiaomi.com, reject
 host, tracker.gitee.com, reject
 host, tracking-adnet.vivo.com.cn, reject
 host, tracking.miui.com, reject
@@ -742,7 +735,6 @@ host, widgets.outbrain.com, reject
 host, widgets.pinterest.com, reject
 host, wildcard.moatads.com.edgekey.net, reject
 host, wn.x.jd.com, reject
-host, ws-keyboard.shouji.sogou.com, reject
 host, ws.tapjoyads.com, reject
 host, wv.inner-active.mobi, reject
 host, wwads.cn, reject

@@ -99,6 +99,27 @@ class GeneralRulesTests(unittest.TestCase):
         for parent in ('hismarttv.com', 'miaozhen.com', 'reachmax.cn'):
             self.assertNotIn('host-suffix, ' + parent + ', reject', filters)
 
+    def test_reviewed_false_positives_do_not_replace_ad_controls(self):
+        outputs = general.build()
+        filters = outputs[ROOT / 'dist/general-filter.list']
+        # Business hosts are backed by the corresponding public issue reports in
+        # sources/general/exclusions.json.  The paired ad hosts are synthetic
+        # positive controls: removing a false positive must not weaken unrelated ads.
+        cases = (
+            ('a.market.xiaomi.com', 'api.ad.xiaomi.com'),
+            ('a0.app.xiaomi.com', 'diagnosis.ad.xiaomi.com'),
+            ('tracker.ai.xiaomi.com', 'globalapi.ad.xiaomi.com'),
+            ('ccc-x.jd.com', 'addata.jd.com'),
+            ('knicks.jd.com', 'skdisplay.jd.com'),
+            ('pkoplink.com', 'ad-cmp.hismarttv.com'),
+            ('shouji.sogou.com', 'v2.reachmax.cn'),
+        )
+        for business_host, ad_host in cases:
+            self.assertNotIn('host, ' + business_host + ', reject', filters)
+            self.assertNotIn('host-suffix, ' + business_host + ', reject', filters)
+            self.assertIn('host, ' + ad_host + ', reject', filters)
+        self.assertNotIn('host, ws-keyboard.shouji.sogou.com, reject', filters)
+
 
 if __name__ == '__main__':
     unittest.main()

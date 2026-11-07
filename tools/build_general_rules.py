@@ -61,6 +61,7 @@ def build():
         if hashlib.sha256(normalized).hexdigest() != source['sha256']:
             raise ValueError('Source snapshot hash mismatch: ' + source['file'])
     guards = set(manifest['family_exclusions'] + manifest['profile_host_exclusions'])
+    guards.update(item['host'] for item in manifest.get('reviewed_false_positive_exclusions', []))
     for values in manifest['external_host_exclusions'].values():
         guards.update(values)
     paths = list((ROOT / 'dist/filter').glob('*.list')) + list((ROOT / 'dist/rewrite').glob('*.snippet'))
@@ -140,6 +141,7 @@ def build():
             '#!date=' + manifest['date'],
             '# Upstream: ' + author,
             '# Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.',
+            '# False-positive review: 217heidai/adblockfilters issue reports and whitelist (GPL-3.0).',
             '# Modified by 000Robin: specialist exclusions, conservative scope and deduplication.',
             '# License: ' + license_name + '; repository personal-use restrictions do not apply.',
             '# Sources, corresponding build inputs and licenses: sources/general/',
@@ -150,7 +152,8 @@ def build():
     }
     report = {
         'date': manifest['date'], 'counts': counts,
-        'protected_host_patterns': len(guards), 'general_mitm_hosts': len(rewrite_hosts),
+        'protected_host_patterns': len(guards), 'reviewed_false_positive_exclusions': len(manifest.get('reviewed_false_positive_exclusions', [])),
+        'general_mitm_hosts': len(rewrite_hosts),
         'device_tested': False,
         'scope': 'Only literal-host reject rewrites with ad-related paths. All specialist host scopes are excluded conservatively, not only identical rules.',
         'not_used': {'217heidai': 'Large aggregate omitted to limit unrelated blocking.', 'ddgksf2013.top/StartUpAds.conf': 'HTTP 200 HTML page, not a rewrite resource.'},

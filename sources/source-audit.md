@@ -108,3 +108,12 @@
 - 3 条 `yfamilys.com` 来源仍返回 HTTP 200 与纯文本正文；部分 GitHub `/raw/`、jsDelivr 跳转在当前抓取环境超时，但对应官方 Raw 正文可读，未误判为来源失效。
 - 公开检索复核 `TPCTPCTPC/Adblock-gist`：仓库有 MIT 许可证和明确的 Quantumult X 兼容说明，但其方案拆分为域名、宽泛关键词和 HTTPS 重写多个集合，并明确要求使用者自行承担 MitM 风险。当前 `Keywords.list` 包含 `metrics`、`usage`、`intercom`、`safebrowsing` 等高误杀面关键词；在没有实机/HAR 证据且与现有候选高度重叠的情况下不登记。
 - 未修改运行规则、`dist/`、`rules/protected-*.conf`、脚本/节点图标链接；未复制或合并会员/VIP、RevenueCat、Cookie/Token、定位伪造内容。
+
+## 增量复核（2026-11-07）
+
+- 全量检查 54 条重写来源和 21 条分流候选：65 条返回可解析的 HTTP 206 正文，6 条返回 HTTP 200；其中 5 条 `ddgksf2013.top` 地址的 200 正文仍是 HTML 资源首页而不是规则。3 条 `yfamilys.com` 与 Limbopro 官方入口返回 403，只记访问受限，不绕过、不替换镜像、不判定失效。
+- `Yu9191/wloc` 原 404 地址恢复为公开 Raw，仓库当前采用 AGPL-3.0；正文仍明确是 Apple 定位修改而非广告净化，因此只把可达性从失效改为恢复，继续保持停用，不复制、不启用、不合并。
+- AWAvenue Quantumult X 与 blackmatrix7 Advertising 的规范化正文和 SHA-256 均未变化。交叉审查 217heidai 当前 GPL-3.0 白名单与公开问题后，确认通用分流中 7 个范围具有业务误杀证据；按精确主机排除并保留独立广告命中对照。
+- 同时阅读 hwind2021 当日实际开屏规则和 Brilliant7819 新聚合仓库的规则、生成器、近期提交及许可。前者仍为多上游生成集合；后者包含宽泛主机、未替换脚本占位符并混有 VIP/RevenueCat 解锁输出，均未作为通用规则来源。
+- 六个外部专用来源均可读取；黑料专用模块当前 hostname 比记录多出 `*.google-analytics.com`、`*.googletagmanager.com` 与 `*97baoliao*`，已追加到专用排除。对拼多多、微博中未再声明的旧保护只保留、不回收，防止上游结构调整造成专用范围回流。
+- 本轮不改动任何 `rules/protected-*.conf`、专用模块、MitM 主机或重写行为；没有提交原始 HAR、完整私人配置、Cookie、Token、凭据或定位脚本正文。

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23",
+  "date": "2026-11-07",
   "counts": {
     "rewrite": {
       "input": 753,
@@ -11,14 +11,15 @@
     },
     "filter": {
       "input": 979,
-      "specialist_or_protected": 188,
+      "specialist_or_protected": 200,
       "preserve_general_rewrite": 5,
       "unsupported_or_invalid": 4,
-      "covered_by_suffix": 22,
-      "output": 760
+      "covered_by_suffix": 19,
+      "output": 751
     }
   },
-  "protected_host_patterns": 322,
+  "protected_host_patterns": 332,
+  "reviewed_false_positive_exclusions": 7,
   "general_mitm_hosts": 219,
   "device_tested": false,
   "scope": "Only literal-host reject rewrites with ad-related paths. All specialist host scopes are excluded conservatively, not only identical rules.",

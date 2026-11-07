@@ -1,5 +1,15 @@
 # Discovery log
 
+## 2026-11-07 — 白名单交叉审计与 7 项业务误杀修复
+
+- AWAvenue Quantumult X 与 blackmatrix7 Advertising 当前正文分别仍为提交 `59f1a351` 和 `a75313d3` 对应快照，规范化 SHA-256 未变；本轮没有把上游生成更新未经审查直接同步到固定输出。
+- 复核 [`217heidai/adblockfilters`](https://github.com/217heidai/adblockfilters) 当前 GPL-3.0 白名单、最新提交 [`70dcea3f`](https://github.com/217heidai/adblockfilters/commit/70dcea3fdc21393e039fe8e30973e797a2d1d434) 及关联问题。最新提交说明 `i.snssdk.com` 会影响皮皮虾下载；本仓库通用输出原本不含该主机。进一步全量交叉发现 7 个实际冲突，按问题证据排除小米主题/云备份/小爱音箱、京东金融商品链接/商品信息、网心云节点上报及搜狗输入法皮肤主机。
+- 复核 [`hwind2021/QuantumultX-AdBlock-CN`](https://github.com/hwind2021/QuantumultX-AdBlock-CN) 2026-11-07 的 112 条开屏重写、469 条开屏分流和自动更新提交。重写数量未变，分流仍为多上游聚合；没有可独立归因且优于当前精确范围的新规则，因此不整包采用。
+- 复核新仓库 [`Brilliant7819/quantumultx-adblock`](https://github.com/Brilliant7819/quantumultx-adblock) 的 MIT 许可证、实际重写、生成器和近期自动提交。其约 28.5 万域名聚合含宽泛 SDK/业务主机，脚本配置仍含 `OWNER/REPO` 占位路径，并同时发布 VIP/RevenueCat 等 `unlock-merged.conf`；只作风险研究，不登记、不复制、不合并。
+- 构建输入新增 7 个带问题链接的误杀排除项；结合专用主机刷新后，生成分流由 760 条降至 751 条，其中搜狗父主机保护同时移除 `ws-keyboard.shouji.sogou.com`，黑料专用保护移除通用层的 `google-analytics.com`。每项误杀修复均有不应命中的业务主机、应继续命中的广告主机和回归测试；这是合成匹配与公开上游报告，不是本机 HAR 或 iPhone 实测。
+- 刷新六个外部专用来源的 hostname 后，黑料专用模块新增 `*.google-analytics.com`、`*.googletagmanager.com` 与 `*97baoliao*` 三项保护；通用生成器让出这些范围。拼多多和微博来源当前未再声明的旧保护项继续保留，避免因上游结构变化重新并入专用范围。
+- 全量访问检查覆盖 54 条重写来源与 21 条分流候选。既有 5 条 `ddgksf2013.top` 地址仍返回 HTML 首页，3 条 `yfamilys.com` 与 Limbopro 入口返回 403，均未绕过或判作新失效；`Yu9191/wloc` 已恢复公开 Raw，但仍属于定位修改，保持停用且不复制正文。
+
 ## 2026-10-24 — 其他 GitHub 来源交叉审查
 
 - 审查 [`hwind2021/QuantumultX-AdBlock-CN`](https://github.com/hwind2021/QuantumultX-AdBlock-CN) 的当日 `AdBlock-Splash.conf`、`Splash-Killer.list`、`splash_sdk.conf`、更新记录和许可说明。其 112 条开屏重写与 474 条开屏分流主要汇总 blackmatrix7、anti-AD 等上游；抽查的固定主机/路径已在本仓库 blackmatrix7 输入或专用排除范围中，新增的后缀/关键词匹配会扩大误伤范围，因此本轮不重复采用。

@@ -20,6 +20,7 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/g
 - 重写采用 blackmatrix7 Advertising 的 751 条输入（上游标注 2025-08-26）。只保留明确广告路径、固定主机、可解析的 reject 类动作，保留原响应类型。排除通配/IP 主机、无主机锚点、混合路径分支和专用范围。主机点号显式转义。
 - 覆盖 8 个 Robin 分流、14 个 Robin 重写模块，以及中国移动、微信小程序、黑料净化、拼多多、Pixiv、微博专用主机。专用主机整体让给专用规则，并保守排除关联服务域名；并非只删完全相同的正则。
 - 同时排除本地规则/MitM/DNS 保护范围、AI 服务、农行和抖音商城。静态列表不能证明所有 App、共享广告 SDK 或未来域名绝对无冲突。
+- 交叉检查 217heidai 的公开白名单与问题记录，排除 7 个有业务误杀证据的主机范围；保留成对的独立广告主机作为合成命中对照。刷新专用主机后当前生成 751 条通用分流。
 - 217heidai 的 214903 条大合集未并入，避免扩大未验证范围。墨鱼旧 StartUpAds.conf 实测 HTTP 200 但正文为 HTML，未用作规则来源。
 - 通用覆盖范围刻意收紧；专用去广仍由原模块提供。静态校验不是 iPhone 实机验证，更新后需重新连接并冷启动常用 App 检查广告、登录、支付和播放。
 
@@ -44,6 +45,7 @@ python tools/validate_rules.py
 
 - `awa.list`、`../../dist/general-filter.list`：源于 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)，保留 GPL-3.0，许可全文见 `LICENSE-AWA-GPL-3.0.txt`。
 - `blackmatrix.conf`、`../../dist/general-rewrite.snippet`：源于 [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)，保留 GPL-2.0，许可全文见 `LICENSE-BM-GPL-2.0.txt`。
+- `exclusions.json` 中的误杀排除证据来自 [217heidai/adblockfilters](https://github.com/217heidai/adblockfilters) 的公开问题与白名单（GPL-3.0）；只引用链接和自写摘要，不复制其规则集。
 - 本目录其他文件、`../../tools/build_general_rules.py`、`../../tests/test_general_rules.py`：Copyright (c) 2026 000Robin，GPL-3.0；许可全文同上。
 - 以上文件不适用根目录的个人专用、禁止修改与再分发限制。两份规则是不同上游的独立衍生文件；其他既有文件的许可不变。上游快照、生成器和排除清单公开保留，便于重建。
 
@@ -54,3 +56,19 @@ python tools/validate_rules.py
 审查摘录保存在 `limbopro-filter.list`、`limbopro-rewrite.conf`，保留作者 MIT 许可；生成时继续执行专用主机排除、重写主机保护和去重。
 没有引入无主机锚点的 `ad.*` 匹配、整个 CloudFront 解密、OpenAI/Google 等受保护主机解密，也没有引入页面导航、远程脚本注入或非广告功能。
 这次增量针对网页广告，不声称修复懂车帝开屏。仅静态审查，手机效果待验证。
+
+## 2026-11-07 业务误杀修复
+
+将 AWAvenue 输入与 217heidai 当前白名单逐项交叉比较，发现通用输出仍拒绝 7 个已有公开业务故障证据的主机范围。生成器现以证据化排除项移除它们；`shouji.sogou.com` 的边界保护同时覆盖其子域 `ws-keyboard.shouji.sogou.com`，因此输出实际减少 8 行。
+
+| 不应命中的业务主机 | 公开证据 | 应继续命中的广告主机（合成对照） |
+|---|---|---|
+| `a.market.xiaomi.com` | [小米主题预览素材](https://github.com/217heidai/adblockfilters/issues/169) | `api.ad.xiaomi.com` |
+| `a0.app.xiaomi.com` | [小米云备份](https://github.com/217heidai/adblockfilters/issues/92) | `diagnosis.ad.xiaomi.com` |
+| `tracker.ai.xiaomi.com` | [小爱音箱请求](https://github.com/217heidai/adblockfilters/issues/66) | `globalapi.ad.xiaomi.com` |
+| `ccc-x.jd.com` | [京东金融商品链接](https://github.com/217heidai/adblockfilters/issues/162) | `addata.jd.com` |
+| `knicks.jd.com` | [京东商品信息](https://github.com/217heidai/adblockfilters/issues/25) | `skdisplay.jd.com` |
+| `pkoplink.com` | [网心云节点上报](https://github.com/217heidai/adblockfilters/issues/152) | `ad-cmp.hismarttv.com` |
+| `shouji.sogou.com` | [搜狗输入法皮肤](https://github.com/217heidai/adblockfilters/issues/26) | `v2.reachmax.cn` |
+
+上述“应命中”仅为静态匹配回归样例；公开问题中的业务恢复属于上游用户报告，不等于本仓库已在 iPhone 实机复测。

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23",
+  "date": "2026-11-07",
   "profile": "QuantumultX_v8.21_DNS_按App模块化.conf (host-only exclusions)",
   "family_exclusions": [
     "10086.cn",
@@ -192,6 +192,48 @@
     "www.bilibili.com",
     "www.google.com"
   ],
+  "reviewed_false_positive_exclusions": [
+    {
+      "host": "a.market.xiaomi.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/169",
+      "reason": "Xiaomi theme preview assets"
+    },
+    {
+      "host": "a0.app.xiaomi.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/92",
+      "reason": "Xiaomi cloud backup"
+    },
+    {
+      "host": "tracker.ai.xiaomi.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/66",
+      "reason": "XiaoAI speaker requests"
+    },
+    {
+      "host": "ccc-x.jd.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/162",
+      "reason": "JD Finance product links"
+    },
+    {
+      "host": "knicks.jd.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/25",
+      "reason": "JD product information"
+    },
+    {
+      "host": "pkoplink.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/152",
+      "reason": "OneThing Cloud node reporting"
+    },
+    {
+      "host": "shouji.sogou.com",
+      "evidence": "https://github.com/217heidai/adblockfilters/issues/26",
+      "reason": "Sogou keyboard skins"
+    }
+  ],
+  "false_positive_source": {
+    "repository": "https://github.com/217heidai/adblockfilters",
+    "whitelist": "https://github.com/217heidai/adblockfilters/blob/main/rules/white.txt",
+    "license": "GPL-3.0"
+  },
   "external_host_exclusions": {
     "applet": [
       "*.ddly666.top",
@@ -235,6 +277,9 @@
       "h.app.coc.10086.cn"
     ],
     "hlw": [
+      "*.google-analytics.com",
+      "*.googletagmanager.com",
+      "*97baoliao*",
       "*heiliao*",
       "*hlcx*",
       "*hlwxx*",
