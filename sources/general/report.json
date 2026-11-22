@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-22",
   "counts": {
     "rewrite": {
       "input": 753,
@@ -10,12 +10,12 @@
       "output": 242
     },
     "filter": {
-      "input": 979,
+      "input": 989,
       "specialist_or_protected": 200,
       "preserve_general_rewrite": 5,
       "unsupported_or_invalid": 4,
       "covered_by_suffix": 19,
-      "output": 751
+      "output": 761
     }
   },
   "protected_host_patterns": 332,

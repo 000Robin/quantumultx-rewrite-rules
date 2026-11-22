@@ -16,11 +16,11 @@ https://raw.githubusercontent.com/000Robin/quantumultx-rewrite-rules/main/dist/g
 
 ## 范围与取舍
 
-- 分流采用 AWAvenue v1.7.8-release 的 976 条输入。转换为 Quantumult X 原生 host/host-suffix；删除专用范围、保护域名、通用重写所需主机、关键词等非精确规则，以及被父域规则覆盖的重复项。
+- 分流以 AWAvenue v1.7.8-release 的 976 条稳定快照为基础，并单独加入 10 条逐项审查的 v1.7.9 广告主机；另保留 3 条已审查的 Limbopro 精确主机。转换为 Quantumult X 原生 host/host-suffix；删除专用范围、保护域名、通用重写所需主机、关键词等非精确规则，以及被父域规则覆盖的重复项。
 - 重写采用 blackmatrix7 Advertising 的 751 条输入（上游标注 2025-08-26）。只保留明确广告路径、固定主机、可解析的 reject 类动作，保留原响应类型。排除通配/IP 主机、无主机锚点、混合路径分支和专用范围。主机点号显式转义。
 - 覆盖 8 个 Robin 分流、14 个 Robin 重写模块，以及中国移动、微信小程序、黑料净化、拼多多、Pixiv、微博专用主机。专用主机整体让给专用规则，并保守排除关联服务域名；并非只删完全相同的正则。
 - 同时排除本地规则/MitM/DNS 保护范围、AI 服务、农行和抖音商城。静态列表不能证明所有 App、共享广告 SDK 或未来域名绝对无冲突。
-- 交叉检查 217heidai 的公开白名单与问题记录，排除 7 个有业务误杀证据的主机范围；保留成对的独立广告主机作为合成命中对照。刷新专用主机后当前生成 751 条通用分流。
+- 交叉检查 217heidai 的公开白名单与问题记录，排除 7 个有业务误杀证据的主机范围；保留成对的独立广告主机作为合成命中对照。刷新专用主机并加入 2026-11-22 审查增量后，当前生成 761 条通用分流。
 - 217heidai 的 214903 条大合集未并入，避免扩大未验证范围。墨鱼旧 StartUpAds.conf 实测 HTTP 200 但正文为 HTML，未用作规则来源。
 - 通用覆盖范围刻意收紧；专用去广仍由原模块提供。静态校验不是 iPhone 实机验证，更新后需重新连接并冷启动常用 App 检查广告、登录、支付和播放。
 
@@ -43,7 +43,7 @@ python tools/validate_rules.py
 
 ## 来源与许可例外
 
-- `awa.list`、`../../dist/general-filter.list`：源于 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)，保留 GPL-3.0，许可全文见 `LICENSE-AWA-GPL-3.0.txt`。
+- `awa.list`、`awa-reviewed-20261122.list`、`../../dist/general-filter.list`：源于 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)，保留 GPL-3.0，许可全文见 `LICENSE-AWA-GPL-3.0.txt`。增量文件仅保存两个上游提交中逐项审查通过的固定广告主机。
 - `blackmatrix.conf`、`../../dist/general-rewrite.snippet`：源于 [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)，保留 GPL-2.0，许可全文见 `LICENSE-BM-GPL-2.0.txt`。
 - `exclusions.json` 中的误杀排除证据来自 [217heidai/adblockfilters](https://github.com/217heidai/adblockfilters) 的公开问题与白名单（GPL-3.0）；只引用链接和自写摘要，不复制其规则集。
 - 本目录其他文件、`../../tools/build_general_rules.py`、`../../tests/test_general_rules.py`：Copyright (c) 2026 000Robin，GPL-3.0；许可全文同上。
@@ -56,6 +56,21 @@ python tools/validate_rules.py
 审查摘录保存在 `limbopro-filter.list`、`limbopro-rewrite.conf`，保留作者 MIT 许可；生成时继续执行专用主机排除、重写主机保护和去重。
 没有引入无主机锚点的 `ad.*` 匹配、整个 CloudFront 解密、OpenAI/Google 等受保护主机解密，也没有引入页面导航、远程脚本注入或非广告功能。
 这次增量针对网页广告，不声称修复懂车帝开屏。仅静态审查，手机效果待验证。
+
+## 2026-11-22 AWAvenue v1.7.9 精确广告主机增量
+
+逐项比较 AWAvenue 的 [`a5af99ea`](https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/a5af99ea) 与 [`02737455`](https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/02737455) 两个提交，只采用 10 条固定广告主机：
+
+- 小红书开屏素材：`ads-img-bak.xhscdn.com`、`ads-vp5.xhscdn.com`。
+- TopOn/AnyThink 与上海领页广告竞价：`adx.anythinktech.com`、`cn-api-sec.anythinktech.com`、`cn-da.anythinktech.com`、`cn-tk.anythinktech.com`、`ssapi.anythinktech.com`、`da.statisticslinks.com`、`tk.statisticslinks.com`、`bid.shanghailingye.cn`。
+
+没有扩大为父域后缀，也没有新增 MitM。合成命中样例使用上述主机的 `/splash`、`/bid` 请求；合成不命中样例使用 `sns-img-bak.xhscdn.com`、`www.anythinktech.com`、`www.shanghailingye.cn` 与 `www.statisticslinks.com`，并由回归测试保证精确边界。
+
+当前 AWAvenue 完整上游相对稳定快照另含 13 条 IP-CIDR、16 条日志/崩溃/埋点/设备指纹主机以及 17 条无问题链接说明的删除。IP 与非广告遥测不属于本任务范围；上游删除也不自动证明原规则失效。因此不整包替换 `awa.list`，而以 `awa-reviewed-20261122.list` 保存可重建的审查子集，避免顺带扩大范围或无证据删除旧规则。
+
+交叉研究 hwind2021 的 2026-11-14 `Splash-Killer.list` 增量：仅新增两个后缀聚合项，缺少独立 App/接口证据且会扩大子域匹配，未采用。复核 fmz200 的百度贴吧修复与喜马拉雅误杀讨论：前者只是删除把 IP 错写成 DOMAIN 的重复项，后者涉及显示层和第三方会员脚本冲突；本仓库通用输出均不包含对应规则。217heidai 的近期 Google/Spotify 白名单问题也不与当前通用输出相交。上述研究不计入新增规则数。
+
+这 10 条为上游广告用途说明与本地合成匹配验证，不是用户 iPhone、HAR 或真实 App 冷启动实测。
 
 ## 2026-11-07 业务误杀修复
 

@@ -1,0 +1,18 @@
+# AWAvenue v1.7.9 selected advertising additions, reviewed 2026-11-22.
+# Upstream commits:
+# - https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/a5af99ea
+# - https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/02737455
+# License: GPL-3.0 (see LICENSE-AWA-GPL-3.0.txt).
+# Scope: fixed advertising delivery/bidding hosts only; telemetry, crash logs,
+# fingerprinting, IP-CIDR additions and unexplained upstream removals are omitted.
+
+DOMAIN,ads-img-bak.xhscdn.com,reject
+DOMAIN,ads-vp5.xhscdn.com,reject
+DOMAIN,adx.anythinktech.com,reject
+DOMAIN,bid.shanghailingye.cn,reject
+DOMAIN,cn-api-sec.anythinktech.com,reject
+DOMAIN,cn-da.anythinktech.com,reject
+DOMAIN,cn-tk.anythinktech.com,reject
+DOMAIN,da.statisticslinks.com,reject
+DOMAIN,ssapi.anythinktech.com,reject
+DOMAIN,tk.statisticslinks.com,reject

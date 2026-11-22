@@ -104,7 +104,9 @@ def build():
             rewrite_hosts.add(host)
     all_rewrite_hosts = {literal_host(line.split()[0])[0] for line in rewrites}
     candidates = set()
-    for line in ((SOURCE / 'awa.list').read_text(encoding='utf-8-sig') + '\n' + (SOURCE / 'limbopro-filter.list').read_text(encoding='utf-8-sig')).splitlines():
+    filter_inputs = ('awa.list', 'awa-reviewed-20261122.list', 'limbopro-filter.list')
+    filter_text = '\n'.join((SOURCE / name).read_text(encoding='utf-8-sig') for name in filter_inputs)
+    for line in filter_text.splitlines():
         line = line.strip()
         if not line or line.startswith('#'):
             continue
@@ -140,7 +142,7 @@ def build():
             '#!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。',
             '#!date=' + manifest['date'],
             '# Upstream: ' + author,
-            '# Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.',
+            '# Additional reviewed inputs: selected AWAvenue v1.7.9 filter hosts (GPL-3.0) and limbopro/Adblock4limbo (MIT).',
             '# False-positive review: 217heidai/adblockfilters issue reports and whitelist (GPL-3.0).',
             '# Modified by 000Robin: specialist exclusions, conservative scope and deduplication.',
             '# License: ' + license_name + '; repository personal-use restrictions do not apply.',

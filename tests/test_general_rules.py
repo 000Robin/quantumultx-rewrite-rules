@@ -99,6 +99,49 @@ class GeneralRulesTests(unittest.TestCase):
         for parent in ('hismarttv.com', 'miaozhen.com', 'reachmax.cn'):
             self.assertNotIn('host-suffix, ' + parent + ', reject', filters)
 
+    def test_awa_202611_ad_hosts_are_exact_and_keep_business_siblings(self):
+        outputs = general.build()
+        filters = outputs[ROOT / 'dist/general-filter.list']
+        rules = []
+        for line in filters.splitlines():
+            if line.startswith('host'):
+                kind, host, _ = [value.strip() for value in line.split(',')]
+                rules.append((kind, host))
+
+        def blocked(host):
+            return any(
+                host == rule_host or (kind == 'host-suffix' and host.endswith('.' + rule_host))
+                for kind, rule_host in rules
+            )
+
+        adopted = (
+            'ads-img-bak.xhscdn.com',
+            'ads-vp5.xhscdn.com',
+            'adx.anythinktech.com',
+            'bid.shanghailingye.cn',
+            'cn-api-sec.anythinktech.com',
+            'cn-da.anythinktech.com',
+            'cn-tk.anythinktech.com',
+            'da.statisticslinks.com',
+            'ssapi.anythinktech.com',
+            'tk.statisticslinks.com',
+        )
+        for host in adopted:
+            self.assertTrue(blocked(host), host)
+            self.assertIn('host, ' + host + ', reject', filters)
+
+        # Synthetic non-hit examples keep ordinary site/docs and Xiaohongshu
+        # note assets outside the exact advertising hosts.
+        for host in (
+            'sns-img-bak.xhscdn.com',
+            'www.anythinktech.com',
+            'www.shanghailingye.cn',
+            'www.statisticslinks.com',
+        ):
+            self.assertFalse(blocked(host), host)
+        for parent in ('xhscdn.com', 'anythinktech.com', 'shanghailingye.cn', 'statisticslinks.com'):
+            self.assertNotIn('host-suffix, ' + parent + ', reject', filters)
+
     def test_reviewed_false_positives_do_not_replace_ad_controls(self):
         outputs = general.build()
         filters = outputs[ROOT / 'dist/general-filter.list']

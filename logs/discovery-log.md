@@ -1,5 +1,15 @@
 # Discovery log
 
+## 2026-11-22 — AWAvenue v1.7.9 十条精确广告主机增量
+
+- 上游证据：逐项审查 [`a5af99ea`](https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/a5af99ea) 的两条小红书开屏素材主机，以及 [`02737455`](https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/02737455) 标明的八条 TopOn/AnyThink 与上海领页广告接口。AWAvenue 为 GPL-3.0；本仓库以 `sources/general/awa-reviewed-20261122.list` 保存固定审查子集，不直接同步整包。
+- 采用 10 条：`ads-img-bak.xhscdn.com`、`ads-vp5.xhscdn.com`、`adx.anythinktech.com`、`cn-api-sec.anythinktech.com`、`cn-da.anythinktech.com`、`cn-tk.anythinktech.com`、`ssapi.anythinktech.com`、`da.statisticslinks.com`、`tk.statisticslinks.com`、`bid.shanghailingye.cn`。全部转换为精确 `host` 拒绝，不生成父域后缀或 MitM。
+- 排除：当前完整上游相对稳定快照还新增 13 条 IP-CIDR 与 16 条日志、崩溃、埋点或设备指纹主机，均不属于直接广告净化；另删除 17 条旧规则但没有对应误杀问题或修复说明。前者不采用，后者继续保留，避免把上游删除自动当作失效证据。
+- 合成验证：应命中上述 10 个广告主机；不应命中 `sns-img-bak.xhscdn.com`、`www.anythinktech.com`、`www.shanghailingye.cn` 和 `www.statisticslinks.com`。这只是静态精确匹配，不是 iPhone、HAR 或真实 App 冷启动实测。
+- 其他 GitHub 研究：hwind2021/QuantumultX-AdBlock-CN 的 2026-11-14 开屏列表仅新增两个来源不透明的后缀规则，未采用；fmz200/wool_scripts 的百度贴吧修复只是移除 IP 被误写为 DOMAIN 的重复项，喜马拉雅讨论涉及显示层与第三方会员脚本冲突，本仓库无相交规则；217heidai 的近期 Spotify/Google 白名单问题也不与通用输出相交。
+- 来源与专用保护：检查两个来源清单中的 91 个公开 URL（含依赖图标/脚本），结果为 80 个 206、7 个 200、4 个 403；5 个 `ddgksf2013.top` 地址仍返回 HTML 首页，3 个 yfamilys 与 Limbopro 入口仍为 403，未绕过或判失效。六个外部专用来源均未出现新的未保护 hostname；拼多多和微博的旧保护范围继续保留。
+- 输出变化：通用分流 751→761，通用重写保持 242；保护基线未改。构建输入、来源哈希、生成器和精确边界回归测试同步更新。
+
 ## 2026-11-07 — 白名单交叉审计与 7 项业务误杀修复
 
 - AWAvenue Quantumult X 与 blackmatrix7 Advertising 当前正文分别仍为提交 `59f1a351` 和 `a75313d3` 对应快照，规范化 SHA-256 未变；本轮没有把上游生成更新未经审查直接同步到固定输出。

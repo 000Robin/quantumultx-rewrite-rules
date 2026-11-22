@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07",
+  "date": "2026-11-22",
   "profile": "QuantumultX_v8.21_DNS_按App模块化.conf (host-only exclusions)",
   "family_exclusions": [
     "10086.cn",
@@ -346,6 +346,16 @@
       "license": "GPL-2.0",
       "sha256": "ff534003519b8cc3365f0890634ee1cf7a388986d47f6ee1382847d778245430",
       "hash_format": "UTF-8 text with LF newlines"
+    },
+    {
+      "file": "awa-reviewed-20261122.list",
+      "license": "GPL-3.0",
+      "sha256": "8a1146fe8d14ca48732b8a99902af692b5276e157a35e91a338e43fe488d066c",
+      "evidence": [
+        "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/a5af99ea",
+        "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/commit/02737455"
+      ],
+      "scope": "Reviewed v1.7.9 subset: two Xiaohongshu splash-asset hosts and eight fixed TopOn/Lingye advertising hosts; telemetry, crash logs, fingerprinting, IP-CIDR additions and unexplained upstream removals omitted."
     },
     {
       "file": "limbopro-filter.list",

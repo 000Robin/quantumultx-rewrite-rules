@@ -1,8 +1,8 @@
 #!name=Robin | 通用去广补充（排除专用）分流
 #!desc=与 v8.21 专用模块配套使用；静态审查通过，实际效果需冷启动验证。
-#!date=2026-11-07
+#!date=2026-11-22
 # Upstream: https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-QuantumultX.list
-# Additional reviewed rules: limbopro/Adblock4limbo (MIT); see sources/general/LICENSE-limbopro-MIT.txt.
+# Additional reviewed inputs: selected AWAvenue v1.7.9 filter hosts (GPL-3.0) and limbopro/Adblock4limbo (MIT).
 # False-positive review: 217heidai/adblockfilters issue reports and whitelist (GPL-3.0).
 # Modified by 000Robin: specialist exclusions, conservative scope and deduplication.
 # License: GPL-3.0; repository personal-use restrictions do not apply.
@@ -81,6 +81,7 @@ host, ads-api-o.api.leiniao.com, reject
 host, ads-api.tiktok.com, reject
 host, ads-api.twitter.com, reject
 host, ads-img-al.xhscdn.com, reject
+host, ads-img-bak.xhscdn.com, reject
 host, ads-img-qc.xhscdn.com, reject
 host, ads-jp.tiktok.com, reject
 host, ads-marketing-vivofs.vivo.com.cn, reject
@@ -89,6 +90,7 @@ host, ads-sg.tiktok.com, reject
 host, ads-shopping.shouqianba.com, reject
 host, ads-video-al.xhscdn.com, reject
 host, ads-video-qc.xhscdn.com, reject
+host, ads-vp5.xhscdn.com, reject
 host, ads.adfunlink.com, reject
 host, ads.auctions.yahoo.com, reject
 host, ads.finance.yahoo.com, reject
@@ -163,6 +165,7 @@ host, adx-strategy-api-cn.statisticslinks.com, reject
 host, adx.ads.heytapmobi.com, reject
 host, adx.ads.oppomobile.com, reject
 host-suffix, adx.adwangmai.com, reject
+host, adx.anythinktech.com, reject
 host, adx.appsdk.com.cn, reject
 host, adx.sogaha.cn, reject
 host, adx.tuia.cn, reject
@@ -243,6 +246,7 @@ host, beacon-api.aliyuncs.com, reject
 host, beacons.gvt2.com, reject
 host, beizi.biz, reject
 host, bianxian.com, reject
+host, bid.shanghailingye.cn, reject
 host, bingads.microsoft.com, reject
 host, bj-td-menta-01-callback.advlion.com, reject
 host, bj.ad.track.66mobi.com, reject
@@ -278,7 +282,10 @@ host, click.liftoff.io, reject
 host, click.oneplus.cn, reject
 host, click4.chinaliftoff.io, reject
 host, cloooud.com, reject
+host, cn-api-sec.anythinktech.com, reject
 host, cn-api.anythinktech.com, reject
+host, cn-da.anythinktech.com, reject
+host, cn-tk.anythinktech.com, reject
 host, cnlogs.umeng.com, reject
 host, cnlogs.umengcloud.com, reject
 host, cnzz.com, reject
@@ -294,6 +301,7 @@ host, csjplatform.com, reject
 host, d.applovin.com, reject
 host, d.applvn.com, reject
 host, da.anythinktech.com, reject
+host, da.statisticslinks.com, reject
 host, data-sdk-uuid-log.d.meituan.net, reject
 host, data.ads.oppomobile.com, reject
 host, data.chsmarttv.com, reject
@@ -621,6 +629,7 @@ host, smad.ms.zhangyue.net, reject
 host, smartad.10010.com, reject
 host, smetrics.samsung.com, reject
 host, sms.ads.oppomobile.com, reject
+host, ssapi.anythinktech.com, reject
 host, ssp.cloooud.com, reject
 host, staging-notify.sec.miui.com, reject
 host, stat.dongqiudi.com, reject
@@ -655,6 +664,7 @@ host, tencent-dtv.m.cn.miaozhen.com, reject
 host, test.ad.xiaomi.com, reject
 host, test.e.ad.xiaomi.com, reject
 host, tk.anythinktech.com, reject
+host, tk.statisticslinks.com, reject
 host, tnc3-aliec1.toutiaoapi.com, reject
 host, tnc3-aliec2.toutiaoapi.com, reject
 host, tnc3-alisc1.toutiaoapi.com, reject
